@@ -414,6 +414,22 @@ section{scroll-margin-top:86px}
 .demo-real summary{cursor:pointer;font:700 15px var(--display)}
 .demo-real p{margin:10px 0 12px;font-size:14px;color:var(--ink2);max-width:80ch}
 .demo-real code{background:var(--sunk);padding:2px 6px;border-radius:5px;font-size:13px}
+
+/* ---------- cases v3: compact, tap to open ---------- */
+.cases{display:block;columns:2;column-gap:12px}
+.cases>.none{column-span:all}
+.case2{border-radius:14px;box-shadow:none;overflow:hidden;transition:box-shadow .2s;break-inside:avoid;margin-bottom:10px;display:block}
+.case2[open]{box-shadow:var(--shadow)}
+.case2 summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:minmax(0,1fr) auto 18px;gap:10px;align-items:center;padding:13px 14px 13px 16px}
+.case2 summary::-webkit-details-marker{display:none}
+.case2 summary:hover{background:var(--sunk)}
+.c2-t{font:700 14.5px/1.3 var(--display)}
+.c2-ch{width:9px;height:9px;border-right:2px solid var(--ink3);border-bottom:2px solid var(--ink3);transform:rotate(45deg);justify-self:center;margin-top:-4px;transition:transform .2s}
+.case2[open] .c2-ch{transform:rotate(-135deg);margin-top:4px}
+.c2-b{padding:0 16px 14px;display:flex;flex-direction:column}
+.c2-b .cf{padding-inline:0}
+.c2-b .see{margin-top:6px}
+@media (max-width:760px){.cases{columns:1}}
 /* ---------- journey map v2 ---------- */
 .jm2-scroll{margin-inline:-20px;padding-inline:20px;overflow-x:auto;scrollbar-width:none;padding-block:6px 18px}
 .jm2{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(5,auto);column-gap:16px}
@@ -702,7 +718,7 @@ section{scroll-margin-top:86px}
 
 <section id="cases">
   <div class="sec-h"><span class="eyebrow">Every case</span><h2>What happens when something is not normal</h2>
-    <p class="sub">Each card is one situation: how the system notices it, what the customer is told, and where it ends.</p></div>
+    <p class="sub">Pick a group, then tap a situation to see how the system notices it, what the customer is told, and where it ends.</p></div>
   <div class="filters" id="filters" role="group" aria-label="Filter cases"></div>
   <div class="cases" id="caselist"></div>
 </section>
@@ -1305,23 +1321,22 @@ const C=[
 [4,'The phone is lost or changed','Admin makes a new phone code.','—','The old code stops working at once.','cont','a13_team_newcode'],
 [4,'One account is getting too many orders','New orders go to the active account with the fewest open orders.','—','Load spreads across accounts by itself.','cont']
 ];
-let gf=-1,q='';
+let gf=0,q='';
 const fl=$('#filters');
-['All cases',...G].forEach((g,i)=>{const b=el('button',null,g+' <span style="opacity:.6">'+(i?C.filter(c=>c[0]===i-1).length:C.length)+'</span>');b.type='button';b.setAttribute('aria-pressed',i===0);b.addEventListener('click',()=>{gf=i-1;[...fl.querySelectorAll('button')].forEach((x,j)=>x.setAttribute('aria-pressed',j===i));cases()});fl.append(b)});
-const inp=el('input');inp.id='caseq';inp.type='search';inp.placeholder='Search cases, e.g. "amount" or "SMS"';inp.setAttribute('aria-label','Search cases');inp.addEventListener('input',()=>{q=inp.value.toLowerCase();cases()});fl.append(inp);
+['All cases',...G].forEach((g,i)=>{const b=el('button',null,g+' <span style="opacity:.6">'+(i?C.filter(c=>c[0]===i-1).length:C.length)+'</span>');b.type='button';b.setAttribute('aria-pressed',i===1);b.addEventListener('click',()=>{gf=i-1;[...fl.querySelectorAll('button')].forEach((x,j)=>x.setAttribute('aria-pressed',j===i));cases()});fl.append(b)});
+const inp=el('input');inp.id='caseq';inp.type='search';inp.placeholder='Search all cases';inp.setAttribute('aria-label','Search cases');inp.addEventListener('input',()=>{q=inp.value.toLowerCase();if(q&&gf>=0){gf=-1;[...fl.querySelectorAll('button')].forEach((x,j)=>x.setAttribute('aria-pressed',j===0))}cases()});fl.append(inp);
 function cases(){
   const L=$('#caselist');L.innerHTML='';
   const rows=C.filter(c=>(gf<0||c[0]===gf)&&(!q||c.join(' ').toLowerCase().includes(q)));
   if(!rows.length){L.append(el('p','none','No case matches. Clear the search to see all '+C.length+'.'));return}
-  rows.forEach(c=>{
-    const o=O[c[5]],d=el('div','card case');
-    d.innerHTML='<div class="case-top"><h4>'+c[1]+'</h4><span class="pill '+o[0]+'">'+o[1]+'</span></div>'+
-      '<div class="cf"><span class="dt">How the system notices</span><p>'+c[2]+'</p></div>'+
+  rows.forEach((c,i)=>{
+    const o=O[c[5]],d=el('details','card case2');
+    d.innerHTML='<summary><span class="c2-t">'+c[1]+'</span><span class="pill '+o[0]+'">'+o[1]+'</span><i class="c2-ch" aria-hidden="true"></i></summary>'+
+      '<div class="c2-b"><div class="cf"><span class="dt">How the system notices</span><p>'+c[2]+'</p></div>'+
       '<div class="cf"><span class="dt">Customer sees</span><p class="'+(c[3]!=='—'?'q':'nil')+'">'+(c[3]!=='—'?c[3]:'No message. Nothing changes on their screen.')+'</p></div>'+
-      '<div class="cf"><span class="dt">What happens</span><p>'+c[4]+'</p></div>';
-    const f=el('div','cfoot');
-    if(c[6]){const b=el('button','see','See the screen');b.type='button';b.addEventListener('click',()=>openZoom(c[6]));f.append(b)}
-    d.append(f);
+      '<div class="cf"><span class="dt">What happens</span><p>'+c[4]+'</p></div></div>';
+    if(c[6]){const b=el('button','see','See the screen');b.type='button';b.addEventListener('click',()=>openZoom(c[6]));d.querySelector('.c2-b').append(b)}
+    if(q&&rows.length<=4)d.open=true;
     L.append(d);
   });
 }
