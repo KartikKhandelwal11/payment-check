@@ -1,0 +1,20 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.db
+*.db-wal
+*.db-shm
+
+# Android
+android/.gradle/
+android/.idea/
+android/local.properties
+android/build/
+android/app/build/
+*.iml
+
+# Customer screenshots (personal data)
+server/uploads/
+
+# macOS
+.DS_Store

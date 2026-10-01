@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#ffffff">
+<title>Pay ₹500.00 · Payment Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/checkout.css?v=9">
+<meta name="robots" content="noindex"><link rel="stylesheet" href="proto.css"></head>
+<body class="has-bar">
+
+
+
+
+
+
+
+
+<div class="page">
+  <header class="appbar">
+    <a class="back" href="wallet.html" aria-label="Back to wallet" id="backLink"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></a>
+    <div class="avatar" aria-hidden="true">P</div>
+    <div class="who"><b>Payment Check</b><small><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.5 3v6c0 4.5-3.2 7.8-7.5 9-4.3-1.2-7.5-4.5-7.5-9V6zM9 12l2 2 4-4"/></svg>Secure checkout</small></div>
+    
+  </header>
+
+  <main>
+    
+
+    
+    <section class="summary" aria-label="Order summary">
+      <div class="top"><span>Add money to wallet</span><span>Order <b class="mono">48YWL8JM</b></span></div>
+      
+      <div class="amount">₹500<small>.00</small></div>
+      <div class="to">To <b>Ankit Mehra</b> · from Aman Verma</div>
+      
+      
+      
+      <ol class="stepper">
+        
+        <li class="done" ><span class="dot"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Pay</li>
+        
+        <li class="now" aria-current="step"><span class="dot">2</span>Upload proof</li>
+        
+        <li class="" ><span class="dot">3</span>Confirmed</li>
+        
+      </ol>
+    </section>
+
+    
+    
+    <section class="card proof">
+  
+      <div class="banner bad full" role="alert"><span class="bi"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></span><p><b>We couldn't accept this screenshot</b>We couldn&#39;t find the UTR / UPI Ref No. Upload the full, uncropped success screen with the UTR visible.</p></div>
+    
+  <div class="mock" aria-hidden="true"><span class="ok"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><i class="amt"></i><i></i><i style="width:70%"></i><i class="utr"></i><i style="width:80%"></i></div>
+  <div style="display:grid;gap:8px">
+    <h2>Upload the right screenshot</h2>
+    <ul class="tips">
+      <li><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>The <b>success screen</b> of your UPI or bank app</span></li>
+      <li><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><b>UTR / UPI Ref No</b> clearly visible</span></li>
+      <li><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Amount <b>₹500.00</b>, not cropped</span></li>
+    </ul>
+  </div>
+  <form method="post" action="/pay/48YWL8JM/screenshot" enctype="multipart/form-data" id="proofForm" class="full" style="display:grid;gap:10px">
+  <label class="drop desk-only">
+    <span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V5M7.5 9.5L12 5l4.5 4.5M5 19h14"/></svg></span>
+    <span><b>Upload again</b><small>PNG or JPG, up to 5 MB</small></span>
+    <input type="file" name="file" id="proofFile" accept="image/png,image/jpeg,image/webp" required aria-label="Upload again">
+  </label>
+  <div class="picked" id="picked" hidden><img id="pickedImg" alt="Selected screenshot"><span id="pickedName"></span><label for="proofFile">Change</label></div>
+  <button type="submit" class="btn desk-only" id="sendBtn" disabled><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Verify screenshot</button>
+</form>
+</section>
+    
+    <form method="post" action="/pay/48YWL8JM/review" style="margin:0;display:grid;gap:4px;justify-items:center">
+      <input type="hidden" name="claim_id" value="2">
+      <button type="submit" class="link">My screenshot is right, send it for review</button>
+      <span class="sub" style="font-size:12.5px">Our team checks it with the bank, usually within 4 hours.</span>
+    </form>
+    
+
+    
+    
+
+    
+    <div class="demo"><b>Demo mode</b><span>No real payment needed: download a sample screenshot and upload it.</span>
+      <div class="chips"><a href="#proto" download>Correct screenshot</a><a href="#proto" download>Wrong amount</a><a href="#proto" download>Payment pending</a><a href="#proto" download>Old date</a><a href="#proto" download>UTR cut off</a></div></div>
+    
+  </main>
+
+  <footer class="foot">
+    <span><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11h12v9H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3"/></svg>Money is added only after our bank confirms your UTR</span>
+    <div class="logos"><img src="static/brands/upi.svg" alt="UPI"><img src="static/brands/gpay.svg" alt="Google Pay"><img src="static/brands/phonepe.svg" alt="PhonePe"><img src="static/brands/paytm.svg" alt="Paytm"><img src="static/brands/hdfc.svg" alt="HDFC Bank"></div>
+  </footer>
+
+  
+  <div class="bar" id="bar">
+    <div class="total">Total<b>₹500.00</b></div>
+    <label class="btn" for="proofFile" id="barPick"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v14H4zM4 15l4.5-4.5L13 15l2.5-2.5L20 17M15.5 9.5h.01"/></svg>Upload again</label>
+    <button class="btn ok" type="submit" form="proofForm" id="barSend" hidden><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Verify screenshot</button>
+  </div>
+  
+</div>
+
+
+<div class="sheet-bg" id="leave" hidden role="dialog" aria-modal="true" aria-labelledby="leaveTitle" aria-describedby="leaveText">
+  <div class="sheet">
+    <div class="orb warn"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8v5M12 16.5v.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg></div>
+    
+    <h2 id="leaveTitle">Leave this payment?</h2>
+    <p id="leaveText">If you've already paid, upload the screenshot now so we can add ₹500.00 to your wallet. You can also do it later from My orders, within 48 hours.</p>
+    <div class="actions"><button type="button" class="btn" data-stay><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v14H4zM4 15l4.5-4.5L13 15l2.5-2.5L20 17M15.5 9.5h.01"/></svg>Stay and upload</button>
+      <button type="button" class="btn ghost" data-leave>Leave anyway</button></div>
+    
+  </div>
+</div>
+
+
+<div class="reading" id="reading" hidden><div><div class="orb brand"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></div>Reading your screenshot…<small>This takes a few seconds</small></div></div>
+
+<script>
+(function () {
+  const orderId = "48YWL8JM";
+  const view = "claim_rejected";
+  const key = "pending|2|rejected|False|False";
+  const clockOffset = 0;
+  const expiresAt = Date.now() + 15 * 60 * 1000;
+  const $ = (id) => document.getElementById(id);
+
+  // ---------- screenshot: pick -> preview -> verify ----------
+  const input = $('proofFile');
+  if (input) {
+    input.addEventListener('change', () => {
+      const f = input.files && input.files[0];
+      $('picked').hidden = !f;
+      if ($('sendBtn')) $('sendBtn').disabled = !f;
+      if ($('barPick')) { $('barPick').hidden = !!f; $('barSend').hidden = !f; }
+      if (!f) return;
+      $('pickedName').textContent = f.name;
+      if (f.type.startsWith('image/')) $('pickedImg').src = URL.createObjectURL(f);
+      $('picked').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    $('proofForm').addEventListener('submit', () => { $('reading').hidden = false; });
+  }
+  window.addEventListener('pageshow', () => { $('reading').hidden = true; });
+
+  document.querySelectorAll('[data-copy]').forEach((b) => b.addEventListener('click', () => {
+    const v = b.dataset.copy;
+    const ok = () => { b.textContent = 'Copied'; setTimeout(() => b.textContent = 'Copy', 1500); };
+    if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(v).then(ok, () => {}); return; }
+    const ta = document.createElement('textarea'); ta.value = v; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); ok(); } finally { ta.remove(); }
+  }));
+
+  // ---------- confirm before leaving an unfinished payment ----------
+  const leave = $('leave');
+  if (leave) {
+    let leaving = false;
+    let target = null;              // where to go when the customer confirms
+    const show = (to) => { target = to; leave.hidden = false; leave.querySelector('[data-stay]').focus(); };
+    const hide = () => { leave.hidden = true; };
+    // Page's own back arrow.
+    const backLink = $('backLink');
+    if (backLink) backLink.addEventListener('click', (e) => { e.preventDefault(); show(backLink.href); });
+    // Phone back button / gesture: keep one extra history entry and catch it.
+    if (!(history.state && history.state.guard)) history.pushState({ guard: true }, '');
+    window.addEventListener('popstate', () => {
+      if (leaving) return;
+      history.pushState({ guard: true }, '');
+      show(null);
+    });
+    leave.querySelector('[data-stay]').addEventListener('click', () => {
+      hide();
+      if ($('proofFile') && view !== 'claim_ready') $('proofForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    leave.querySelector('[data-leave]').addEventListener('click', async () => {
+      leaving = true;
+      // "I haven't paid": close the order so a new one can be made straight away.
+      if (view === 'pay' && true) {
+        try { await fetch('/pay/' + orderId + '/cancel', { method: 'POST' }); } catch (e) {}
+        location.href = 'wallet.html';
+        return;
+      }
+      if (target) location.href = target;
+      else if (true) location.href = 'wallet.html';
+      else history.go(-2);
+    });
+    leave.addEventListener('click', (e) => { if (e.target === leave) hide(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !leave.hidden) hide(); });
+  }
+
+  // ---------- live status: reload when anything changes ----------
+  if (['pay', 'in_progress', 'review', 'expired'].includes(view)) {
+    let busy = false;
+    const poll = async () => {
+      if (busy) return; busy = true;
+      try {
+        const r = await fetch('/api/orders/' + orderId + '/status', { cache: 'no-store' });
+        if (r.ok) { const o = await r.json(); if (o.key !== key) { location.reload(); return; } }
+      } catch (e) {}
+      busy = false;
+    };
+    void (0, view === 'pay' ? 5000 : 3000);
+    document.addEventListener('visibilitychange', () => {  });
+  }
+
+  if (view !== 'pay') return;
+
+  // ---------- timer ----------
+  const tick = () => {
+    const left = Math.max(0, Math.round((expiresAt - (Date.now() + clockOffset)) / 1000));
+    document.querySelectorAll('[data-left]').forEach((el) => {
+      el.textContent = Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0');
+    });
+  };
+  tick(); setInterval(tick, 1000);
+
+  // ---------- other ways to pay: one open at a time ----------
+  const rows = [...document.querySelectorAll('details.row')];
+  rows.forEach((d) => d.addEventListener('toggle', () => { if (d.open) rows.forEach((o) => { if (o !== d) o.open = false; }); }));
+  const openRow = (name) => rows.forEach((d) => { d.open = d.dataset.m === name; });
+
+  // ---------- UPI apps ----------
+  const upiQuery = "pa=ankit.mehra%40okhdfcbank\u0026pn=Ankit%20Mehra\u0026am=500.00\u0026cu=INR\u0026tn=Order%2048YWL8JM";
+  const ua = navigator.userAgent;
+  const isAndroid = /Android/i.test(ua);
+  const isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const APPS = {
+    phonepe: { name: 'PhonePe', android: 'com.phonepe.app', ios: 'phonepe://pay?' },
+    gpay:    { name: 'Google Pay', android: 'com.google.android.apps.nbu.paisa.user', ios: 'gpay://upi/pay?' },
+    paytm:   { name: 'Paytm', android: 'net.one97.paytm', ios: 'paytmmp://pay?' },
+    other:   { name: 'a UPI app' },
+  };
+  const pageUrl = location.href.split('#')[0];
+  const notice = (text) => { $('notice').textContent = text; $('notice').hidden = false; };
+
+  // A computer can't open UPI apps: show the QR straight away.
+  if (!isAndroid && !isIOS && !rows.some((d) => d.open)) openRow('qr');
+
+  function ifNothingOpened(fn) {
+    const t = setTimeout(() => { if (document.visibilityState === 'visible') fn(); }, 2500);
+    const cancel = () => clearTimeout(t);
+    document.addEventListener('visibilitychange', cancel, { once: true });
+    window.addEventListener('pagehide', cancel, { once: true });
+    window.addEventListener('blur', cancel, { once: true });
+  }
+  document.querySelectorAll('.app').forEach((a) => {
+    const app = APPS[a.dataset.app];
+    if (isAndroid && app.android) {
+      // Opens exactly this app; if it isn't installed, Chrome returns here with #noapp-…
+      a.href = 'intent://pay?' + upiQuery + '#Intent;scheme=upi;package=' + app.android +
+               ';S.browser_fallback_url=' + encodeURIComponent(pageUrl + '#noapp-' + a.dataset.app) + ';end';
+    } else if (isIOS && app.ios) {
+      a.href = app.ios + upiQuery;
+    }
+    a.addEventListener('click', (e) => {
+      if (!isAndroid && !isIOS) { e.preventDefault(); openRow('qr'); notice('UPI apps open on a phone. Scan the QR below with your phone instead.'); return; }
+      try { localStorage.setItem('upiApp', a.dataset.app); sessionStorage.setItem('went-' + orderId, '1'); } catch (err) {}
+      $('notice').hidden = true;
+      ifNothingOpened(() => notice("Didn't open " + app.name + '? It may not be installed. Try another app or scan the QR.'));
+    });
+  });
+  const m = location.hash.match(/^#noapp-(\w+)/);
+  if (m && APPS[m[1]]) {
+    notice(APPS[m[1]].name + ' is not installed on this phone. Try another app or scan the QR.');
+    history.replaceState(null, '', pageUrl);
+  }
+  // Last used app first, marked.
+  let last = null;
+  try { last = localStorage.getItem('upiApp'); } catch (e) {}
+  const lastBtn = last && document.querySelector('.app[data-app="' + last + '"]');
+  if (lastBtn && (isAndroid || isIOS)) {
+    $('apps').prepend(lastBtn);
+    const tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = 'Last'; lastBtn.append(tag);
+  }
+  // Back from the UPI app: point at the upload step.
+  const cameBack = () => {
+    let went = false;
+    try { went = sessionStorage.getItem('went-' + orderId) === '1'; } catch (e) {}
+    if (!went || document.visibilityState !== 'visible') return;
+    $('backNote').hidden = false;
+    $('backNote').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const bar = $('bar');
+    if (bar) { bar.classList.remove('nudge'); void bar.offsetWidth; bar.classList.add('nudge'); }
+  };
+  document.addEventListener('visibilitychange', cameBack);
+  cameBack();
+})();
+</script>
+<script>window.PROTO={"page": "pay-no-utr.html", "wallet": "wallet.html"}</script><script src="proto.js"></script></body>
+</html>

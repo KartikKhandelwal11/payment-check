@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Log in · Payment Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#f3f4f9; --card:#fff; --ink:#111827; --muted:#6b7280; --line:#e5e7eb;
+          --accent:#4f46e5; --accent-ink:#fff; --accent-soft:#eef2ff; --bad:#dc2626; --bad-soft:#fef2f2; }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; display:grid; place-items:center; background:var(--bg); color:var(--ink);
+         font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; padding:24px 16px; }
+  form { width:100%; max-width:360px; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:28px 24px;
+         box-shadow:0 8px 24px rgba(16,24,40,.08); display:grid; gap:14px; }
+  .logo { width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,#4338ca,#7c3aed); box-shadow:0 6px 14px -4px rgba(79,70,229,.5); color:var(--accent-ink); display:grid; place-items:center; font-weight:800; font-size:22px; }
+  h1 { font-size:20px; margin:4px 0 0; }
+  p { margin:-8px 0 4px; color:var(--muted); font-size:14px; }
+  label { display:grid; gap:6px; font-size:12px; font-weight:600; color:var(--muted); }
+  input { font:inherit; color:var(--ink); background:var(--card); padding:11px 12px; border:1px solid var(--line); border-radius:9px; }
+  input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+  button { font:inherit; font-weight:650; padding:12px; border:0; border-radius:9px; background:linear-gradient(180deg,#5b54ea,#4338ca); color:var(--accent-ink); cursor:pointer; box-shadow:0 6px 16px -6px rgba(67,56,202,.6); }
+  button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .error { background:var(--bad-soft); color:var(--bad); padding:9px 12px; border-radius:8px; margin:0; font-size:14px; font-weight:500; }
+</style>
+<meta name="robots" content="noindex"><link rel="stylesheet" href="proto.css"></head>
+<body>
+<form method="post" action="/admin/login">
+  <div class="logo" aria-hidden="true">₹</div>
+  <h1>Payment Check</h1>
+  <p>Log in to the team dashboard</p>
+  
+  <label>Admin password
+    <input id="password" name="password" type="password" autocomplete="current-password" autofocus required>
+  </label>
+  <button type="submit">Log in</button>
+</form>
+<script>window.PROTO={"page": "admin-login.html", "wallet": "wallet.html"}</script><script src="proto.js"></script></body>
+</html>

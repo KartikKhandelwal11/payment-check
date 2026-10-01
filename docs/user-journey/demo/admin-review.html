@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f5f6fb">
+<title>Payments to check · Payment Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/admin.css?v=25">
+<script>
+  // Hide animated cards until motion starts (no flash); always show them after 1.2 s.
+  (function () {
+    var soft = false;
+    try { soft = sessionStorage.getItem('pcSoft') === location.pathname + location.search; } catch (e) {}
+    if (soft || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.documentElement.classList.add('pre-anim');
+    setTimeout(function () { document.documentElement.classList.remove('pre-anim'); }, 1200);
+  })();
+</script>
+<meta name="robots" content="noindex"><link rel="stylesheet" href="proto.css"></head>
+<body>
+<div class="wash" aria-hidden="true"><i></i></div>
+<div class="app">
+  <aside class="sidebar" id="sidebar" aria-label="Main menu">
+    <div style="display:flex;align-items:center">
+      <a class="sb-brand" href="admin.html"><div class="logo" aria-hidden="true">₹</div><div><b>Payment Check</b><small>Team dashboard</small></div></a>
+      <button class="sb-close" type="button" id="drawerClose" aria-label="Close menu"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <a class="sb-cta" href="#proto"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>New payment link</a>
+    <div class="sb-label">Menu</div>
+    <nav class="sb-nav">
+      
+      <a class="sb-item" href="admin.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Overview<span class="badge hot" title="Alerts">3</span></a>
+      <a class="sb-item active" href="admin-review.html" aria-current="page"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>Payments to check<span class="badge hot" title="Need your decision">3</span></a>
+      <a class="sb-item" href="admin-orders.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6M9 4a1 1 0 0 0-1 1v1h8V5a1 1 0 0 0-1-1M8 6H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-2M9 12h6M9 16h4"/></svg>All payments</a>
+      <a class="sb-item" href="admin-statements.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13l3-8h12l3 8v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 13h5l1 2h6l1-2h5"/></svg>Bank statement</a>
+      <a class="sb-item" href="admin-team.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>Bank accounts<span class="badge" title="Phones online">1/2</span></a>
+      <a class="sb-item" href="admin-customers.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg>Customers</a>
+    </nav>
+    <div class="sb-label">More</div>
+    <nav class="sb-nav">
+      <a class="sb-item" href="admin-payments.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h13v4"/><path d="M3 7v11a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1H5a2 2 0 0 1-2-2z"/><circle cx="16.5" cy="14.5" r="1.3"/></svg>Unclaimed money<span class="badge">2</span></a>
+      <a class="sb-item" href="admin-notifications.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg>Phone messages</a>
+    </nav>
+
+    <div class="sb-foot">
+      <div class="live"><i></i>Live · updates every 20s</div>
+      <div class="demo-tag">Demo mode · simulate buttons on</div>
+      <form method="post" action="/admin/logout"><button class="btn-ghost" type="submit"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 17l5-5-5-5M15 12H3"/></svg>Log out</button></form>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <div class="main">
+    <header class="topbar" id="topbar">
+      <button class="menu-btn" type="button" id="drawerOpen" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+      
+      <div>
+        <div class="crumb">Find the UTR in the bank, then decide</div>
+        <h1>Payments to check</h1>
+      </div>
+      <div class="actions"></div>
+    </header>
+    <main class="content">
+      
+      
+      
+
+<div class="acct-grid">
+  
+  
+  <section class="card rv-card" data-animate id="o-PCCRJWZB">
+    <div class="rc-top">
+      <img class="rc-thumb" src="claims/7.jpg" alt="" loading="lazy">
+      <div class="rc-who">
+        <b>Sonia Jain</b>
+        <small>01 Oct, 07:21 AM · PCCRJWZB</small>
+        <span class="rc-amt">₹200.00<small> · order ₹400.00</small></span>
+      </div>
+    </div>
+    <p class="rc-why"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>Customer says they paid a different amount</p>
+    <div class="rc-foot">
+      <span class="mono rc-utr">638985330527</span>
+      <button type="button" data-open="dlg-PCCRJWZB">Check</button>
+    </div>
+  </section>
+  
+  
+  <section class="card rv-card" data-animate id="o-GNEREBG7">
+    <div class="rc-top">
+      <img class="rc-thumb" src="claims/19.jpg" alt="" loading="lazy">
+      <div class="rc-who">
+        <b>Ananya Rao</b>
+        <small>01 Oct, 07:21 AM · GNEREBG7</small>
+        <span class="rc-amt">₹999.00</span>
+      </div>
+    </div>
+    <p class="rc-why"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>Two customers claimed the same UTR</p>
+    <div class="rc-foot">
+      <span class="mono rc-utr">658235369642</span>
+      <button type="button" data-open="dlg-GNEREBG7">Check</button>
+    </div>
+  </section>
+  
+  
+  <section class="card rv-card" data-animate id="o-SNFMS6KG">
+    <div class="rc-top">
+      <img class="rc-thumb" src="claims/20.jpg" alt="" loading="lazy">
+      <div class="rc-who">
+        <b>Varun Gill</b>
+        <small>01 Oct, 07:21 AM · SNFMS6KG</small>
+        <span class="rc-amt">₹999.00</span>
+      </div>
+    </div>
+    <p class="rc-why"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>Two customers claimed the same UTR</p>
+    <div class="rc-foot">
+      <span class="mono rc-utr">658235369642</span>
+      <button type="button" data-open="dlg-SNFMS6KG">Check</button>
+    </div>
+  </section>
+  
+</div>
+
+
+
+
+
+
+
+<dialog class="modal wide" id="dlg-PCCRJWZB" aria-labelledby="dlg-PCCRJWZB-t" tabindex="-1">
+  <div class="modal-b">
+    <div class="modal-h">
+      <div><h2 id="dlg-PCCRJWZB-t">Sonia Jain says they paid ₹200.00</h2>
+        <p class="muted">Order <a class="oid" href="admin-order-PCCRJWZB.html">PCCRJWZB</a> for ₹400.00 · to Priya Verma (PRIYA02) · Customer says they paid a different amount</p></div>
+      <button type="button" class="btn-ghost" data-close aria-label="Close"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+
+    <div class="dl-grid">
+      <div>
+        <a class="dl-shot" href="claims/7.jpg" target="_blank" rel="noopener"><img src="claims/7.jpg" alt="Customer's screenshot" loading="lazy"></a>
+        
+      </div>
+      <div class="dl-side">
+        <div>
+          <div class="dl-label">UTR to search in the bank</div>
+          <div class="utrbig"><code>638985330527</code><button type="button" class="btn-2" data-copy="638985330527"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copy</button></div>
+          
+        </div>
+        <dl class="ac-facts">
+          <div><dt>Amount on screenshot</dt><dd>₹200.00</dd></div>
+          <div><dt>Date on screenshot</dt><dd>01 Oct, 07:21 AM</dd></div>
+          <div><dt>Paid to</dt><dd>PRIYA02</dd></div>
+          <div><dt>In our bank records</dt><dd><span class="muted">Not yet</span></dd></div>
+        </dl>
+        
+
+        <div class="two">
+          <form method="post" action="/admin/review/PCCRJWZB/approve" style="margin:0"
+                onsubmit="return confirm('Add ₹200.00 to Sonia Jain\'s wallet?')">
+            <input type="hidden" name="utr" value="638985330527">
+            
+            <input type="hidden" name="amount" value="200">
+            <input type="hidden" name="member_id" value="PRIYA02">
+            <button type="submit" class="bigbtn yes">✓ Found in bank<small>Add ₹200.00</small></button>
+          </form>
+          <form method="post" action="/admin/review/PCCRJWZB/reject" style="margin:0"
+                onsubmit="return confirm('Reject? The customer will see: No payment with this UTR reached our account.')">
+            <input type="hidden" name="reason" value="not_received">
+            <button type="submit" class="bigbtn no">✗ Not in bank<small>Reject</small></button>
+          </form>
+        </div>
+
+        <details class="more-opt">
+          <summary>More options</summary>
+          <div style="display:grid;gap:12px">
+            <form method="post" action="/admin/review/PCCRJWZB/approve" class="opt-box">
+              <b>Approve with other details</b>
+              <div class="two-col">
+                <label class="f">UTR<input name="utr" id="utr2_PCCRJWZB" required value="638985330527" autocomplete="off"></label>
+                <label class="f">Amount<input name="amount" id="amt_PCCRJWZB" required inputmode="decimal" value="200"></label>
+              </div>
+              <label class="f">Account where you found it
+                <select name="member_id" id="acct_PCCRJWZB"><option value="PRIYA02" selected>Priya Verma (PRIYA02)</option><option value="RAHUL01" >Rahul Sharma (RAHUL01)</option><option value="ANKIT03" >Ankit Mehra (ANKIT03)</option></select></label>
+              <button type="submit">Approve</button>
+            </form>
+            <form method="post" action="/admin/review/PCCRJWZB/reject" class="opt-box" onsubmit="return confirm('Reject this payment?')">
+              <b>Reject with another reason</b>
+              <select name="reason" id="reason_PCCRJWZB"><option value="not_received" selected>No payment with this UTR reached our account.</option><option value="wrong_account" >This payment went to an account that isn&#39;t ours.</option><option value="other_customer" >This UTR belongs to another customer&#39;s payment.</option><option value="not_genuine" >This screenshot doesn&#39;t match any payment we received.</option></select>
+              <button type="submit" class="btn-danger">Reject</button>
+            </form>
+            <form method="post" action="/admin/review/PCCRJWZB/ask" class="opt-box">
+              <b>Ask the customer to upload again</b>
+              <input name="message" id="ask_PCCRJWZB" required value="Please upload the full transaction details page from your UPI app, showing the UTR and the account it was debited from.">
+              <button type="submit" class="btn-2">Send back</button>
+            </form>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+
+
+
+
+<dialog class="modal wide" id="dlg-GNEREBG7" aria-labelledby="dlg-GNEREBG7-t" tabindex="-1">
+  <div class="modal-b">
+    <div class="modal-h">
+      <div><h2 id="dlg-GNEREBG7-t">Ananya Rao says they paid ₹999.00</h2>
+        <p class="muted">Order <a class="oid" href="admin-order-GNEREBG7.html">GNEREBG7</a> for ₹999.00 · to Ankit Mehra (ANKIT03) · Two customers claimed the same UTR</p></div>
+      <button type="button" class="btn-ghost" data-close aria-label="Close"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+
+    <div class="dl-grid">
+      <div>
+        <a class="dl-shot" href="claims/19.jpg" target="_blank" rel="noopener"><img src="claims/19.jpg" alt="Customer's screenshot" loading="lazy"></a>
+        
+      </div>
+      <div class="dl-side">
+        <div>
+          <div class="dl-label">UTR to search in the bank</div>
+          <div class="utrbig"><code>658235369642</code><button type="button" class="btn-2" data-copy="658235369642"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copy</button></div>
+          
+        </div>
+        <dl class="ac-facts">
+          <div><dt>Amount on screenshot</dt><dd>₹999.00</dd></div>
+          <div><dt>Date on screenshot</dt><dd>01 Oct, 07:21 AM</dd></div>
+          <div><dt>Paid to</dt><dd>ANKIT03</dd></div>
+          <div><dt>In our bank records</dt><dd><span class="muted">Not yet</span></dd></div>
+        </dl>
+        <p class="dl-warn">Same UTR also claimed on <a class="oid" href="admin-order-SNFMS6KG.html">SNFMS6KG</a>.</p>
+
+        <div class="two">
+          <form method="post" action="/admin/review/GNEREBG7/approve" style="margin:0"
+                onsubmit="return confirm('Add ₹999.00 to Ananya Rao\'s wallet?')">
+            <input type="hidden" name="utr" value="658235369642">
+            
+            <input type="hidden" name="amount" value="999">
+            <input type="hidden" name="member_id" value="ANKIT03">
+            <button type="submit" class="bigbtn yes">✓ Found in bank<small>Add ₹999.00</small></button>
+          </form>
+          <form method="post" action="/admin/review/GNEREBG7/reject" style="margin:0"
+                onsubmit="return confirm('Reject? The customer will see: This UTR belongs to another customer&#39;s payment.')">
+            <input type="hidden" name="reason" value="other_customer">
+            <button type="submit" class="bigbtn no">✗ Not in bank<small>Reject</small></button>
+          </form>
+        </div>
+
+        <details class="more-opt">
+          <summary>More options</summary>
+          <div style="display:grid;gap:12px">
+            <form method="post" action="/admin/review/GNEREBG7/approve" class="opt-box">
+              <b>Approve with other details</b>
+              <div class="two-col">
+                <label class="f">UTR<input name="utr" id="utr2_GNEREBG7" required value="658235369642" autocomplete="off"></label>
+                <label class="f">Amount<input name="amount" id="amt_GNEREBG7" required inputmode="decimal" value="999"></label>
+              </div>
+              <label class="f">Account where you found it
+                <select name="member_id" id="acct_GNEREBG7"><option value="PRIYA02" >Priya Verma (PRIYA02)</option><option value="RAHUL01" >Rahul Sharma (RAHUL01)</option><option value="ANKIT03" selected>Ankit Mehra (ANKIT03)</option></select></label>
+              <button type="submit">Approve</button>
+            </form>
+            <form method="post" action="/admin/review/GNEREBG7/reject" class="opt-box" onsubmit="return confirm('Reject this payment?')">
+              <b>Reject with another reason</b>
+              <select name="reason" id="reason_GNEREBG7"><option value="not_received" >No payment with this UTR reached our account.</option><option value="wrong_account" >This payment went to an account that isn&#39;t ours.</option><option value="other_customer" selected>This UTR belongs to another customer&#39;s payment.</option><option value="not_genuine" >This screenshot doesn&#39;t match any payment we received.</option></select>
+              <button type="submit" class="btn-danger">Reject</button>
+            </form>
+            <form method="post" action="/admin/review/GNEREBG7/ask" class="opt-box">
+              <b>Ask the customer to upload again</b>
+              <input name="message" id="ask_GNEREBG7" required value="Please upload the full transaction details page from your UPI app, showing the UTR and the account it was debited from.">
+              <button type="submit" class="btn-2">Send back</button>
+            </form>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+
+
+
+
+<dialog class="modal wide" id="dlg-SNFMS6KG" aria-labelledby="dlg-SNFMS6KG-t" tabindex="-1">
+  <div class="modal-b">
+    <div class="modal-h">
+      <div><h2 id="dlg-SNFMS6KG-t">Varun Gill says they paid ₹999.00</h2>
+        <p class="muted">Order <a class="oid" href="admin-order-SNFMS6KG.html">SNFMS6KG</a> for ₹999.00 · to Priya Verma (PRIYA02) · Two customers claimed the same UTR</p></div>
+      <button type="button" class="btn-ghost" data-close aria-label="Close"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+
+    <div class="dl-grid">
+      <div>
+        <a class="dl-shot" href="claims/20.jpg" target="_blank" rel="noopener"><img src="claims/20.jpg" alt="Customer's screenshot" loading="lazy"></a>
+        
+      </div>
+      <div class="dl-side">
+        <div>
+          <div class="dl-label">UTR to search in the bank</div>
+          <div class="utrbig"><code>658235369642</code><button type="button" class="btn-2" data-copy="658235369642"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copy</button></div>
+          
+        </div>
+        <dl class="ac-facts">
+          <div><dt>Amount on screenshot</dt><dd>₹999.00</dd></div>
+          <div><dt>Date on screenshot</dt><dd>01 Oct, 07:21 AM</dd></div>
+          <div><dt>Paid to</dt><dd>PRIYA02</dd></div>
+          <div><dt>In our bank records</dt><dd><span class="muted">Not yet</span></dd></div>
+        </dl>
+        <p class="dl-warn">Same UTR also claimed on <a class="oid" href="admin-order-GNEREBG7.html">GNEREBG7</a>.</p>
+
+        <div class="two">
+          <form method="post" action="/admin/review/SNFMS6KG/approve" style="margin:0"
+                onsubmit="return confirm('Add ₹999.00 to Varun Gill\'s wallet?')">
+            <input type="hidden" name="utr" value="658235369642">
+            
+            <input type="hidden" name="amount" value="999">
+            <input type="hidden" name="member_id" value="PRIYA02">
+            <button type="submit" class="bigbtn yes">✓ Found in bank<small>Add ₹999.00</small></button>
+          </form>
+          <form method="post" action="/admin/review/SNFMS6KG/reject" style="margin:0"
+                onsubmit="return confirm('Reject? The customer will see: This UTR belongs to another customer&#39;s payment.')">
+            <input type="hidden" name="reason" value="other_customer">
+            <button type="submit" class="bigbtn no">✗ Not in bank<small>Reject</small></button>
+          </form>
+        </div>
+
+        <details class="more-opt">
+          <summary>More options</summary>
+          <div style="display:grid;gap:12px">
+            <form method="post" action="/admin/review/SNFMS6KG/approve" class="opt-box">
+              <b>Approve with other details</b>
+              <div class="two-col">
+                <label class="f">UTR<input name="utr" id="utr2_SNFMS6KG" required value="658235369642" autocomplete="off"></label>
+                <label class="f">Amount<input name="amount" id="amt_SNFMS6KG" required inputmode="decimal" value="999"></label>
+              </div>
+              <label class="f">Account where you found it
+                <select name="member_id" id="acct_SNFMS6KG"><option value="PRIYA02" selected>Priya Verma (PRIYA02)</option><option value="RAHUL01" >Rahul Sharma (RAHUL01)</option><option value="ANKIT03" >Ankit Mehra (ANKIT03)</option></select></label>
+              <button type="submit">Approve</button>
+            </form>
+            <form method="post" action="/admin/review/SNFMS6KG/reject" class="opt-box" onsubmit="return confirm('Reject this payment?')">
+              <b>Reject with another reason</b>
+              <select name="reason" id="reason_SNFMS6KG"><option value="not_received" >No payment with this UTR reached our account.</option><option value="wrong_account" >This payment went to an account that isn&#39;t ours.</option><option value="other_customer" selected>This UTR belongs to another customer&#39;s payment.</option><option value="not_genuine" >This screenshot doesn&#39;t match any payment we received.</option></select>
+              <button type="submit" class="btn-danger">Reject</button>
+            </form>
+            <form method="post" action="/admin/review/SNFMS6KG/ask" class="opt-box">
+              <b>Ask the customer to upload again</b>
+              <input name="message" id="ask_SNFMS6KG" required value="Please upload the full transaction details page from your UPI app, showing the UTR and the account it was debited from.">
+              <button type="submit" class="btn-2">Send back</button>
+            </form>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+
+
+    </main>
+  </div>
+</div>
+
+
+<script src="static/vendor/motion-11.11.13.js"></script>
+<script>window.PC_AUTO_REFRESH = false;</script>
+<script src="static/admin.js?v=10"></script>
+
+<script>
+(function () {
+  const openDlg = (d) => { d.showModal(); d.focus(); };
+  document.querySelectorAll('[data-open]').forEach((b) => b.addEventListener('click', () => openDlg(document.getElementById(b.dataset.open))));
+  document.querySelectorAll('dialog.modal').forEach((d) => {
+    d.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => d.close()));
+    d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
+  });
+  // Opened from a link like /admin/review#o-ABC123: go straight to that payment.
+  const m = location.hash.match(/^#o-(\w+)/);
+  if (m && document.getElementById('dlg-' + m[1])) openDlg(document.getElementById('dlg-' + m[1]));
+})();
+</script>
+
+<script>window.PROTO={"page": "admin-review.html", "wallet": "wallet.html"}</script><script src="proto.js"></script></body>
+</html>

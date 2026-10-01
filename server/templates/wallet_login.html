@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#0f1b4d">
+<title>Log in · Payment Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/customer.css?v=3">
+</head>
+<body>
+<div class="shell">
+  <div class="topline"><div class="brand"><i aria-hidden="true">₹</i>Payment Check</div></div>
+  <section class="card">
+    <form method="post" action="/wallet/login" class="block" style="margin:0">
+      <h1 class="sec-title" style="font-size:20px">Log in to your wallet</h1>
+      <p class="sec-sub" style="margin:0">Demo login: no OTP. Use any name and a 10-digit mobile number.</p>
+      {% if error %}<div class="flash" role="alert" style="margin:0">{{ error }}</div>{% endif %}
+      <label class="f">Name<input id="name" name="name" autocomplete="name" required value="{{ form.name or '' }}"></label>
+      <label class="f">Mobile number<input id="phone" name="phone" inputmode="numeric" autocomplete="tel" required placeholder="98765 43210" value="{{ form.phone or '' }}"></label>
+      <button type="submit" class="btn brand">Log in</button>
+    </form>
+  </section>
+</div>
+</body>
+</html>

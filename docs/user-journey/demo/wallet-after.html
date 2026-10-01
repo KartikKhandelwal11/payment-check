@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#0f1b4d">
+<title>Wallet · Payment Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/customer.css?v=4">
+<meta name="robots" content="noindex"><link rel="stylesheet" href="proto.css"></head>
+<body>
+
+<div class="shell">
+  <div class="topline">
+    <div class="brand"><i aria-hidden="true">₹</i>Payment Check</div>
+    <form class="top-actions" method="post" action="/wallet/logout" style="margin:0"><button type="submit">Log out</button></form>
+  </div>
+
+  <section class="card balance">
+    <div class="lbl">Wallet balance</div>
+    <div class="big">₹500.00</div>
+    <div class="who">Aman Verma · 9876543210</div>
+  </section>
+
+  
+
+  <section class="card">
+    <form method="post" action="/wallet/add" class="block" style="margin:0" id="addForm">
+      <h2 class="sec-title">Add Cash</h2>
+      
+      <label class="amount-in"><span>₹</span><input id="amount" name="amount" inputmode="decimal" placeholder="0" required
+        autocomplete="off" aria-label="Amount in rupees" value=""></label>
+      <div class="chips" aria-label="Quick amounts">
+        <button type="button" class="chip" data-amount="100" aria-pressed="false">₹100</button><button type="button" class="chip" data-amount="200" aria-pressed="false">₹200</button><button type="button" class="chip" data-amount="500" aria-pressed="false">₹500</button><button type="button" class="chip" data-amount="1000" aria-pressed="false">₹1000</button>
+      </div>
+      <div class="methods" role="radiogroup" aria-label="Payment method">
+        <label><input type="radio" name="method" value="upi" checked>UPI<span class="mlogos"><img src="static/brands/gpay.svg" alt="Google Pay"><img src="static/brands/phonepe.svg" alt="PhonePe"><img src="static/brands/paytm.svg" alt="Paytm"></span></label>
+        <label><input type="radio" name="method" value="bank">Bank transfer<span class="mlogos"><img src="static/brands/hdfc.svg" alt="HDFC Bank"></span><small>IMPS / NEFT</small></label>
+        
+      </div>
+      <button type="submit" class="btn brand">Continue</button>
+      <p class="sec-sub" style="margin:0">After paying you'll upload the payment screenshot. The money is added once our bank confirms the UTR.</p>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2 class="sec-title">My orders</h2>
+    
+    <ul class="orders">
+      
+      <li><a href="pay-paid.html">
+        <div><span class="amt-s">₹500.00</span><small>01 Oct, 07:21 AM · UPI · 48YWL8JM</small>
+          </div>
+        <span class="st tag paid">Added</span>
+      </a></li>
+      
+    </ul>
+    
+  </section>
+</div>
+<script>
+  const amount = document.getElementById('amount');
+  const chips = document.querySelectorAll('.chip');
+  const sync = () => chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.amount === amount.value.trim())));
+  chips.forEach((c) => c.addEventListener('click', () => { amount.value = c.dataset.amount; sync(); }));
+  amount.addEventListener('input', sync); sync();
+</script>
+<script>window.PROTO={"page": "wallet-after.html", "wallet": "wallet-after.html"}</script><script src="proto.js"></script></body>
+</html>

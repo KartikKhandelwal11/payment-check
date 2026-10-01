@@ -1,0 +1,21 @@
+{% extends "_admin_base.html" %}
+{% from "_ui.html" import icon, order_form, empty %}
+{% block title %}New payment link{% endblock %}
+{% block crumb %}Orders{% endblock %}
+{% block heading %}New payment link{% endblock %}
+{% block content_class %} narrow{% endblock %}
+{% block actions %}{% endblock %}
+{% block fab %}{% endblock %}
+
+{% block content %}
+<section class="card" data-animate>
+  <div class="card-b" style="padding:22px">
+    {% if members %}
+    {{ order_form(members, quick_amounts, form) }}
+    {% else %}
+    {{ empty('users', 'Add your team first', 'Payment links go to a team member’s UPI ID.') }}
+    <a class="btn btn-lg" href="/admin/team">Add team member</a>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

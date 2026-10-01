@@ -1,0 +1,90 @@
+{% extends "_admin_base.html" %}
+{% from "_ui.html" import icon, empty %}
+{% block title %}Unclaimed money{% endblock %}
+{% block crumb %}Money the bank reported, and UPI app alerts{% endblock %}
+{% block heading %}Unclaimed money{% endblock %}
+{% block actions %}{% endblock %}
+
+{% block content %}
+{% set unmatched = credits | selectattr('status', 'equalto', 'unmatched') | list %}
+<section class="card" data-animate>
+  <div class="toolbar">
+    <nav class="tabs" aria-label="View">
+      <a href="/admin/payments?tab=unmatched" class="{% if tab == 'unmatched' %}on{% endif %}">Not claimed<span class="n">{{ unmatched | length }}</span></a>
+      <a href="/admin/payments?tab=all" class="{% if tab == 'all' %}on{% endif %}">All bank credits<span class="n">{{ credits | length }}</span></a>
+      <a href="/admin/payments?tab=alerts" class="{% if tab == 'alerts' %}on{% endif %}">UPI app alerts<span class="n">{{ signals | length }}</span></a>
+    </nav>
+  </div>
+
+  {% if tab == 'unmatched' %}
+    <p class="muted" style="margin:0 18px 12px">Money the bank reported with a UTR that no customer has claimed. Usually the customer hasn't uploaded yet. If you know the order, link it: the UTR and amount are credited to it.</p>
+    {% if unmatched %}
+    <div class="table" data-rows>
+      <table class="stack">
+        <thead><tr><th>Amount</th><th>UTR</th><th class="hide-sm">Account</th><th>Received</th><th style="text-align:right">Link to order</th></tr></thead>
+        <tbody>
+        {% for b in unmatched %}
+        <tr>
+          <td class="c1"><span class="amt">{{ b.amount_paise | rupees }}</span><span class="sub">{{ b.source }}{% if b.sender %} · {{ b.sender }}{% endif %}</span></td>
+          <td class="mono hide-sm">{{ b.utr }}</td>
+          <td class="hide-sm">{{ b.member_id }}</td>
+          <td class="c2 muted num">{{ b.received_at | local_time }}</td>
+          <td class="full">
+            <form class="approve" method="post" action="/admin/credits/link">
+              <input type="hidden" name="utr" value="{{ b.utr }}"><input type="hidden" name="amount" value="{{ b.amount_paise | plain_amount }}">
+              <input id="link_{{ b.id }}" name="order_id" placeholder="Order no." aria-label="Order number" required autocapitalize="characters">
+              <button type="submit">Credit</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}{{ empty('check', 'All caught up', 'Every bank credit with a UTR is linked to an order.') }}{% endif %}
+
+  {% elif tab == 'all' %}
+    {% if credits %}
+    <div class="table" data-rows>
+      <table class="stack">
+        <thead><tr><th>Amount</th><th>Status</th><th class="hide-sm">UTR</th><th class="hide-sm">From</th><th class="hide-sm">Order</th><th>Time</th></tr></thead>
+        <tbody>
+        {% for b in credits %}
+        <tr {% if b.order_id %}data-href="/admin/orders/{{ b.order_id }}"{% endif %}>
+          <td class="c1" style="grid-row:span 2"><span class="amt">{{ b.amount_paise | rupees }}</span>
+            <span class="sub">{{ b.member_id }} · {{ b.source }}{% if b.in_statement %} · in statement{% endif %}</span></td>
+          <td class="c2"><span class="pill {{ b.status }}">{{ {'unmatched': 'Not claimed', 'credited': 'Credited', 'no_utr': 'No UTR'}[b.status] }}</span></td>
+          <td class="hide-sm mono">{{ b.utr or '—' }}</td>
+          <td class="hide-sm">{{ b.sender or '—' }}</td>
+          <td class="hide-sm">{% if b.order_id %}<a class="oid" href="/admin/orders/{{ b.order_id }}">{{ b.order_id }}</a>{% else %}—{% endif %}</td>
+          <td class="c2 muted num">{{ b.received_at | local_time }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}{{ empty('wallet', 'Nothing yet', 'HDFC SMS and statement rows show up here.') }}{% endif %}
+
+  {% else %}
+    <p class="muted" style="margin:0 18px 12px">PhonePe / Paytm / GPay “money received” alerts. They have no UTR, so they never credit money. They only let the customer's page say “Payment received, confirming”.</p>
+    {% if signals %}
+    <div class="table" data-rows>
+      <table class="stack">
+        <thead><tr><th>Amount</th><th>From</th><th class="hide-sm">Account</th><th class="hide-sm">Shown on order</th><th>Time</th></tr></thead>
+        <tbody>
+        {% for p in signals %}
+        <tr>
+          <td class="c1"><span class="amt">{{ p.amount_paise | rupees }}</span><span class="sub">{{ p.package }}</span></td>
+          <td class="c2">{{ p.payer_name or '—' }}</td>
+          <td class="hide-sm">{{ p.member_id }}</td>
+          <td class="hide-sm">{% if p.order_id %}<a class="oid" href="/admin/orders/{{ p.order_id }}">{{ p.order_id }}</a>{% else %}—{% endif %}</td>
+          <td class="c2 muted num">{{ p.received_at | local_time }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}{{ empty('bell', 'No alerts yet', 'UPI app alerts from the phones appear here.') }}{% endif %}
+  {% endif %}
+</section>
+{% endblock %}

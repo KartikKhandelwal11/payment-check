@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f5f6fb">
+<title>Unclaimed money · Payment Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/admin.css?v=25">
+<script>
+  // Hide animated cards until motion starts (no flash); always show them after 1.2 s.
+  (function () {
+    var soft = false;
+    try { soft = sessionStorage.getItem('pcSoft') === location.pathname + location.search; } catch (e) {}
+    if (soft || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.documentElement.classList.add('pre-anim');
+    setTimeout(function () { document.documentElement.classList.remove('pre-anim'); }, 1200);
+  })();
+</script>
+<meta name="robots" content="noindex"><link rel="stylesheet" href="proto.css"></head>
+<body>
+<div class="wash" aria-hidden="true"><i></i></div>
+<div class="app">
+  <aside class="sidebar" id="sidebar" aria-label="Main menu">
+    <div style="display:flex;align-items:center">
+      <a class="sb-brand" href="admin.html"><div class="logo" aria-hidden="true">₹</div><div><b>Payment Check</b><small>Team dashboard</small></div></a>
+      <button class="sb-close" type="button" id="drawerClose" aria-label="Close menu"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <a class="sb-cta" href="#proto"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>New payment link</a>
+    <div class="sb-label">Menu</div>
+    <nav class="sb-nav">
+      
+      <a class="sb-item" href="admin.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Overview<span class="badge hot" title="Alerts">3</span></a>
+      <a class="sb-item" href="admin-review.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>Payments to check<span class="badge hot" title="Need your decision">3</span></a>
+      <a class="sb-item" href="admin-orders.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6M9 4a1 1 0 0 0-1 1v1h8V5a1 1 0 0 0-1-1M8 6H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-2M9 12h6M9 16h4"/></svg>All payments</a>
+      <a class="sb-item" href="admin-statements.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13l3-8h12l3 8v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 13h5l1 2h6l1-2h5"/></svg>Bank statement</a>
+      <a class="sb-item" href="admin-team.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>Bank accounts<span class="badge" title="Phones online">1/2</span></a>
+      <a class="sb-item" href="admin-customers.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg>Customers</a>
+    </nav>
+    <div class="sb-label">More</div>
+    <nav class="sb-nav">
+      <a class="sb-item active" href="admin-payments.html" aria-current="page"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h13v4"/><path d="M3 7v11a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1H5a2 2 0 0 1-2-2z"/><circle cx="16.5" cy="14.5" r="1.3"/></svg>Unclaimed money<span class="badge">2</span></a>
+      <a class="sb-item" href="admin-notifications.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg>Phone messages</a>
+    </nav>
+
+    <div class="sb-foot">
+      <div class="live"><i></i>Live · updates every 20s</div>
+      <div class="demo-tag">Demo mode · simulate buttons on</div>
+      <form method="post" action="/admin/logout"><button class="btn-ghost" type="submit"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 17l5-5-5-5M15 12H3"/></svg>Log out</button></form>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <div class="main">
+    <header class="topbar" id="topbar">
+      <button class="menu-btn" type="button" id="drawerOpen" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+      
+      <div>
+        <div class="crumb">Money the bank reported, and UPI app alerts</div>
+        <h1>Unclaimed money</h1>
+      </div>
+      <div class="actions"></div>
+    </header>
+    <main class="content">
+      
+      
+      
+
+<section class="card" data-animate>
+  <div class="toolbar">
+    <nav class="tabs" aria-label="View">
+      <a href="admin-payments.html" class="on">Not claimed<span class="n">2</span></a>
+      <a href="admin-payments.html" class="">All bank credits<span class="n">5</span></a>
+      <a href="admin-payments.html" class="">UPI app alerts<span class="n">1</span></a>
+    </nav>
+  </div>
+
+  
+    <p class="muted" style="margin:0 18px 12px">Money the bank reported with a UTR that no customer has claimed. Usually the customer hasn't uploaded yet. If you know the order, link it: the UTR and amount are credited to it.</p>
+    
+    <div class="table" data-rows>
+      <table class="stack">
+        <thead><tr><th>Amount</th><th>UTR</th><th class="hide-sm">Account</th><th>Received</th><th style="text-align:right">Link to order</th></tr></thead>
+        <tbody>
+        
+        <tr>
+          <td class="c1"><span class="amt">₹650.00</span><span class="sub">sms · gaurav.s@ybl</span></td>
+          <td class="mono hide-sm">615559990001</td>
+          <td class="hide-sm">PRIYA02</td>
+          <td class="c2 muted num">01 Oct, 07:21 AM</td>
+          <td class="full">
+            <form class="approve" method="post" action="/admin/credits/link">
+              <input type="hidden" name="utr" value="615559990001"><input type="hidden" name="amount" value="650">
+              <input id="link_3" name="order_id" placeholder="Order no." aria-label="Order number" required autocapitalize="characters">
+              <button type="submit">Credit</button>
+            </form>
+          </td>
+        </tr>
+        
+        <tr>
+          <td class="c1"><span class="amt">₹1,500.00</span><span class="sub">statement</span></td>
+          <td class="mono hide-sm">618888777766</td>
+          <td class="hide-sm">PRIYA02</td>
+          <td class="c2 muted num">01 Oct, 12:00 AM</td>
+          <td class="full">
+            <form class="approve" method="post" action="/admin/credits/link">
+              <input type="hidden" name="utr" value="618888777766"><input type="hidden" name="amount" value="1500">
+              <input id="link_5" name="order_id" placeholder="Order no." aria-label="Order number" required autocapitalize="characters">
+              <button type="submit">Credit</button>
+            </form>
+          </td>
+        </tr>
+        
+        </tbody>
+      </table>
+    </div>
+    
+
+  
+</section>
+
+    </main>
+  </div>
+</div>
+
+
+<script src="static/vendor/motion-11.11.13.js"></script>
+<script>window.PC_AUTO_REFRESH = false;</script>
+<script src="static/admin.js?v=10"></script>
+
+<script>window.PROTO={"page": "admin-payments.html", "wallet": "wallet.html"}</script><script src="proto.js"></script></body>
+</html>

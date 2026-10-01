@@ -1,0 +1,146 @@
+{% extends "_admin_base.html" %}
+{% from "_ui.html" import icon, avatar, empty %}
+{% block title %}Overview{% endblock %}
+{% block crumb %}Welcome back{% endblock %}
+{% block content_class %}{% endblock %}
+{% block heading %}Overview{% endblock %}
+
+{% block content %}
+{% set members = dash.members %}
+{% set unmatched = dash.unmatched %}
+
+{% set tasks = (1 if stats.review_count else 0) + (1 if statements_due else 0) + (offline | length > 0) | int %}
+{% if tasks %}
+<div class="todo-strip" data-animate>
+  {% if stats.review_count %}
+  <a class="task do" href="/admin/review"><span class="t-ic">{{ icon('orders') }}</span>
+    <div class="t-tx"><b>{{ stats.review_count }} payment{{ 's' if stats.review_count != 1 }} need{{ '' if stats.review_count != 1 else 's' }} your decision</b><span>Customers are waiting</span></div>
+    <span class="btn">Check now</span></a>
+  {% endif %}
+  {% if statements_due %}
+  <a class="task do" href="/admin/statements"><span class="t-ic">{{ icon('inbox') }}</span>
+    <div class="t-tx"><b>Upload the bank statement</b><span>{% for m in statements_due %}{{ m.name }}{{ ', ' if not loop.last }}{% endfor %}</span></div>
+    <span class="btn btn-2">Upload</span></a>
+  {% endif %}
+  {% if offline %}
+  <a class="task info" href="/admin/team"><span class="t-ic">{{ icon('phone') }}</span>
+    <div class="t-tx"><b>{{ offline | length }} phone{{ 's' if offline | length != 1 }} offline</b><span>{% for m in offline %}{{ m.name }}{{ ', ' if not loop.last }}{% endfor %}</span></div>
+    <span class="btn btn-2">Check</span></a>
+  {% endif %}
+</div>
+{% endif %}
+
+<div class="grid-top">
+  <section class="card hero-card" data-animate aria-label="Money received">
+    <div class="k">{{ icon('rupee') }}Added to wallets today<span class="chip-lite">This week {{ week_paise | rupees_short }}</span></div>
+    <div>
+      <div class="big" data-count="{{ (stats.paid_today_paise // 100) }}" data-money>{{ stats.paid_today_paise | rupees_short }}</div>
+      <div class="s" style="margin-top:8px">{{ stats.paid_today_count }} payment{{ '' if stats.paid_today_count == 1 else 's' }} today · {{ week_count }} this week</div>
+    </div>
+    <div class="bars" role="img" aria-label="Money received in the last 7 days">
+      {% for d in days %}
+      <div class="bar{% if loop.last %} today{% endif %}" title="{{ d.start | weekday }}: {{ d.paise | rupees_short }} ({{ d.count }})">
+        <i style="height:{{ [4, (d.paise * 72 // day_max)] | max }}px"></i>
+        <span>{{ 'Today' if loop.last else (d.start | weekday) }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <div class="stats">
+    <a class="card stat{% if stats.review_count %} alert{% endif %}" href="/admin/review" data-animate>
+      <div class="ic {% if stats.review_count %}g-rose{% else %}g-slate{% endif %}">{{ icon('alert') }}</div>
+      <div class="v" data-count="{{ stats.review_count }}">{{ stats.review_count }}</div>
+      <div class="k">{% if stats.review_count %}Need your decision{% else %}Nothing to check{% endif %}</div>
+    </a>
+    <a class="card stat" href="/admin/orders?status=in_progress" data-animate>
+      <div class="ic g-amber">{{ icon('clock') }}</div>
+      <div class="v" data-count="{{ stats.in_progress_count }}">{{ stats.in_progress_count }}</div>
+      <div class="k">Waiting for bank{% if stats.late_count %} · {{ stats.late_count }} late{% endif %}</div>
+    </a>
+    <a class="card stat" href="/admin/team" data-animate>
+      <div class="ic g-sky">{{ icon('phone') }}</div>
+      <div class="v"><span data-count="{{ stats.online_count }}">{{ stats.online_count }}</span><small> / {{ stats.member_count }}</small></div>
+      <div class="k">Phones online</div>
+    </a>
+    <a class="card stat" href="/admin/payments" data-animate>
+      <div class="ic g-green">{{ icon('wallet') }}</div>
+      <div class="v" data-count="{{ stats.unmatched_count }}">{{ stats.unmatched_count }}</div>
+      <div class="k">Unclaimed money</div>
+    </a>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="stack-col">
+    {% if dash.alerts %}
+    <section class="card unmatched-card" data-animate>
+      <div class="card-h"><h2>Alerts</h2><span class="count">{{ dash.alerts | length }}</span>
+        <span class="sub">Things that need a person: fake SMS, credits the bank never got, closed accounts, paused customers.</span></div>
+      <div class="alerts">
+        {% for a in dash.alerts %}
+        <div class="alert-row{% if a.kind in ('account_closed', 'customer_paused') %} soft{% endif %}">{{ icon('alert') }}
+          <span>{{ a.text }}{% if a.order_id %} <a class="oid" href="/admin/orders/{{ a.order_id }}">{{ a.order_id }}</a>{% endif %}<span class="when">{{ a.at | local_time }}</span></span>
+          <form method="post" action="/admin/alerts/{{ a.id }}/resolve"><button type="submit" class="btn-2">Done</button></form>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    <section class="card" data-animate>
+      <div class="card-h"><h2>Recent orders</h2><a class="link-more right" href="/admin/orders">View all {{ icon('chev') }}</a></div>
+      {% if dash.orders %}
+      <div class="table" data-rows style="margin-top:12px">
+        <table class="stack">
+          <thead><tr><th>Order</th><th>Amount</th><th>Status</th><th class="hide-sm">Customer</th><th class="hide-sm">Created</th></tr></thead>
+          <tbody>
+          {% for o in dash.orders[:8] %}
+          <tr data-href="/admin/orders/{{ o.id }}">
+            <td class="c1" style="grid-row:span 2"><a class="oid" href="/admin/orders/{{ o.id }}">{{ o.id }}</a>
+              <span class="sub">{{ o.member_id }} · {{ o.method | upper }}</span>
+              <span class="sub m-only">{{ o.customer_name or '—' }} · {{ o.created_at | local_time }}</span></td>
+            <td class="c2 amt">{{ (o.credited_paise or o.amount_paise) | rupees }}</td>
+            <td class="c2"><span class="pill {{ o.status }}">{{ STATUS[o.status] }}</span></td>
+            <td class="hide-sm">{{ o.customer_name or '—' }}</td>
+            <td class="hide-sm muted num">{{ o.created_at | local_time }}</td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      {{ empty('link', 'No orders yet', 'Orders appear when customers use Add Cash at /wallet.') }}
+      {% endif %}
+    </section>
+  </div>
+
+  <div class="stack-col">
+    <section class="card" data-animate>
+      <div class="card-h"><h2>Daily checklist</h2></div>
+      <ol class="steps" style="padding:12px 18px 16px 36px">
+        <li>Clear <a href="/admin/review">Payments to check</a> (target: within 4 hours).</li>
+        <li>Upload each account's statement at 10 AM, 2 PM, 6 PM and 10 PM on <a href="/admin/statements">Bank statement</a>.</li>
+        <li>Act on every red alert, then press Done.</li>
+        <li>Check every phone is online on <a href="/admin/team">Bank accounts</a>.</li>
+      </ol>
+    </section>
+
+    <section class="card" data-animate>
+      <div class="card-h"><h2>Accounts</h2><span class="count">{{ stats.online_count }}/{{ stats.member_count }} online</span>
+        <a class="link-more right" href="/admin/team">Manage {{ icon('chev') }}</a></div>
+      <ul class="members" data-rows>
+        {% for m in members %}
+        <li>
+          {{ avatar(m) }}
+          <div class="who"><b>{{ m.name }}</b><span>{{ m.upi_id }}</span></div>
+          <div class="state">{% if m.status != 'active' %}<span class="off">{{ m.status | capitalize }}</span>{% elif m.online %}<span class="on">Online</span>{% else %}<span class="off">Offline</span>{% endif %}</div>
+        </li>
+        {% else %}
+        <li class="muted">No accounts yet</li>
+        {% endfor %}
+      </ul>
+    </section>
+  </div>
+</div>
+{% endblock %}

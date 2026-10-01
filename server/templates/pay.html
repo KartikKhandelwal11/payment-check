@@ -1,0 +1,466 @@
+{% set amt = order.amount_paise | rupees %}{% set v = view.view %}{% set claim = order.claim %}
+{%- set upload_views = ('pay', 'expired', 'action', 'claim_rejected') -%}
+{%- set shows_upload = v in upload_views and (v not in ('expired', 'action') or view.upload_open) -%}
+{%- set has_bar = shows_upload or v == 'claim_ready' -%}
+{#- Unfinished screens: leaving by mistake could strand a payment, so ask first. -#}
+{%- set guard = shows_upload or v in ('claim_ready', 'claim_pick') -%}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#ffffff">
+<title>Pay {{ amt }} · {{ merchant_name }}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/checkout.css?v=9">
+</head>
+<body{% if has_bar %} class="has-bar"{% endif %}>
+{%- macro ic(d, w='2', cls='i') -%}<svg class="{{ cls }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="{{ w }}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ d }}"/></svg>{%- endmacro %}
+{% set I_CHECK = 'M5 12.5l4.5 4.5L19 7.5' %}{% set I_X = 'M6 6l12 12M18 6L6 18' %}{% set I_ALERT = 'M12 8v5M12 16.5v.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z' %}
+{% set I_UP = 'M12 16V5M7.5 9.5L12 5l4.5 4.5M5 19h14' %}{% set I_EYE = 'M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z' %}
+{% set I_CLOCK = 'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM12 7v5l3 2' %}{% set I_LOCK = 'M6 11h12v9H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3' %}
+{% set I_SHIELD = 'M12 3l7.5 3v6c0 4.5-3.2 7.8-7.5 9-4.3-1.2-7.5-4.5-7.5-9V6zM9 12l2 2 4-4' %}
+{% set I_QR = 'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v2h-2zM14 18h2v2h-2zM18 18h2v2h-2z' %}
+{% set I_BANK = 'M3 9.5L12 4l9 5.5M5 10v7M9.5 10v7M14.5 10v7M19 10v7M3 20h18' %}
+{% set I_CHEV = 'M9 6l6 6-6 6' %}{% set I_IMG = 'M4 5h16v14H4zM4 15l4.5-4.5L13 15l2.5-2.5L20 17M15.5 9.5h.01' %}
+
+{%- macro upload(label='Upload payment screenshot') -%}
+<form method="post" action="/pay/{{ order.id }}/screenshot" enctype="multipart/form-data" id="proofForm" class="full" style="display:grid;gap:10px">
+  <label class="drop desk-only">
+    <span class="ic">{{ ic(I_UP) }}</span>
+    <span><b>{{ label }}</b><small>PNG or JPG, up to 5 MB</small></span>
+    <input type="file" name="file" id="proofFile" accept="image/png,image/jpeg,image/webp" required aria-label="{{ label }}">
+  </label>
+  <div class="picked" id="picked" hidden><img id="pickedImg" alt="Selected screenshot"><span id="pickedName"></span><label for="proofFile">Change</label></div>
+  <button type="submit" class="btn desk-only" id="sendBtn" disabled>{{ ic(I_CHECK, '2.4') }}Verify screenshot</button>
+</form>
+{%- endmacro %}
+
+{%- macro proof_card(title, label='Upload payment screenshot') -%}
+<section class="card proof">
+  {{ caller() if caller }}
+  <div class="mock" aria-hidden="true"><span class="ok">{{ ic(I_CHECK, '3') }}</span><i class="amt"></i><i></i><i style="width:70%"></i><i class="utr"></i><i style="width:80%"></i></div>
+  <div style="display:grid;gap:8px">
+    <h2>{{ title }}</h2>
+    <ul class="tips">
+      <li>{{ ic(I_CHECK, '2.6') }}<span>The <b>success screen</b> of your UPI or bank app</span></li>
+      <li>{{ ic(I_CHECK, '2.6') }}<span><b>UTR / UPI Ref No</b> clearly visible</span></li>
+      <li>{{ ic(I_CHECK, '2.6') }}<span>Amount <b>{{ amt }}</b>, not cropped</span></li>
+    </ul>
+  </div>
+  {{ upload(label) }}
+</section>
+{%- endmacro %}
+
+<div class="page">
+  <header class="appbar">
+    {% if customer %}<a class="back" href="/wallet" aria-label="Back to wallet" id="backLink">{{ ic('M15 6l-6 6 6 6', '2.2') }}</a>{% endif %}
+    <div class="avatar" aria-hidden="true">{{ merchant_name[:1] | upper }}</div>
+    <div class="who"><b>{{ merchant_name }}</b><small>{{ ic(I_SHIELD, '2.2') }}Secure checkout</small></div>
+    {% if v == 'pay' %}<div class="timer" aria-label="Time left to pay">{{ ic(I_CLOCK, '2.2') }}<span data-left>--:--</span></div>{% endif %}
+  </header>
+
+  <main>
+    {% if error %}<div class="banner bad" role="alert"><span class="bi">{{ ic(I_ALERT, '2.2') }}</span><p>{{ error }}</p></div>{% endif %}
+
+    {# ---------------- order summary ---------------- #}
+    <section class="summary" aria-label="Order summary">
+      <div class="top"><span>{% if v == 'paid' %}Added to wallet{% else %}Add money to wallet{% endif %}</span><span>Order <b class="mono">{{ order.id }}</b></span></div>
+      {% set shown = (order.credited_paise or order.amount_paise) | rupees %}
+      <div class="amount">{{ shown[:-3] }}<small>{{ shown[-3:] }}</small></div>
+      <div class="to">To <b>{{ order.member_name }}</b>{% if order.customer_name %} · from {{ order.customer_name }}{% endif %}</div>
+      {% set s1 = 'now' if v == 'pay' else 'done' %}
+      {% set s2 = 'done' if v in ('in_progress', 'review', 'paid', 'failed') else '' if v in ('pay', 'cancelled') else 'now' %}
+      {% set s3 = 'done' if v == 'paid' else 'now' if v in ('in_progress', 'review', 'failed') else '' %}
+      <ol class="stepper">
+        {% for state, n, label in [(s1, 1, 'Pay'), (s2, 2, 'Upload proof'), (s3, 3, 'Confirmed')] %}
+        <li class="{{ state }}" {% if state == 'now' %}aria-current="step"{% endif %}><span class="dot">{% if state == 'done' %}{{ ic(I_CHECK, '3.2') }}{% else %}{{ n }}{% endif %}</span>{{ label }}</li>
+        {% endfor %}
+      </ol>
+    </section>
+
+    {# ---------------- 1. pay ---------------- #}
+    {% if v == 'pay' %}
+    {% set has_bank = order.member_bank and order.member_ifsc %}
+    {% set hdfc = has_bank and order.member_ifsc.startswith('HDFC') %}
+    <section class="card" aria-labelledby="h-upi">
+      <h2 class="label" id="h-upi">Pay with UPI app</h2>
+      <p class="notice" id="notice" role="alert" hidden></p>
+      <div class="apps" id="apps">
+        <a class="app" data-app="gpay" href="upi://pay?{{ upi_query }}"><span class="tile"><img src="/static/brands/gpay-icon.svg" alt=""></span>Google Pay</a>
+        <a class="app" data-app="phonepe" href="upi://pay?{{ upi_query }}"><span class="tile"><img src="/static/brands/phonepe-icon.svg" alt=""></span>PhonePe</a>
+        <a class="app" data-app="paytm" href="upi://pay?{{ upi_query }}"><span class="tile"><img class="wide" src="/static/brands/paytm.svg" alt=""></span>Paytm</a>
+        <a class="app" data-app="other" href="upi://pay?{{ upi_query }}"><span class="tile"><img class="wide" src="/static/brands/upi.svg" alt=""></span>Other</a>
+      </div>
+      <p class="note">{{ ic(I_LOCK) }}<span>Opens with <b>{{ amt }}</b> filled in. Pay, then come back here.</span></p>
+    </section>
+
+    <section class="card" aria-labelledby="h-other">
+      <h2 class="label" id="h-other">Other ways to pay</h2>
+      <div class="group">
+        <details class="row" data-m="qr">
+          <summary><span class="ic">{{ ic(I_QR) }}</span><span class="t"><b>Scan QR code</b><small>Use any UPI app on another phone</small></span>{{ ic(I_CHEV, '2', 'i chev') }}</summary>
+          <div class="body qr">
+            <div class="frame"><img src="/qr/{{ order.id }}.svg" alt="UPI QR code for {{ amt }} to {{ order.member_name }}"></div>
+            <img class="upi" src="/static/brands/upi.svg" alt="UPI">
+            <p>{{ amt }} to {{ order.member_name }} · <span class="mono">{{ order.member_upi }}</span></p>
+          </div>
+        </details>
+        {% if has_bank %}
+        <details class="row" data-m="bank" {% if order.method == 'bank' %}open{% endif %}>
+          <summary><span class="ic">{% if hdfc %}<img src="/static/brands/hdfc-icon.svg" alt="">{% else %}{{ ic(I_BANK) }}{% endif %}</span>
+            <span class="t"><b>Bank transfer</b><small>IMPS · NEFT · RTGS{% if hdfc %} · HDFC Bank{% endif %}</small></span>{{ ic(I_CHEV, '2', 'i chev') }}</summary>
+          <div class="body">
+            {% if hdfc %}<img class="bank-logo" src="/static/brands/hdfc.svg" alt="HDFC Bank">{% endif %}
+            <div class="kv">
+              <div><span>Account name</span><b>{{ order.member_name }}</b><button type="button" class="copy" data-copy="{{ order.member_name }}">Copy</button></div>
+              <div><span>Account number</span><b class="mono">{{ order.member_bank }}</b><button type="button" class="copy" data-copy="{{ order.member_bank }}">Copy</button></div>
+              <div><span>IFSC</span><b class="mono">{{ order.member_ifsc }}</b><button type="button" class="copy" data-copy="{{ order.member_ifsc }}">Copy</button></div>
+              <div><span>Amount</span><b>{{ amt }}</b><button type="button" class="copy" data-copy="{{ order.amount_paise | plain_amount }}">Copy</button></div>
+              <div><span>Remarks (optional)</span><b class="mono">Order {{ order.id }}</b><button type="button" class="copy" data-copy="Order {{ order.id }}">Copy</button></div>
+            </div>
+            <p class="note">{{ ic(I_CLOCK) }}<span>IMPS confirms in seconds; NEFT can take a few hours.</span></p>
+          </div>
+        </details>
+        {% endif %}
+      </div>
+    </section>
+
+    <div id="backNote" class="banner ok" hidden><span class="bi">{{ ic(I_CHECK, '2.6') }}</span><p><b>Done paying?</b>Take a screenshot of the success screen and upload it below.</p></div>
+    {{ proof_card('After paying, upload the screenshot') }}
+    {% if customer %}
+    <form method="post" action="/pay/{{ order.id }}/cancel" style="margin:0;display:grid" onsubmit="return confirm('Cancel this order? Only if you have NOT paid.')">
+      <button type="submit" class="link muted">Haven't paid? Cancel this order</button>
+    </form>
+    {% endif %}
+
+    {# ---------------- 2. screenshot ---------------- #}
+    {% elif v == 'upload_closed' %}
+    <section class="card"><div class="status"><div class="orb grey">{{ ic(I_CLOCK) }}</div><h1>This order is closed</h1>
+      <p>Screenshots can be uploaded for 48 hours. If you paid and weren't credited, contact support with your UTR.</p></div></section>
+    {% if customer %}<a class="btn ghost" href="/wallet">Back to wallet</a>{% endif %}
+
+    {% elif v in ('expired', 'action') %}
+    {% call proof_card('Upload payment screenshot') %}
+      {% if v == 'action' %}
+      <div class="banner warn full"><span class="bi">{{ ic(I_ALERT, '2.2') }}</span><p><b>Please upload again</b>{{ view.message }}</p></div>
+      {% elif view.message %}
+      <div class="banner warn full"><span class="bi">{{ ic(I_ALERT, '2.2') }}</span><p><b>{% if view.message.startswith('You closed') %}Order closed{% else %}Don't pay to this account{% endif %}</b>{{ view.message }}</p></div>
+      {% else %}
+      <div class="banner warn full"><span class="bi">{{ ic(I_CLOCK, '2.2') }}</span><p><b>Time to pay is over</b>Don't pay on this order any more. Already paid? Upload the screenshot.</p></div>
+      {% endif %}
+    {% endcall %}
+    {% if customer %}<a class="btn ghost" href="/wallet">Create a new order</a>{% endif %}
+
+    {% elif v == 'claim_ready' %}
+    <div class="banner ok"><span class="bi">{{ ic(I_CHECK, '2.6') }}</span><p><b>Screenshot verified</b>Check the details read from it. They can't be edited.</p></div>
+    <section class="card">
+      <div class="kv">
+        <div><span>UTR / Ref No</span><b class="mono">{{ claim.utr }}</b></div>
+        <div><span>Amount</span><b>{{ claim.amount_paise | rupees }}</b></div>
+        <div><span>Paid to</span><b>{{ order.member_name }}</b></div>
+        <div><span>Date</span><b>{{ claim.shot_at | local_time }}</b></div>
+        <div><span>Status</span><b style="color:var(--ok)">Successful</b></div>
+      </div>
+      <form method="post" action="/pay/{{ order.id }}/proceed" id="proceedForm" style="margin:0">
+        <input type="hidden" name="claim_id" value="{{ claim.id }}">
+        <button type="submit" class="btn ok desk-only">{{ ic(I_CHECK, '2.6') }}Proceed</button>
+      </form>
+      <p class="note">{{ ic(I_LOCK) }}<span>UTR looks wrong? Upload a clearer screenshot instead.</span></p>
+    </section>
+    <details class="more"><summary>Upload a different screenshot</summary>{{ proof_card('Upload a different screenshot') }}</details>
+
+    {% elif v == 'claim_pick' %}
+    <div class="banner info"><span class="bi">{{ ic(I_EYE) }}</span><p><b>Which one is your UTR?</b>Your screenshot shows two numbers. Pick the UTR / UPI Ref No.</p></div>
+    <section class="card">
+      <form method="post" action="/pay/{{ order.id }}/pick" style="margin:0;display:grid;gap:12px">
+        <input type="hidden" name="claim_id" value="{{ claim.id }}">
+        <div class="choice">{% for u in claim.utr_options %}<label><input type="radio" name="utr" value="{{ u }}" required> <span class="mono">{{ u }}</span></label>{% endfor %}</div>
+        <button type="submit" class="btn">Continue</button>
+      </form>
+    </section>
+
+    {% elif v == 'claim_rejected' %}
+    {% call proof_card('Upload the right screenshot', 'Upload again') %}
+      <div class="banner bad full" role="alert"><span class="bi">{{ ic(I_X, '2.4') }}</span><p><b>We couldn't accept this screenshot</b>{{ claim.problem_text }}</p></div>
+    {% endcall %}
+    {% if reviewable %}
+    <form method="post" action="/pay/{{ order.id }}/review" style="margin:0;display:grid;gap:4px;justify-items:center">
+      <input type="hidden" name="claim_id" value="{{ claim.id }}">
+      <button type="submit" class="link">{% if claim.problem == 'amount_mismatch' %}I paid {{ claim.amount_paise | rupees }}, check it for me{% else %}My screenshot is right, send it for review{% endif %}</button>
+      <span class="sub" style="font-size:12.5px">Our team checks it with the bank, usually within 4 hours.</span>
+    </form>
+    {% endif %}
+
+    {# ---------------- 3. confirmation ---------------- #}
+    {% elif v == 'in_progress' %}
+    <section class="card">
+      {% if view.late %}
+      <div class="status"><div class="orb warn">{{ ic(I_CLOCK) }}</div><h1>Bank confirmation is late</h1>
+        <p>Your details look right. We'll confirm from the bank statement, {% if view.night %}tomorrow morning{% else %}usually within 4 hours{% endif %}. You can close this page.</p></div>
+      {% else %}
+      <div class="status"><div class="orb brand">{{ ic(I_BANK) }}</div>
+        <h1>{% if view.push_seen %}Payment received{% else %}Confirming with the bank{% endif %}</h1>
+        <p>{% if view.push_seen %}Waiting for the bank's final confirmation…{% else %}This usually takes under 2 minutes.{% endif %}</p></div>
+      {% endif %}
+      <div class="kv"><div><span>UTR / Ref No</span><b class="mono">{{ claim.utr }}</b></div><div><span>Amount</span><b>{{ amt }}</b></div></div>
+      <p class="note">{{ ic(I_LOCK) }}<span>You can close this page. The money is added as soon as the bank confirms.</span></p>
+    </section>
+
+    {% elif v == 'review' %}
+    <section class="card">
+      <div class="status"><div class="orb info">{{ ic(I_EYE) }}</div><span class="chip-review">In review</span><h1>We're checking this payment</h1><p>{{ view.message }}</p></div>
+      <ol class="next">
+        <li>{{ ic(I_CHECK, '2.6') }}<span>Our team matches your UTR with the bank statement.</span></li>
+        <li>{{ ic(I_CLOCK) }}<span>This takes up to 4 hours (payments after 10 PM: next morning).</span></li>
+        <li>{{ ic(I_LOCK) }}<span>You can close this page. The result shows here and in My orders.</span></li>
+      </ol>
+      {% if claim and claim.utr %}<div class="kv"><div><span>UTR / Ref No</span><b class="mono">{{ claim.utr }}</b></div></div>{% endif %}
+      {% if customer %}<a class="btn ghost" href="/wallet">Back to wallet</a>{% endif %}
+    </section>
+
+    {% elif v == 'paid' %}
+    <section class="card">
+      <div class="status"><div class="orb ok">{{ ic(I_CHECK, '2.6') }}</div><h1>Payment successful</h1>
+        <p>{{ (order.credited_paise or order.amount_paise) | rupees }} has been added to your wallet.</p></div>
+      <div class="kv">
+        <div><span>UTR / Ref No</span><b class="mono">{{ order.utr }}</b></div>
+        <div><span>Paid to</span><b>{{ order.member_name }}</b></div>
+        <div><span>Confirmed</span><b>{{ order.paid_at | local_time }}</b></div>
+      </div>
+      {% if customer %}<a class="btn" href="/wallet">Back to wallet</a>{% endif %}
+    </section>
+
+    {% elif v == 'failed' %}
+    <section class="card">
+      <div class="status"><div class="orb bad">{{ ic(I_X, '2.4') }}</div><h1>Payment not verified</h1>
+        <p>{{ view.message or 'No matching payment reached our bank account.' }}</p></div>
+      <p class="sub" style="text-align:center">If money left your account, contact support with your UTR{% if claim and claim.utr %} <b class="mono">{{ claim.utr }}</b>{% endif %}.</p>
+      {% if customer %}<a class="btn ghost" href="/wallet">Back to wallet</a>{% endif %}
+    </section>
+
+    {% elif v == 'cancelled' %}
+    <section class="card">
+      <div class="status"><div class="orb grey">{{ ic(I_X, '2.4') }}</div><h1>Order cancelled</h1><p>Please don't pay on this order.</p></div>
+      {% if customer %}<a class="btn" href="/wallet">Back to wallet</a>{% endif %}
+    </section>
+    {% endif %}
+
+    {% if demo_mode and v in ('pay', 'expired', 'action', 'claim_rejected', 'claim_ready', 'claim_pick') %}
+    <div class="demo"><b>Demo mode</b><span>No real payment needed: download a sample screenshot and upload it.</span>
+      <div class="chips">{% for key, label in demo_variants.items() %}<a href="/pay/{{ order.id }}/demo-screenshot.png?variant={{ key }}" download>{{ label }}</a>{% endfor %}</div></div>
+    {% endif %}
+  </main>
+
+  <footer class="foot">
+    <span>{{ ic(I_LOCK) }}Money is added only after our bank confirms your UTR</span>
+    <div class="logos"><img src="/static/brands/upi.svg" alt="UPI"><img src="/static/brands/gpay.svg" alt="Google Pay"><img src="/static/brands/phonepe.svg" alt="PhonePe"><img src="/static/brands/paytm.svg" alt="Paytm"><img src="/static/brands/hdfc.svg" alt="HDFC Bank"></div>
+  </footer>
+
+  {% if shows_upload %}
+  <div class="bar" id="bar">
+    <div class="total">Total<b>{{ amt }}</b></div>
+    <label class="btn" for="proofFile" id="barPick">{{ ic(I_IMG) }}{% if v == 'claim_rejected' %}Upload again{% elif v == 'pay' %}I've paid · Upload proof{% else %}Upload screenshot{% endif %}</label>
+    <button class="btn ok" type="submit" form="proofForm" id="barSend" hidden>{{ ic(I_CHECK, '2.4') }}Verify screenshot</button>
+  </div>
+  {% elif v == 'claim_ready' %}
+  <div class="bar"><div class="total">Total<b>{{ amt }}</b></div><button class="btn ok" type="submit" form="proceedForm">{{ ic(I_CHECK, '2.6') }}Proceed</button></div>
+  {% endif %}
+</div>
+
+{% if guard %}
+<div class="sheet-bg" id="leave" hidden role="dialog" aria-modal="true" aria-labelledby="leaveTitle" aria-describedby="leaveText">
+  <div class="sheet">
+    <div class="orb warn">{{ ic(I_ALERT, '2.2') }}</div>
+    {% if v == 'claim_ready' %}
+    <h2 id="leaveTitle">Finish adding {{ amt }}?</h2>
+    <p id="leaveText">Your screenshot is checked but not submitted yet. Press Proceed so we can add the money to your wallet.</p>
+    <div class="actions"><button type="button" class="btn ok" data-stay>{{ ic(I_CHECK, '2.6') }}Stay and proceed</button>
+      <button type="button" class="btn ghost" data-leave>Leave anyway</button></div>
+    {% else %}
+    <h2 id="leaveTitle">Leave this payment?</h2>
+    <p id="leaveText">If you've already paid, upload the screenshot now so we can add {{ amt }} to your wallet. You can also do it later from My orders, within 48 hours.</p>
+    <div class="actions"><button type="button" class="btn" data-stay>{{ ic(I_IMG) }}Stay and upload</button>
+      <button type="button" class="btn ghost" data-leave>{% if v == 'pay' %}I haven't paid, leave{% else %}Leave anyway{% endif %}</button></div>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
+<div class="reading" id="reading" hidden><div><div class="orb brand">{{ ic(I_EYE) }}</div>Reading your screenshot…<small>This takes a few seconds</small></div></div>
+
+<script>
+(function () {
+  const orderId = {{ order.id | tojson }};
+  const view = {{ v | tojson }};
+  const key = {{ view.key | tojson }};
+  const clockOffset = {{ server_now }} * 1000 - Date.now();
+  const expiresAt = {{ order.expires_at }} * 1000;
+  const $ = (id) => document.getElementById(id);
+
+  // ---------- screenshot: pick -> preview -> verify ----------
+  const input = $('proofFile');
+  if (input) {
+    input.addEventListener('change', () => {
+      const f = input.files && input.files[0];
+      $('picked').hidden = !f;
+      if ($('sendBtn')) $('sendBtn').disabled = !f;
+      if ($('barPick')) { $('barPick').hidden = !!f; $('barSend').hidden = !f; }
+      if (!f) return;
+      $('pickedName').textContent = f.name;
+      if (f.type.startsWith('image/')) $('pickedImg').src = URL.createObjectURL(f);
+      $('picked').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    $('proofForm').addEventListener('submit', () => { $('reading').hidden = false; });
+  }
+  window.addEventListener('pageshow', () => { $('reading').hidden = true; });
+
+  document.querySelectorAll('[data-copy]').forEach((b) => b.addEventListener('click', () => {
+    const v = b.dataset.copy;
+    const ok = () => { b.textContent = 'Copied'; setTimeout(() => b.textContent = 'Copy', 1500); };
+    if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(v).then(ok, () => {}); return; }
+    const ta = document.createElement('textarea'); ta.value = v; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); ok(); } finally { ta.remove(); }
+  }));
+
+  // ---------- confirm before leaving an unfinished payment ----------
+  const leave = $('leave');
+  if (leave) {
+    let leaving = false;
+    let target = null;              // where to go when the customer confirms
+    const show = (to) => { target = to; leave.hidden = false; leave.querySelector('[data-stay]').focus(); };
+    const hide = () => { leave.hidden = true; };
+    // Page's own back arrow.
+    const backLink = $('backLink');
+    if (backLink) backLink.addEventListener('click', (e) => { e.preventDefault(); show(backLink.href); });
+    // Phone back button / gesture: keep one extra history entry and catch it.
+    if (!(history.state && history.state.guard)) history.pushState({ guard: true }, '');
+    window.addEventListener('popstate', () => {
+      if (leaving) return;
+      history.pushState({ guard: true }, '');
+      show(null);
+    });
+    leave.querySelector('[data-stay]').addEventListener('click', () => {
+      hide();
+      if ($('proofFile') && view !== 'claim_ready') $('proofForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    leave.querySelector('[data-leave]').addEventListener('click', async () => {
+      leaving = true;
+      // "I haven't paid": close the order so a new one can be made straight away.
+      if (view === 'pay' && {{ 'true' if customer else 'false' }}) {
+        try { await fetch('/pay/' + orderId + '/cancel', { method: 'POST' }); } catch (e) {}
+        location.href = '/wallet';
+        return;
+      }
+      if (target) location.href = target;
+      else if ({{ 'true' if customer else 'false' }}) location.href = '/wallet';
+      else history.go(-2);
+    });
+    leave.addEventListener('click', (e) => { if (e.target === leave) hide(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !leave.hidden) hide(); });
+  }
+
+  // ---------- live status: reload when anything changes ----------
+  if (['pay', 'in_progress', 'review', 'expired'].includes(view)) {
+    let busy = false;
+    const poll = async () => {
+      if (busy) return; busy = true;
+      try {
+        const r = await fetch('/api/orders/' + orderId + '/status', { cache: 'no-store' });
+        if (r.ok) { const o = await r.json(); if (o.key !== key) { location.reload(); return; } }
+      } catch (e) {}
+      busy = false;
+    };
+    setInterval(poll, view === 'pay' ? 5000 : 3000);
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') poll(); });
+  }
+
+  if (view !== 'pay') return;
+
+  // ---------- timer ----------
+  const tick = () => {
+    const left = Math.max(0, Math.round((expiresAt - (Date.now() + clockOffset)) / 1000));
+    document.querySelectorAll('[data-left]').forEach((el) => {
+      el.textContent = Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0');
+    });
+  };
+  tick(); setInterval(tick, 1000);
+
+  // ---------- other ways to pay: one open at a time ----------
+  const rows = [...document.querySelectorAll('details.row')];
+  rows.forEach((d) => d.addEventListener('toggle', () => { if (d.open) rows.forEach((o) => { if (o !== d) o.open = false; }); }));
+  const openRow = (name) => rows.forEach((d) => { d.open = d.dataset.m === name; });
+
+  // ---------- UPI apps ----------
+  const upiQuery = {{ upi_query | tojson }};
+  const ua = navigator.userAgent;
+  const isAndroid = /Android/i.test(ua);
+  const isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const APPS = {
+    phonepe: { name: 'PhonePe', android: 'com.phonepe.app', ios: 'phonepe://pay?' },
+    gpay:    { name: 'Google Pay', android: 'com.google.android.apps.nbu.paisa.user', ios: 'gpay://upi/pay?' },
+    paytm:   { name: 'Paytm', android: 'net.one97.paytm', ios: 'paytmmp://pay?' },
+    other:   { name: 'a UPI app' },
+  };
+  const pageUrl = location.href.split('#')[0];
+  const notice = (text) => { $('notice').textContent = text; $('notice').hidden = false; };
+
+  // A computer can't open UPI apps: show the QR straight away.
+  if (!isAndroid && !isIOS && !rows.some((d) => d.open)) openRow('qr');
+
+  function ifNothingOpened(fn) {
+    const t = setTimeout(() => { if (document.visibilityState === 'visible') fn(); }, 2500);
+    const cancel = () => clearTimeout(t);
+    document.addEventListener('visibilitychange', cancel, { once: true });
+    window.addEventListener('pagehide', cancel, { once: true });
+    window.addEventListener('blur', cancel, { once: true });
+  }
+  document.querySelectorAll('.app').forEach((a) => {
+    const app = APPS[a.dataset.app];
+    if (isAndroid && app.android) {
+      // Opens exactly this app; if it isn't installed, Chrome returns here with #noapp-…
+      a.href = 'intent://pay?' + upiQuery + '#Intent;scheme=upi;package=' + app.android +
+               ';S.browser_fallback_url=' + encodeURIComponent(pageUrl + '#noapp-' + a.dataset.app) + ';end';
+    } else if (isIOS && app.ios) {
+      a.href = app.ios + upiQuery;
+    }
+    a.addEventListener('click', (e) => {
+      if (!isAndroid && !isIOS) { e.preventDefault(); openRow('qr'); notice('UPI apps open on a phone. Scan the QR below with your phone instead.'); return; }
+      try { localStorage.setItem('upiApp', a.dataset.app); sessionStorage.setItem('went-' + orderId, '1'); } catch (err) {}
+      $('notice').hidden = true;
+      ifNothingOpened(() => notice("Didn't open " + app.name + '? It may not be installed. Try another app or scan the QR.'));
+    });
+  });
+  const m = location.hash.match(/^#noapp-(\w+)/);
+  if (m && APPS[m[1]]) {
+    notice(APPS[m[1]].name + ' is not installed on this phone. Try another app or scan the QR.');
+    history.replaceState(null, '', pageUrl);
+  }
+  // Last used app first, marked.
+  let last = null;
+  try { last = localStorage.getItem('upiApp'); } catch (e) {}
+  const lastBtn = last && document.querySelector('.app[data-app="' + last + '"]');
+  if (lastBtn && (isAndroid || isIOS)) {
+    $('apps').prepend(lastBtn);
+    const tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = 'Last'; lastBtn.append(tag);
+  }
+  // Back from the UPI app: point at the upload step.
+  const cameBack = () => {
+    let went = false;
+    try { went = sessionStorage.getItem('went-' + orderId) === '1'; } catch (e) {}
+    if (!went || document.visibilityState !== 'visible') return;
+    $('backNote').hidden = false;
+    $('backNote').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const bar = $('bar');
+    if (bar) { bar.classList.remove('nudge'); void bar.offsetWidth; bar.classList.add('nudge'); }
+  };
+  document.addEventListener('visibilitychange', cameBack);
+  cameBack();
+})();
+</script>
+</body>
+</html>

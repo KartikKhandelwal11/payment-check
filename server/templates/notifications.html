@@ -1,0 +1,41 @@
+{% extends "_admin_base.html" %}
+{% from "_ui.html" import icon, empty %}
+{% block title %}Notifications{% endblock %}
+{% block crumb %}Every SMS and app alert the receiving phones sent, and what happened to it{% endblock %}
+{% block heading %}Phone messages{% endblock %}
+
+{% block content %}
+{% set APP = {'com.phonepe.app': 'PhonePe', 'net.one97.paytm': 'Paytm', 'com.paytm.business': 'Paytm for Business',
+              'com.google.android.apps.nbu.paisa.user': 'Google Pay', 'demo': 'Demo'} %}
+<section class="card" data-animate>
+  <div class="toolbar">
+    <nav class="tabs" aria-label="Filter messages">
+      {% for key, label in [('all', 'All'), ('used', 'Used'), ('unused', 'Not used'), ('blocked', 'Blocked')] %}
+      <a href="/admin/notifications?tab={{ key }}" class="{% if tab == key %}on{% endif %}" {% if tab == key %}aria-current="true"{% endif %}>{{ label }}<span class="n">{{ counts[key] }}</span></a>
+      {% endfor %}
+    </nav>
+  </div>
+  {% if messages %}
+  <div class="table" data-rows>
+    <table class="stack">
+      <thead><tr><th>Time</th><th>Account</th><th>Type</th><th>From</th><th>Message</th><th>Order</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for n in messages %}
+      <tr>
+        <td class="c2 muted num">{{ n.received_at | local_time }}</td>
+        <td class="hide-sm">{{ n.member_id }}</td>
+        <td class="c1">{{ n.kind }}</td>
+        <td class="hide-sm">{% if n.package == 'sms' %}<span class="mono">{{ n.title }}</span>{% else %}{{ APP.get(n.package, n.package) }}{% endif %}</td>
+        <td class="full msg-cell">{% if n.package != 'sms' and n.title %}<b>{{ n.title }}</b>{% endif %}<span>{{ n.text }}</span></td>
+        <td class="hide-sm">{% if n.order %}<a class="oid" href="/admin/orders/{{ n.order }}">{{ n.order }}</a>{% else %}<span class="muted">—</span>{% endif %}</td>
+        <td class="c2"><span class="pill s-badge {{ n.tone }}">{{ n.status }}</span></td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  {{ empty('bell', 'Nothing here', 'Messages forwarded by the receiving phones appear here.') }}
+  {% endif %}
+</section>
+{% endblock %}

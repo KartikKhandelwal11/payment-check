@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f5f6fb">
+<title>Bank accounts · Payment Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/admin.css?v=25">
+<script>
+  // Hide animated cards until motion starts (no flash); always show them after 1.2 s.
+  (function () {
+    var soft = false;
+    try { soft = sessionStorage.getItem('pcSoft') === location.pathname + location.search; } catch (e) {}
+    if (soft || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.documentElement.classList.add('pre-anim');
+    setTimeout(function () { document.documentElement.classList.remove('pre-anim'); }, 1200);
+  })();
+</script>
+<meta name="robots" content="noindex"><link rel="stylesheet" href="proto.css"></head>
+<body>
+<div class="wash" aria-hidden="true"><i></i></div>
+<div class="app">
+  <aside class="sidebar" id="sidebar" aria-label="Main menu">
+    <div style="display:flex;align-items:center">
+      <a class="sb-brand" href="admin.html"><div class="logo" aria-hidden="true">₹</div><div><b>Payment Check</b><small>Team dashboard</small></div></a>
+      <button class="sb-close" type="button" id="drawerClose" aria-label="Close menu"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <a class="sb-cta" href="#proto"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>New payment link</a>
+    <div class="sb-label">Menu</div>
+    <nav class="sb-nav">
+      
+      <a class="sb-item" href="admin.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Overview<span class="badge hot" title="Alerts">3</span></a>
+      <a class="sb-item" href="admin-review.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>Payments to check<span class="badge hot" title="Need your decision">3</span></a>
+      <a class="sb-item" href="admin-orders.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6M9 4a1 1 0 0 0-1 1v1h8V5a1 1 0 0 0-1-1M8 6H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-2M9 12h6M9 16h4"/></svg>All payments</a>
+      <a class="sb-item" href="admin-statements.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13l3-8h12l3 8v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 13h5l1 2h6l1-2h5"/></svg>Bank statement</a>
+      <a class="sb-item active" href="admin-team.html" aria-current="page"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>Bank accounts<span class="badge" title="Phones online">1/2</span></a>
+      <a class="sb-item" href="admin-customers.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg>Customers</a>
+    </nav>
+    <div class="sb-label">More</div>
+    <nav class="sb-nav">
+      <a class="sb-item" href="admin-payments.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h13v4"/><path d="M3 7v11a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1H5a2 2 0 0 1-2-2z"/><circle cx="16.5" cy="14.5" r="1.3"/></svg>Unclaimed money<span class="badge">2</span></a>
+      <a class="sb-item" href="admin-notifications.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg>Phone messages</a>
+    </nav>
+
+    <div class="sb-foot">
+      <div class="live"><i></i>Live · updates every 20s</div>
+      <div class="demo-tag">Demo mode · simulate buttons on</div>
+      <form method="post" action="/admin/logout"><button class="btn-ghost" type="submit"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 17l5-5-5-5M15 12H3"/></svg>Log out</button></form>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <div class="main">
+    <header class="topbar" id="topbar">
+      <button class="menu-btn" type="button" id="drawerOpen" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+      
+      <div>
+        <div class="crumb">Where customers' money goes</div>
+        <h1>Bank accounts</h1>
+      </div>
+      <div class="actions"><button type="button" class="btn" data-open="addDialog"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add account</button></div>
+    </header>
+    <main class="content">
+      
+      
+      
+
+
+
+<div class="acct-grid">
+  
+  <section class="card acct-card" data-animate>
+    <div class="ac-head">
+      <div class="avatar c3 " aria-hidden="true">P<span class="dot"></span></div>
+      <div class="ac-name"><b>Priya Verma</b><small>PRIYA02</small></div>
+      <span class="soft-pill on">Active</span>
+    </div>
+    <dl class="ac-facts">
+      <div><dt>UPI ID</dt><dd>priya.verma@okhdfcbank</dd></div>
+      <div><dt>Bank account</dt><dd>50100519374620</dd></div>
+      <div><dt>IFSC</dt><dd>HDFC0000148</dd></div>
+      <div><dt>Phone</dt><dd><span class="bad-t">Offline</span></dd></div>
+      <div><dt>Open orders</dt><dd>4</dd></div>
+    </dl>
+    
+    <div class="ac-actions">
+      <button type="button" class="btn-2" data-open="edit-PRIYA02">Edit</button>
+      <form method="post" action="/admin/members/PRIYA02/status">
+        <button class="btn-2" name="status" value="paused" type="submit">Pause</button>
+        
+      </form>
+      <form method="post" action="/admin/members/PRIYA02/status"
+            onsubmit="return confirm('Close Priya Verma now? Customers who have not paid yet are told not to pay. This cannot be undone.')">
+        <button class="btn-danger" name="status" value="closed" type="submit">Close now</button>
+      </form>
+    </div>
+
+    <dialog class="modal" id="edit-PRIYA02" aria-labelledby="edit-PRIYA02-t">
+      <form method="post" action="/admin/members/PRIYA02/edit" class="modal-b">
+        <div class="modal-h"><div><h2 id="edit-PRIYA02-t">Edit Priya Verma</h2><p class="muted">PRIYA02 · priya.verma@okhdfcbank</p></div>
+          <button type="button" class="btn-ghost" data-close aria-label="Close"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+        <label class="f">Account holder name<input name="name" id="name_PRIYA02" required value="Priya Verma"></label>
+        <div class="two-col">
+          <label class="f">Account number<input name="bank_account" id="acct_PRIYA02" inputmode="numeric" value="50100519374620"></label>
+          <label class="f">IFSC<input name="ifsc" id="ifsc_PRIYA02" autocapitalize="characters" value="HDFC0000148"></label>
+        </div>
+        <div class="modal-a"><button type="button" class="btn-2" data-close>Cancel</button><button type="submit">Save</button></div>
+      </form>
+      <form method="post" action="/admin/members/PRIYA02/reset" class="modal-foot"
+            onsubmit="return confirm('Make a new phone code for Priya Verma? The old code stops working.')">
+        <span class="muted">Phone lost or changed?</span><button class="btn-2" type="submit"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>New phone code</button>
+      </form>
+    </dialog>
+    
+  </section>
+  
+  <section class="card acct-card" data-animate>
+    <div class="ac-head">
+      <div class="avatar c4 " aria-hidden="true">R<span class="dot on"></span></div>
+      <div class="ac-name"><b>Rahul Sharma</b><small>RAHUL01</small></div>
+      <span class="soft-pill on">Active</span>
+    </div>
+    <dl class="ac-facts">
+      <div><dt>UPI ID</dt><dd>rahul.sharma@okhdfcbank</dd></div>
+      <div><dt>Bank account</dt><dd>50100482736195</dd></div>
+      <div><dt>IFSC</dt><dd>HDFC0001203</dd></div>
+      <div><dt>Phone</dt><dd><span class="ok-t">Online</span></dd></div>
+      <div><dt>Open orders</dt><dd>4</dd></div>
+    </dl>
+    
+    <div class="ac-actions">
+      <button type="button" class="btn-2" data-open="edit-RAHUL01">Edit</button>
+      <form method="post" action="/admin/members/RAHUL01/status">
+        <button class="btn-2" name="status" value="paused" type="submit">Pause</button>
+        
+      </form>
+      <form method="post" action="/admin/members/RAHUL01/status"
+            onsubmit="return confirm('Close Rahul Sharma now? Customers who have not paid yet are told not to pay. This cannot be undone.')">
+        <button class="btn-danger" name="status" value="closed" type="submit">Close now</button>
+      </form>
+    </div>
+
+    <dialog class="modal" id="edit-RAHUL01" aria-labelledby="edit-RAHUL01-t">
+      <form method="post" action="/admin/members/RAHUL01/edit" class="modal-b">
+        <div class="modal-h"><div><h2 id="edit-RAHUL01-t">Edit Rahul Sharma</h2><p class="muted">RAHUL01 · rahul.sharma@okhdfcbank</p></div>
+          <button type="button" class="btn-ghost" data-close aria-label="Close"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+        <label class="f">Account holder name<input name="name" id="name_RAHUL01" required value="Rahul Sharma"></label>
+        <div class="two-col">
+          <label class="f">Account number<input name="bank_account" id="acct_RAHUL01" inputmode="numeric" value="50100482736195"></label>
+          <label class="f">IFSC<input name="ifsc" id="ifsc_RAHUL01" autocapitalize="characters" value="HDFC0001203"></label>
+        </div>
+        <div class="modal-a"><button type="button" class="btn-2" data-close>Cancel</button><button type="submit">Save</button></div>
+      </form>
+      <form method="post" action="/admin/members/RAHUL01/reset" class="modal-foot"
+            onsubmit="return confirm('Make a new phone code for Rahul Sharma? The old code stops working.')">
+        <span class="muted">Phone lost or changed?</span><button class="btn-2" type="submit"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>New phone code</button>
+      </form>
+    </dialog>
+    
+  </section>
+  
+  <section class="card acct-card closed" data-animate>
+    <div class="ac-head">
+      <div class="avatar c3 " aria-hidden="true">A<span class="dot on"></span></div>
+      <div class="ac-name"><b>Ankit Mehra</b><small>ANKIT03</small></div>
+      <span class="soft-pill off">Closed</span>
+    </div>
+    <dl class="ac-facts">
+      <div><dt>UPI ID</dt><dd>ankit.mehra@okhdfcbank</dd></div>
+      <div><dt>Bank account</dt><dd>50100633018274</dd></div>
+      <div><dt>IFSC</dt><dd>HDFC0002291</dd></div>
+      <div><dt>Phone</dt><dd>—</dd></div>
+      <div><dt>Open orders</dt><dd>2</dd></div>
+    </dl>
+    
+  </section>
+  
+</div>
+
+
+<dialog class="modal" id="addDialog" aria-labelledby="addTitle" >
+  <form method="post" action="/admin/members" class="modal-b">
+    <div class="modal-h"><div><h2 id="addTitle">Add bank account</h2><p class="muted">You'll get a code to connect the phone that receives this account's SMS.</p></div>
+      <button type="button" class="btn-ghost" data-close aria-label="Close"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    
+    <label class="f">Account holder name<input id="member_name" name="name" placeholder="Rahul Sharma" required value=""></label>
+    <label class="f">UPI ID<input id="member_upi" name="upi_id" placeholder="rahul@okhdfcbank" required autocapitalize="off" autocorrect="off" value=""></label>
+    <div class="two-col">
+      <label class="f"><span>Account number <span class="opt">(optional)</span></span><input id="member_acct" name="bank_account" inputmode="numeric" value=""></label>
+      <label class="f"><span>IFSC <span class="opt">(optional)</span></span><input id="member_ifsc" name="ifsc" placeholder="HDFC0001234" autocapitalize="characters" value=""></label>
+    </div>
+    <label class="f"><span>Short code <span class="opt">(any name, e.g. RAHUL01)</span></span>
+      <input id="member_code" name="member_id" placeholder="RAHUL01" required autocapitalize="characters" value=""></label>
+    <div class="modal-a"><button type="button" class="btn-2" data-close>Cancel</button><button type="submit"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add account</button></div>
+  </form>
+</dialog>
+
+    </main>
+  </div>
+</div>
+
+
+<script src="static/vendor/motion-11.11.13.js"></script>
+<script>window.PC_AUTO_REFRESH = false;</script>
+<script src="static/admin.js?v=10"></script>
+
+<script>
+(function () {
+  document.querySelectorAll('[data-open]').forEach((b) => b.addEventListener('click', () => {
+    const d = document.getElementById(b.dataset.open);
+    d.showModal();
+    const first = d.querySelector('input:not([readonly])');
+    if (first) first.focus();
+  }));
+  document.querySelectorAll('dialog.modal').forEach((d) => {
+    d.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => d.close()));
+    d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
+  });
+  // The add form came back with an error: show it again with what was typed.
+  const add = document.getElementById('addDialog');
+  if (add && add.hasAttribute('data-autoopen')) add.showModal();
+})();
+</script>
+
+<script>window.PROTO={"page": "admin-team.html", "wallet": "wallet.html"}</script><script src="proto.js"></script></body>
+</html>

@@ -1,0 +1,115 @@
+{% extends "_admin_base.html" %}
+{% from "_ui.html" import icon, avatar, empty %}
+{% block title %}Bank accounts{% endblock %}
+{% block crumb %}Where customers' money goes{% endblock %}
+{% block heading %}Bank accounts{% endblock %}
+{% block actions %}<button type="button" class="btn" data-open="addDialog">{{ icon('plus') }}Add account</button>{% endblock %}
+
+{% block content %}
+{% if new_token %}
+<section class="card panel" data-animate>
+  <div class="card-b">
+    <div class="panel-title">
+      <div class="ic">{{ icon('phone') }}</div>
+      <div><b>Connect the phone for {{ new_token.member }}</b><span class="muted">Open the Payment Forwarder app on the phone that gets this account's HDFC SMS and enter these two values. The code is shown only once.</span></div>
+    </div>
+    <label class="f">Server address
+      <div class="copy-field"><input readonly value="{{ base_url }}"><button type="button" class="btn-2" data-copy="{{ base_url }}">{{ icon('copy') }}Copy</button></div>
+    </label>
+    <label class="f">Phone code
+      <div class="copy-field"><input readonly value="{{ new_token.token }}"><button type="button" class="btn-2" data-copy="{{ new_token.token }}">{{ icon('copy') }}Copy</button></div>
+    </label>
+  </div>
+</section>
+{% endif %}
+
+{% if dash.members %}
+<div class="acct-grid">
+  {% for m in dash.members %}
+  <section class="card acct-card{% if m.status == 'closed' %} closed{% endif %}" data-animate>
+    <div class="ac-head">
+      {{ avatar(m) }}
+      <div class="ac-name"><b>{{ m.name }}</b><small>{{ m.id }}</small></div>
+      <span class="soft-pill {{ 'on' if m.status == 'active' else 'off' if m.status == 'closed' else '' }}">{{ {'active': 'Active', 'paused': 'Paused', 'closed': 'Closed'}[m.status] }}</span>
+    </div>
+    <dl class="ac-facts">
+      <div><dt>UPI ID</dt><dd>{{ m.upi_id }}</dd></div>
+      <div><dt>Bank account</dt><dd>{% if m.bank_account %}{{ m.bank_account }}{% else %}<span class="muted">Not added</span>{% endif %}</dd></div>
+      <div><dt>IFSC</dt><dd>{{ m.ifsc or '—' }}</dd></div>
+      <div><dt>Phone</dt><dd>{% if m.status == 'closed' %}—{% elif m.online %}<span class="ok-t">Online</span>{% else %}<span class="bad-t">Offline</span>{% endif %}</dd></div>
+      <div><dt>Open orders</dt><dd>{{ m.open }}</dd></div>
+    </dl>
+    {% if m.status != 'closed' %}
+    <div class="ac-actions">
+      <button type="button" class="btn-2" data-open="edit-{{ m.id }}">Edit</button>
+      <form method="post" action="/admin/members/{{ m.id }}/status">
+        {% if m.status == 'active' %}<button class="btn-2" name="status" value="paused" type="submit">Pause</button>
+        {% else %}<button class="btn-2" name="status" value="active" type="submit">Resume</button>{% endif %}
+      </form>
+      <form method="post" action="/admin/members/{{ m.id }}/status"
+            onsubmit="return confirm('Close {{ m.name }} now? Customers who have not paid yet are told not to pay. This cannot be undone.')">
+        <button class="btn-danger" name="status" value="closed" type="submit">Close now</button>
+      </form>
+    </div>
+
+    <dialog class="modal" id="edit-{{ m.id }}" aria-labelledby="edit-{{ m.id }}-t">
+      <form method="post" action="/admin/members/{{ m.id }}/edit" class="modal-b">
+        <div class="modal-h"><div><h2 id="edit-{{ m.id }}-t">Edit {{ m.name }}</h2><p class="muted">{{ m.id }} · {{ m.upi_id }}</p></div>
+          <button type="button" class="btn-ghost" data-close aria-label="Close">{{ icon('x') }}</button></div>
+        <label class="f">Account holder name<input name="name" id="name_{{ m.id }}" required value="{{ m.name }}"></label>
+        <div class="two-col">
+          <label class="f">Account number<input name="bank_account" id="acct_{{ m.id }}" inputmode="numeric" value="{{ m.bank_account or '' }}"></label>
+          <label class="f">IFSC<input name="ifsc" id="ifsc_{{ m.id }}" autocapitalize="characters" value="{{ m.ifsc or '' }}"></label>
+        </div>
+        <div class="modal-a"><button type="button" class="btn-2" data-close>Cancel</button><button type="submit">Save</button></div>
+      </form>
+      <form method="post" action="/admin/members/{{ m.id }}/reset" class="modal-foot"
+            onsubmit="return confirm('Make a new phone code for {{ m.name }}? The old code stops working.')">
+        <span class="muted">Phone lost or changed?</span><button class="btn-2" type="submit">{{ icon('refresh') }}New phone code</button>
+      </form>
+    </dialog>
+    {% endif %}
+  </section>
+  {% endfor %}
+</div>
+{% else %}
+<section class="card" data-animate>{{ empty('users', 'No bank accounts yet', 'Press “Add account” to add the HDFC account that will receive customers’ money.') }}</section>
+{% endif %}
+
+<dialog class="modal" id="addDialog" aria-labelledby="addTitle" {% if form %}data-autoopen{% endif %}>
+  <form method="post" action="/admin/members" class="modal-b">
+    <div class="modal-h"><div><h2 id="addTitle">Add bank account</h2><p class="muted">You'll get a code to connect the phone that receives this account's SMS.</p></div>
+      <button type="button" class="btn-ghost" data-close aria-label="Close">{{ icon('x') }}</button></div>
+    {% if error %}<div class="flash err" role="alert">{{ icon('alert') }}<span>{{ error }}</span></div>{% endif %}
+    <label class="f">Account holder name<input id="member_name" name="name" placeholder="Rahul Sharma" required value="{{ form.name if form else '' }}"></label>
+    <label class="f">UPI ID<input id="member_upi" name="upi_id" placeholder="rahul@okhdfcbank" required autocapitalize="off" autocorrect="off" value="{{ form.upi_id if form else '' }}"></label>
+    <div class="two-col">
+      <label class="f"><span>Account number <span class="opt">(optional)</span></span><input id="member_acct" name="bank_account" inputmode="numeric" value="{{ form.bank_account if form else '' }}"></label>
+      <label class="f"><span>IFSC <span class="opt">(optional)</span></span><input id="member_ifsc" name="ifsc" placeholder="HDFC0001234" autocapitalize="characters" value="{{ form.ifsc if form else '' }}"></label>
+    </div>
+    <label class="f"><span>Short code <span class="opt">(any name, e.g. RAHUL01)</span></span>
+      <input id="member_code" name="member_id" placeholder="RAHUL01" required autocapitalize="characters" value="{{ form.member_id if form else '' }}"></label>
+    <div class="modal-a"><button type="button" class="btn-2" data-close>Cancel</button><button type="submit">{{ icon('plus') }}Add account</button></div>
+  </form>
+</dialog>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  document.querySelectorAll('[data-open]').forEach((b) => b.addEventListener('click', () => {
+    const d = document.getElementById(b.dataset.open);
+    d.showModal();
+    const first = d.querySelector('input:not([readonly])');
+    if (first) first.focus();
+  }));
+  document.querySelectorAll('dialog.modal').forEach((d) => {
+    d.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => d.close()));
+    d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
+  });
+  // The add form came back with an error: show it again with what was typed.
+  const add = document.getElementById('addDialog');
+  if (add && add.hasAttribute('data-autoopen')) add.showModal();
+})();
+</script>
+{% endblock %}

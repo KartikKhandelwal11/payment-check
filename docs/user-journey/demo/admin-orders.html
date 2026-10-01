@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f5f6fb">
+<title>Orders · Payment Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/admin.css?v=25">
+<script>
+  // Hide animated cards until motion starts (no flash); always show them after 1.2 s.
+  (function () {
+    var soft = false;
+    try { soft = sessionStorage.getItem('pcSoft') === location.pathname + location.search; } catch (e) {}
+    if (soft || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.documentElement.classList.add('pre-anim');
+    setTimeout(function () { document.documentElement.classList.remove('pre-anim'); }, 1200);
+  })();
+</script>
+<meta name="robots" content="noindex"><link rel="stylesheet" href="proto.css"></head>
+<body>
+<div class="wash" aria-hidden="true"><i></i></div>
+<div class="app">
+  <aside class="sidebar" id="sidebar" aria-label="Main menu">
+    <div style="display:flex;align-items:center">
+      <a class="sb-brand" href="admin.html"><div class="logo" aria-hidden="true">₹</div><div><b>Payment Check</b><small>Team dashboard</small></div></a>
+      <button class="sb-close" type="button" id="drawerClose" aria-label="Close menu"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <a class="sb-cta" href="#proto"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>New payment link</a>
+    <div class="sb-label">Menu</div>
+    <nav class="sb-nav">
+      
+      <a class="sb-item" href="admin.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Overview<span class="badge hot" title="Alerts">3</span></a>
+      <a class="sb-item" href="admin-review.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>Payments to check<span class="badge hot" title="Need your decision">3</span></a>
+      <a class="sb-item active" href="admin-orders.html" aria-current="page"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6M9 4a1 1 0 0 0-1 1v1h8V5a1 1 0 0 0-1-1M8 6H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-2M9 12h6M9 16h4"/></svg>All payments</a>
+      <a class="sb-item" href="admin-statements.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13l3-8h12l3 8v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 13h5l1 2h6l1-2h5"/></svg>Bank statement</a>
+      <a class="sb-item" href="admin-team.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>Bank accounts<span class="badge" title="Phones online">1/2</span></a>
+      <a class="sb-item" href="admin-customers.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg>Customers</a>
+    </nav>
+    <div class="sb-label">More</div>
+    <nav class="sb-nav">
+      <a class="sb-item" href="admin-payments.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h13v4"/><path d="M3 7v11a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1H5a2 2 0 0 1-2-2z"/><circle cx="16.5" cy="14.5" r="1.3"/></svg>Unclaimed money<span class="badge">2</span></a>
+      <a class="sb-item" href="admin-notifications.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg>Phone messages</a>
+    </nav>
+
+    <div class="sb-foot">
+      <div class="live"><i></i>Live · updates every 20s</div>
+      <div class="demo-tag">Demo mode · simulate buttons on</div>
+      <form method="post" action="/admin/logout"><button class="btn-ghost" type="submit"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 17l5-5-5-5M15 12H3"/></svg>Log out</button></form>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <div class="main">
+    <header class="topbar" id="topbar">
+      <button class="menu-btn" type="button" id="drawerOpen" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+      
+      <div>
+        <div class="crumb">Every Add Cash order and its status</div>
+        <h1>All payments</h1>
+      </div>
+      <div class="actions"></div>
+    </header>
+    <main class="content">
+      
+      
+      
+
+<section class="card" data-animate>
+  <form class="toolbar" method="get" action="/admin/orders" role="search">
+    <nav class="tabs" aria-label="Filter by status">
+      
+      <a href="admin-orders.html" class="on"
+         aria-current="true">All<span class="n">25</span></a>
+      
+      <a href="admin-orders.html" class=""
+         >Needs decision<span class="n">3</span></a>
+      
+      <a href="admin-orders.html" class=""
+         >Waiting for bank<span class="n">1</span></a>
+      
+      <a href="admin-orders.html" class=""
+         >Added<span class="n">3</span></a>
+      
+      <a href="admin-orders.html" class=""
+         >Rejected<span class="n">4</span></a>
+      
+      <a href="admin-orders.html" class=""
+         >Not paid yet<span class="n">6</span></a>
+      
+      <a href="admin-orders.html" class=""
+         >Not paid<span class="n">7</span></a>
+      
+    </nav>
+    <input type="hidden" name="status" value="all">
+    <label class="search"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input type="search" name="q" value="" placeholder="Search order, customer, UTR or amount" aria-label="Search orders" data-keep>
+    </label>
+  </form>
+
+  
+  <div class="table" data-rows>
+    <table class="stack">
+      <thead><tr><th>Order</th><th>Amount</th><th>Status</th><th class="hide-sm">Account</th><th class="hide-sm">Customer</th><th class="hide-sm">Created</th><th class="hide-sm"></th></tr></thead>
+      <tbody>
+      
+      <tr data-href="admin-order-6JXMCWXG.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-6JXMCWXG.html">6JXMCWXG</a>
+          
+          <span class="sub m-only">Suspicious User · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹113.00</td>
+        <td class="c2"><span class="pill failed">Rejected</span>
+          </td>
+        <td class="hide-sm">Priya Verma<span class="sub">PRIYA02</span></td>
+        <td class="hide-sm">Suspicious User</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/6JXMCWXG" title="Copy payment link" aria-label="Copy payment link for 6JXMCWXG"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for 6JXMCWXG"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-MUCASQ9V.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-MUCASQ9V.html">MUCASQ9V</a>
+          
+          <span class="sub m-only">Suspicious User · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹111.00</td>
+        <td class="c2"><span class="pill failed">Rejected</span>
+          </td>
+        <td class="hide-sm">Ankit Mehra<span class="sub">ANKIT03</span></td>
+        <td class="hide-sm">Suspicious User</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/MUCASQ9V" title="Copy payment link" aria-label="Copy payment link for MUCASQ9V"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for MUCASQ9V"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-9AP3V675.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-9AP3V675.html">9AP3V675</a>
+          
+          <span class="sub m-only">Suspicious User · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹112.00</td>
+        <td class="c2"><span class="pill failed">Rejected</span>
+          </td>
+        <td class="hide-sm">Rahul Sharma<span class="sub">RAHUL01</span></td>
+        <td class="hide-sm">Suspicious User</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/9AP3V675" title="Copy payment link" aria-label="Copy payment link for 9AP3V675"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for 9AP3V675"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-SNFMS6KG.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-SNFMS6KG.html">SNFMS6KG</a>
+          
+          <span class="sub m-only">Varun Gill · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹999.00</td>
+        <td class="c2"><span class="pill review">Needs your decision</span>
+          </td>
+        <td class="hide-sm">Priya Verma<span class="sub">PRIYA02</span></td>
+        <td class="hide-sm">Varun Gill</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/SNFMS6KG" title="Copy payment link" aria-label="Copy payment link for SNFMS6KG"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for SNFMS6KG"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-Z7WMCUC6.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-Z7WMCUC6.html">Z7WMCUC6</a>
+          
+          <span class="sub m-only">Harsh Vardhan · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹700.00</td>
+        <td class="c2"><span class="pill expired">Not paid</span>
+          </td>
+        <td class="hide-sm">Rahul Sharma<span class="sub">RAHUL01</span></td>
+        <td class="hide-sm">Harsh Vardhan</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/Z7WMCUC6" title="Copy payment link" aria-label="Copy payment link for Z7WMCUC6"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for Z7WMCUC6"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-VAERVHUX.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-VAERVHUX.html">VAERVHUX</a>
+          
+          <span class="sub m-only">Farah Khan · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹1,200.00</td>
+        <td class="c2"><span class="pill expired">Not paid</span>
+          </td>
+        <td class="hide-sm">Ankit Mehra<span class="sub">ANKIT03</span></td>
+        <td class="hide-sm">Farah Khan</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/VAERVHUX" title="Copy payment link" aria-label="Copy payment link for VAERVHUX"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for VAERVHUX"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-MFRF5K4E.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-MFRF5K4E.html">MFRF5K4E</a>
+          
+          <span class="sub m-only">Gaurav Sethi · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹650.00</td>
+        <td class="c2"><span class="pill pending">Not paid yet</span>
+          </td>
+        <td class="hide-sm">Rahul Sharma<span class="sub">RAHUL01</span></td>
+        <td class="hide-sm">Gaurav Sethi</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/MFRF5K4E" title="Copy payment link" aria-label="Copy payment link for MFRF5K4E"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for MFRF5K4E"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-GNEREBG7.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-GNEREBG7.html">GNEREBG7</a>
+          
+          <span class="sub m-only">Ananya Rao · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹999.00</td>
+        <td class="c2"><span class="pill review">Needs your decision</span>
+          </td>
+        <td class="hide-sm">Ankit Mehra<span class="sub">ANKIT03</span></td>
+        <td class="hide-sm">Ananya Rao</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/GNEREBG7" title="Copy payment link" aria-label="Copy payment link for GNEREBG7"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for GNEREBG7"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-VWB9KB95.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-VWB9KB95.html">VWB9KB95</a>
+          
+          <span class="sub m-only">Simran Kaur · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹450.00</td>
+        <td class="c2"><span class="pill action">Asked to upload again</span>
+          </td>
+        <td class="hide-sm">Priya Verma<span class="sub">PRIYA02</span></td>
+        <td class="hide-sm">Simran Kaur</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/VWB9KB95" title="Copy payment link" aria-label="Copy payment link for VWB9KB95"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for VWB9KB95"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-98JS8GSJ.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-98JS8GSJ.html">98JS8GSJ</a>
+          <span class="sub">652000016942</span>
+          <span class="sub m-only">Rakesh Yadav · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹800.00</td>
+        <td class="c2"><span class="pill paid">Added to wallet</span>
+          <span class="sub num hide-sm">01 Oct, 12:00 AM</span></td>
+        <td class="hide-sm">Priya Verma<span class="sub">PRIYA02</span></td>
+        <td class="hide-sm">Rakesh Yadav</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/98JS8GSJ" title="Copy payment link" aria-label="Copy payment link for 98JS8GSJ"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for 98JS8GSJ"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-HDG42MWU.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-HDG42MWU.html">HDG42MWU</a>
+          
+          <span class="sub m-only">Deepak Joshi · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹900.00</td>
+        <td class="c2"><span class="pill failed">Rejected</span>
+          </td>
+        <td class="hide-sm">Rahul Sharma<span class="sub">RAHUL01</span></td>
+        <td class="hide-sm">Deepak Joshi</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/HDG42MWU" title="Copy payment link" aria-label="Copy payment link for HDG42MWU"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for HDG42MWU"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-J6B7ZBMK.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-J6B7ZBMK.html">J6B7ZBMK</a>
+          
+          <span class="sub m-only">Karan Malhotra · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹500.00</td>
+        <td class="c2"><span class="pill pending">Not paid yet</span>
+          </td>
+        <td class="hide-sm">Priya Verma<span class="sub">PRIYA02</span></td>
+        <td class="hide-sm">Karan Malhotra</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/J6B7ZBMK" title="Copy payment link" aria-label="Copy payment link for J6B7ZBMK"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for J6B7ZBMK"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-FZMTG9U2.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-FZMTG9U2.html">FZMTG9U2</a>
+          
+          <span class="sub m-only">Tanvi Shah · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹500.00</td>
+        <td class="c2"><span class="pill pending">Not paid yet</span>
+          </td>
+        <td class="hide-sm">Rahul Sharma<span class="sub">RAHUL01</span></td>
+        <td class="hide-sm">Tanvi Shah</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/FZMTG9U2" title="Copy payment link" aria-label="Copy payment link for FZMTG9U2"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for FZMTG9U2"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-ND4XHHJN.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-ND4XHHJN.html">ND4XHHJN</a>
+          
+          <span class="sub m-only">Isha Kapoor · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹750.00</td>
+        <td class="c2"><span class="pill expired">Not paid</span>
+          </td>
+        <td class="hide-sm">Ankit Mehra<span class="sub">ANKIT03</span></td>
+        <td class="hide-sm">Isha Kapoor</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/ND4XHHJN" title="Copy payment link" aria-label="Copy payment link for ND4XHHJN"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for ND4XHHJN"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-GBT8Y99E.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-GBT8Y99E.html">GBT8Y99E</a>
+          
+          <span class="sub m-only">Meera Nair · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹500.00</td>
+        <td class="c2"><span class="pill in_progress">Waiting for bank</span>
+          </td>
+        <td class="hide-sm">Ankit Mehra<span class="sub">ANKIT03</span></td>
+        <td class="hide-sm">Meera Nair</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/GBT8Y99E" title="Copy payment link" aria-label="Copy payment link for GBT8Y99E"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for GBT8Y99E"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-RLEMWHQC.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-RLEMWHQC.html">RLEMWHQC</a>
+          
+          <span class="sub m-only">Arjun Nair · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹100.00</td>
+        <td class="c2"><span class="pill pending">Not paid yet</span>
+          </td>
+        <td class="hide-sm">Rahul Sharma<span class="sub">RAHUL01</span></td>
+        <td class="hide-sm">Arjun Nair</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/RLEMWHQC" title="Copy payment link" aria-label="Copy payment link for RLEMWHQC"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for RLEMWHQC"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-PBR4PTG4.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-PBR4PTG4.html">PBR4PTG4</a>
+          
+          <span class="sub m-only">Rohit Das · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹600.00</td>
+        <td class="c2"><span class="pill pending">Not paid yet</span>
+          </td>
+        <td class="hide-sm">Priya Verma<span class="sub">PRIYA02</span></td>
+        <td class="hide-sm">Rohit Das</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/PBR4PTG4" title="Copy payment link" aria-label="Copy payment link for PBR4PTG4"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for PBR4PTG4"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-CCVL6NV2.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-CCVL6NV2.html">CCVL6NV2</a>
+          
+          <span class="sub m-only">Vikas Rao · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹250.00</td>
+        <td class="c2"><span class="pill pending">Not paid yet</span>
+          </td>
+        <td class="hide-sm">Rahul Sharma<span class="sub">RAHUL01</span></td>
+        <td class="hide-sm">Vikas Rao</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/CCVL6NV2" title="Copy payment link" aria-label="Copy payment link for CCVL6NV2"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for CCVL6NV2"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-8TAB484C.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-8TAB484C.html">8TAB484C</a>
+          
+          <span class="sub m-only">Pooja Iyer · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹150.00</td>
+        <td class="c2"><span class="pill expired">Not paid</span>
+          </td>
+        <td class="hide-sm">Ankit Mehra<span class="sub">ANKIT03</span></td>
+        <td class="hide-sm">Pooja Iyer</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/8TAB484C" title="Copy payment link" aria-label="Copy payment link for 8TAB484C"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for 8TAB484C"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-QJXTTFB5.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-QJXTTFB5.html">QJXTTFB5</a>
+          
+          <span class="sub m-only">Kartik Khandelwal · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹321.00</td>
+        <td class="c2"><span class="pill expired">Not paid</span>
+          </td>
+        <td class="hide-sm">Rahul Sharma<span class="sub">RAHUL01</span></td>
+        <td class="hide-sm">Kartik Khandelwal</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/QJXTTFB5" title="Copy payment link" aria-label="Copy payment link for QJXTTFB5"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for QJXTTFB5"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-RATTNT3P.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-RATTNT3P.html">RATTNT3P</a>
+          
+          <span class="sub m-only">Kartik Khandelwal · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹300.00</td>
+        <td class="c2"><span class="pill expired">Not paid</span>
+          </td>
+        <td class="hide-sm">Ankit Mehra<span class="sub">ANKIT03</span></td>
+        <td class="hide-sm">Kartik Khandelwal</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/RATTNT3P" title="Copy payment link" aria-label="Copy payment link for RATTNT3P"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for RATTNT3P"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-PCCRJWZB.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-PCCRJWZB.html">PCCRJWZB</a>
+          
+          <span class="sub m-only">Sonia Jain · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹400.00</td>
+        <td class="c2"><span class="pill review">Needs your decision</span>
+          </td>
+        <td class="hide-sm">Priya Verma<span class="sub">PRIYA02</span></td>
+        <td class="hide-sm">Sonia Jain</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/PCCRJWZB" title="Copy payment link" aria-label="Copy payment link for PCCRJWZB"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for PCCRJWZB"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-4B25QCQZ.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-4B25QCQZ.html">4B25QCQZ</a>
+          <span class="sub">606790821344</span>
+          <span class="sub m-only">Neha Gupta · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹2,000.00</td>
+        <td class="c2"><span class="pill paid">Added to wallet</span>
+          <span class="sub num hide-sm">01 Oct, 07:21 AM</span></td>
+        <td class="hide-sm">Priya Verma<span class="sub">PRIYA02</span></td>
+        <td class="hide-sm">Neha Gupta</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/4B25QCQZ" title="Copy payment link" aria-label="Copy payment link for 4B25QCQZ"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for 4B25QCQZ"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-48YWL8JM.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-48YWL8JM.html">48YWL8JM</a>
+          <span class="sub">635731716995</span>
+          <span class="sub m-only">Aman Verma · 01 Oct, 07:21 AM</span>
+        </td>
+        <td class="c2 amt">₹500.00</td>
+        <td class="c2"><span class="pill paid">Added to wallet</span>
+          <span class="sub num hide-sm">01 Oct, 07:21 AM</span></td>
+        <td class="hide-sm">Ankit Mehra<span class="sub">ANKIT03</span></td>
+        <td class="hide-sm">Aman Verma</td>
+        <td class="hide-sm num muted">01 Oct, 07:21 AM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/48YWL8JM" title="Copy payment link" aria-label="Copy payment link for 48YWL8JM"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for 48YWL8JM"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      <tr data-href="admin-order-JYWVDH2U.html">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="admin-order-JYWVDH2U.html">JYWVDH2U</a>
+          
+          <span class="sub m-only">Nitin Bansal · 28 Sep, 11:48 PM</span>
+        </td>
+        <td class="c2 amt">₹350.00</td>
+        <td class="c2"><span class="pill expired">Not paid</span>
+          </td>
+        <td class="hide-sm">Priya Verma<span class="sub">PRIYA02</span></td>
+        <td class="hide-sm">Nitin Bansal</td>
+        <td class="hide-sm num muted">28 Sep, 11:48 PM</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="https://your-server.example/pay/JYWVDH2U" title="Copy payment link" aria-label="Copy payment link for JYWVDH2U"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          <a class="icon-btn btn" href="#proto" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for JYWVDH2U"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+  
+</section>
+
+    </main>
+  </div>
+</div>
+
+
+<script src="static/vendor/motion-11.11.13.js"></script>
+<script>window.PC_AUTO_REFRESH = false;</script>
+<script src="static/admin.js?v=10"></script>
+
+<script>window.PROTO={"page": "admin-orders.html", "wallet": "wallet.html"}</script><script src="proto.js"></script></body>
+</html>

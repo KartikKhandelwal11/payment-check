@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f5f6fb">
+<title>Bank statement · Payment Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/admin.css?v=25">
+<script>
+  // Hide animated cards until motion starts (no flash); always show them after 1.2 s.
+  (function () {
+    var soft = false;
+    try { soft = sessionStorage.getItem('pcSoft') === location.pathname + location.search; } catch (e) {}
+    if (soft || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.documentElement.classList.add('pre-anim');
+    setTimeout(function () { document.documentElement.classList.remove('pre-anim'); }, 1200);
+  })();
+</script>
+<meta name="robots" content="noindex"><link rel="stylesheet" href="proto.css"></head>
+<body>
+<div class="wash" aria-hidden="true"><i></i></div>
+<div class="app">
+  <aside class="sidebar" id="sidebar" aria-label="Main menu">
+    <div style="display:flex;align-items:center">
+      <a class="sb-brand" href="admin.html"><div class="logo" aria-hidden="true">₹</div><div><b>Payment Check</b><small>Team dashboard</small></div></a>
+      <button class="sb-close" type="button" id="drawerClose" aria-label="Close menu"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <a class="sb-cta" href="#proto"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>New payment link</a>
+    <div class="sb-label">Menu</div>
+    <nav class="sb-nav">
+      
+      <a class="sb-item" href="admin.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Overview<span class="badge hot" title="Alerts">3</span></a>
+      <a class="sb-item" href="admin-review.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>Payments to check<span class="badge hot" title="Need your decision">3</span></a>
+      <a class="sb-item" href="admin-orders.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6M9 4a1 1 0 0 0-1 1v1h8V5a1 1 0 0 0-1-1M8 6H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-2M9 12h6M9 16h4"/></svg>All payments</a>
+      <a class="sb-item active" href="admin-statements.html" aria-current="page"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13l3-8h12l3 8v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 13h5l1 2h6l1-2h5"/></svg>Bank statement</a>
+      <a class="sb-item" href="admin-team.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>Bank accounts<span class="badge" title="Phones online">1/2</span></a>
+      <a class="sb-item" href="admin-customers.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg>Customers</a>
+    </nav>
+    <div class="sb-label">More</div>
+    <nav class="sb-nav">
+      <a class="sb-item" href="admin-payments.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h13v4"/><path d="M3 7v11a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1H5a2 2 0 0 1-2-2z"/><circle cx="16.5" cy="14.5" r="1.3"/></svg>Unclaimed money<span class="badge">2</span></a>
+      <a class="sb-item" href="admin-notifications.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg>Phone messages</a>
+    </nav>
+
+    <div class="sb-foot">
+      <div class="live"><i></i>Live · updates every 20s</div>
+      <div class="demo-tag">Demo mode · simulate buttons on</div>
+      <form method="post" action="/admin/logout"><button class="btn-ghost" type="submit"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 17l5-5-5-5M15 12H3"/></svg>Log out</button></form>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <div class="main">
+    <header class="topbar" id="topbar">
+      <button class="menu-btn" type="button" id="drawerOpen" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+      
+      <div>
+        <div class="crumb">The bank's final word on every payment</div>
+        <h1>Bank statement</h1>
+      </div>
+      <div class="actions"></div>
+    </header>
+    <main class="content">
+      
+      
+      
+
+<form method="post" action="/admin/statements" enctype="multipart/form-data" id="stmtForm">
+  
+  <label class="big-drop" id="bigDrop" data-animate>
+    <input type="file" name="file" id="stmt_file" accept=".csv,.txt,text/csv,text/plain" required>
+    <span class="bd-ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13l3-8h12l3 8v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 13h5l1 2h6l1-2h5"/></svg></span>
+    <b>Upload bank statement</b>
+    <span>Click to choose, or drop the file here</span>
+    <small>HDFC netbanking → Account statement → download as Delimited / CSV</small>
+  </label>
+
+  
+  <dialog class="modal" id="uploadDialog" aria-labelledby="dlgTitle">
+    <div class="modal-b">
+      <div class="modal-h"><div><h2 id="dlgTitle">Which account is this statement for?</h2><p class="muted" id="dlgFile"></p></div>
+        <button type="button" class="btn-ghost" data-close aria-label="Close"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+      <div class="pick-acct">
+        
+        <label><input type="radio" name="member_id" value="PRIYA02" required >
+          <span><b>Priya Verma · PRIYA02</b><small>A/c 50100519374620 · last uploaded 01 Oct, 07:21 AM</small></span></label>
+        
+        <label><input type="radio" name="member_id" value="RAHUL01" required checked>
+          <span><b>Rahul Sharma · RAHUL01</b><small>A/c 50100482736195 · never uploaded</small></span></label>
+        
+      </div>
+      <label class="f">When did you download it?
+        <input type="datetime-local" name="downloaded_at" id="stmt_when" required value="2026-10-01T07:21">
+        <span class="opt" style="font-weight:400">Payments after this time won't be reported missing.</span></label>
+      <div class="modal-a"><button type="button" class="btn-2" data-close>Cancel</button><button type="submit"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Check statement</button></div>
+    </div>
+  </dialog>
+</form>
+
+
+
+<div class="acct-grid">
+  
+  <section class="card acct-card" data-animate>
+    <div class="ac-head">
+      <div class="as-ic ok"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <div class="ac-name"><b>Priya Verma</b><small>PRIYA02 · A/c 50100519374620</small></div>
+    </div>
+    <dl class="ac-facts">
+      <div><dt>Last uploaded</dt><dd>01 Oct, 07:21 AM</dd></div>
+      <div><dt>Status</dt><dd>
+        <span class="ok-t">Up to date</span></dd></div>
+    </dl>
+  </section>
+  
+  <section class="card acct-card" data-animate>
+    <div class="ac-head">
+      <div class="as-ic due"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg></div>
+      <div class="ac-name"><b>Rahul Sharma</b><small>RAHUL01 · A/c 50100482736195</small></div>
+    </div>
+    <dl class="ac-facts">
+      <div><dt>Last uploaded</dt><dd>Never</dd></div>
+      <div><dt>Status</dt><dd>
+        <span class="bad-t">Not uploaded yet</span>
+        </dd></div>
+    </dl>
+  </section>
+  
+</div>
+
+
+
+
+
+
+<section class="card" data-animate>
+  <div class="card-h"><h2>PRIYA02 · hdfc_statement.csv</h2>
+    <span class="sub">Checked 01 Oct, 07:21 AM · downloaded 01 Oct, 07:21 AM · 2 credits · ₹2,300.00</span></div>
+  <div class="report">
+    <div class="ok"><b>1</b><span>Added and in the bank</span></div>
+    <div class="warn"><b>1</b><span>In the bank, not claimed</span></div>
+    <div class="ok"><b>0</b><span>Added but NOT in the bank</span></div>
+    <div class="warn"><b>0</b><span>Sent to check</span></div>
+  </div>
+  
+  
+  <details class="stmt-more"><summary>Money in the bank that no customer has claimed (1)</summary>
+    <div class="alerts"><div class="alert-row soft"><span><b>₹1,500.00</b> · UTR <span class="mono">618888777766</span><span class="raw">UPI-UNKNOWN PAYER-payer@ybl-YESB0000123-618888777766-</span></span></div></div>
+  </details>
+  
+  
+</section>
+
+
+    </main>
+  </div>
+</div>
+
+
+<script src="static/vendor/motion-11.11.13.js"></script>
+<script>window.PC_AUTO_REFRESH = false;</script>
+<script src="static/admin.js?v=10"></script>
+
+<script>
+(function () {
+  const dlg = document.getElementById('uploadDialog');
+  const input = document.getElementById('stmt_file');
+  const drop = document.getElementById('bigDrop');
+  const open = () => {
+    const f = input.files && input.files[0];
+    if (!f) return;
+    document.getElementById('dlgFile').textContent = f.name;
+    dlg.showModal();
+    const checked = dlg.querySelector('input[type=radio]:checked');
+    if (checked) checked.focus();
+  };
+  input.addEventListener('change', open);
+  // Drag a file onto the big box.
+  ['dragenter', 'dragover'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach((t) => drop.addEventListener(t, () => drop.classList.remove('over')));
+  drop.addEventListener('drop', (e) => {
+    e.preventDefault();
+    if (e.dataTransfer.files.length) { input.files = e.dataTransfer.files; open(); }
+  });
+  const cancel = () => { dlg.close(); input.value = ''; };
+  dlg.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', cancel));
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) cancel(); });
+})();
+</script>
+
+<script>window.PROTO={"page": "admin-statements.html", "wallet": "wallet.html"}</script><script src="proto.js"></script></body>
+</html>

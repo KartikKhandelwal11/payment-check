@@ -1,0 +1,26 @@
+/* Prototype layer: only for the static demo on GitHub Pages. */
+.proto-pill{position:fixed;right:14px;bottom:14px;z-index:9999;font:600 13px/1.3 Inter,system-ui,sans-serif;color:#fff}
+.proto-foot{max-width:448px;margin:18px auto 24px;padding:14px 16px;border-radius:14px;background:#111830;color:#fff;font:500 13px/1.45 Inter,system-ui,sans-serif;display:grid;gap:2px;text-align:center;width:calc(100% - 32px);box-sizing:border-box}
+.proto-foot.up{margin-bottom:110px}
+.proto-foot b{font-weight:700;font-size:13.5px}
+.proto-foot span{opacity:.75}
+.proto-foot div{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.proto-foot a{color:#fff;text-decoration:none;font-weight:600;background:rgba(255,255,255,.14);padding:7px 12px;border-radius:999px}
+.proto-foot a:hover{background:rgba(255,255,255,.26)}
+.proto-pill button{all:unset;cursor:pointer;display:flex;align-items:center;gap:8px;background:#111830;color:#fff;padding:9px 14px;border-radius:999px;box-shadow:0 8px 24px rgba(10,16,40,.35);font:inherit}
+.proto-pill button::before{content:"";width:8px;height:8px;border-radius:50%;background:#35d08a;box-shadow:0 0 0 4px rgba(53,208,138,.25)}
+.proto-menu{position:absolute;right:0;bottom:46px;background:#fff;color:#111830;border-radius:14px;box-shadow:0 12px 36px rgba(10,16,40,.28);padding:12px;width:240px;display:grid;gap:4px}
+.proto-menu[hidden]{display:none}
+.proto-menu p{margin:0 0 6px;font-weight:400;font-size:12.5px;color:#48506a}
+.proto-menu a{display:block;padding:9px 10px;border-radius:9px;color:#111830;text-decoration:none;font-weight:600}
+.proto-menu a:hover{background:#eef1f8}
+.proto-toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);z-index:10000;background:#111830;color:#fff;font:500 14px/1.45 Inter,system-ui,sans-serif;padding:12px 16px;border-radius:12px;max-width:min(92vw,440px);box-shadow:0 12px 36px rgba(10,16,40,.35);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none}
+.proto-toast.on{opacity:1;transform:translate(-50%,0)}
+.proto-toast.up{bottom:150px}
+.proto-pick{border:1.5px dashed #9fb3ee;background:#f3f6ff;border-radius:14px;padding:14px;display:grid;gap:10px;font:500 13.5px/1.4 Inter,system-ui,sans-serif;color:#111830;margin:12px 0 0}
+.proto-pick b{font-weight:700}
+.proto-pick small{color:#48506a}
+.proto-pick div{display:flex;flex-wrap:wrap;gap:6px}
+.proto-pick button{all:unset;cursor:pointer;padding:7px 12px;border-radius:999px;background:#fff;border:1px solid #cfd6ee;font:600 12.5px/1 Inter,system-ui,sans-serif;color:#48506a}
+.proto-pick button[aria-pressed="true"]{background:#1a4fd6;border-color:#1a4fd6;color:#fff}
+.demo,.demo-tag{display:none!important}

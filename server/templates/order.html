@@ -1,0 +1,92 @@
+{% extends "_admin_base.html" %}
+{% from "_ui.html" import icon %}
+{% block title %}Order {{ order.id }}{% endblock %}
+{% block crumb %}<a href="/admin/orders" style="color:inherit;text-decoration:none">Orders</a> / {{ order.id }}{% endblock %}
+{% block heading %}Order <span class="mono">{{ order.id }}</span>{% endblock %}
+{% block content_class %} narrow{% endblock %}
+
+{% block content %}
+{% set c = order.claim %}
+{% set open_order = order.status in ('pending', 'expired', 'action') %}
+
+<section class="card hero {{ 'paid' if order.status == 'paid' else 'pending' if order.status in ('pending', 'in_progress', 'review') else 'expired' }}" data-animate>
+  <div class="note-l">{{ order.customer_name or order.note or 'Payment link' }}{% if order.customer_phone %} · {{ order.customer_phone }}{% endif %}</div>
+  <div class="big">{{ (order.credited_paise or order.amount_paise) | rupees }}</div>
+  <div class="meta">{{ order.method | upper }} to {{ order.member_name }} · {{ order.member_upi }}{% if order.member_status != 'active' %} ({{ order.member_status }}){% endif %}</div>
+  <div class="state-box" role="status" aria-live="polite">
+    <span class="pill {{ order.status }}">{{ STATUS[order.status] }}</span>
+    {% if order.status == 'paid' %}<span>UTR <b class="mono">{{ order.utr }}</b> · {{ order.paid_at | local_time }}</span>
+    {% elif order.status == 'in_progress' %}<span>{% if view.late %}Late: no bank SMS yet, the next statement decides{% elif view.push_seen %}UPI app alert seen, waiting for the HDFC SMS{% else %}Waiting for the HDFC SMS{% endif %}</span>
+    {% elif order.status == 'review' and reason %}<span>{{ reason[0] }}</span>
+    {% elif order.customer_message %}<span>{{ order.customer_message }}</span>{% endif %}
+  </div>
+</section>
+
+{% if order.status == 'review' %}
+<a class="btn btn-lg" href="/admin/review#o-{{ order.id }}" data-animate>{{ icon('alert') }}Decide in Review</a>
+{% endif %}
+
+{% if c %}
+<section class="card" data-animate>
+  <div class="card-h"><h2>Customer's screenshot</h2><span class="pill {{ 'paid' if c.state == 'matched' else 'failed' if c.state in ('rejected', 'failed') else 'review' if c.state == 'review' else 'in_progress' }}">{{ c.state }}</span></div>
+  <div class="rv" style="grid-template-columns:160px minmax(0,1fr)">
+    {% if c.image_path %}<a class="rv-shot" href="/admin/claims/{{ c.id }}/image" target="_blank" rel="noopener"><img src="/admin/claims/{{ c.id }}/image" alt="Screenshot" loading="lazy"></a>{% else %}<div class="muted">Screenshot not kept</div>{% endif %}
+    <dl class="kv">
+      <div><dt>UTR</dt><dd class="mono">{{ c.utr or '—' }}</dd></div>
+      <div><dt>Amount</dt><dd>{{ c.amount_paise | rupees if c.amount_paise else '—' }}</dd></div>
+      <div><dt>Date</dt><dd>{{ c.shot_at | local_time }}</dd></div>
+      <div><dt>Paid to</dt><dd>{{ c.paid_to_member or '—' }}</dd></div>
+      <div><dt>Status on screen</dt><dd>{{ c.status_word or '—' }}</dd></div>
+      {% if c.problem %}<div><dt>Problem</dt><dd>{{ c.problem_text }}</dd></div>{% endif %}
+    </dl>
+  </div>
+  {% if c.ocr_text %}<details style="padding:0 18px 16px"><summary class="muted" style="cursor:pointer;font-size:13px">Text read from the screenshot</summary><pre class="raw" style="white-space:pre-wrap">{{ c.ocr_text }}</pre></details>{% endif %}
+</section>
+{% endif %}
+
+{% if open_order %}
+<section class="card" data-animate>
+  <div class="card-h"><h2>Customer page</h2></div>
+  <div class="card-b" style="display:grid;gap:10px">
+    <div class="copy-field"><input readonly value="{{ pay_url }}" aria-label="Payment link"></div>
+    <div class="share-grid">
+      <button type="button" data-copy="{{ pay_url }}">{{ icon('copy') }}Copy link</button>
+      <a class="btn btn-2" href="/pay/{{ order.id }}" target="_blank" rel="noopener">{{ icon('open') }}Open page</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="card" data-animate>
+  <div class="card-h"><h2>What happened</h2></div>
+  <ol class="timeline">
+    {% for e in events %}<li><time>{{ e.at | local_time }}</time><span>{{ e.text }}</span></li>{% endfor %}
+  </ol>
+</section>
+
+<div style="display:grid;gap:8px" data-animate>
+  {% if demo_mode and order.status in ('in_progress', 'review', 'pending', 'expired') %}
+  <div class="card" style="border:1.5px dashed #f59e0b;background:#fffbeb">
+    <div class="card-h"><h2 style="color:#92400e">Demo: pretend the account's phone received…</h2>
+      <span class="sub">Uses the same code path as a real phone. A UPI app alert never credits; only the SMS with the same UTR does.</span></div>
+    <div class="card-b" style="display:grid;gap:8px">
+      <form method="post" action="/admin/orders/{{ order.id }}/simulate-alert" style="margin:0">
+        <button type="submit" class="btn-lg btn-2">{{ icon('bell') }}PhonePe alert: “₹ received” (no UTR)</button></form>
+      <form method="post" action="/admin/orders/{{ order.id }}/simulate-sms" style="margin:0">
+        <button type="submit" class="btn-lg btn-2">{{ icon('bolt') }}HDFC SMS with {% if c and c.utr %}UTR {{ c.utr }}{% else %}a new UTR{% endif %}</button></form>
+      <form method="post" action="/admin/orders/{{ order.id }}/simulate-sms" style="margin:0;display:flex;gap:8px">
+        <input name="amount" id="demo_amount" placeholder="Other amount, e.g. 50" inputmode="decimal" style="flex:1">
+        <button type="submit" class="btn-2">SMS with this amount</button></form>
+    </div>
+  </div>
+  {% endif %}
+  {% if open_order %}
+  <form method="post" action="/admin/orders/{{ order.id }}/cancel" style="margin:0"
+        onsubmit="return confirm('Cancel order {{ order.id }}? The customer page will say not to pay.')">
+    <button type="submit" class="btn-lg btn-danger">Cancel this order</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block fab %}{% endblock %}

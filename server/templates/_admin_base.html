@@ -1,0 +1,81 @@
+{% from "_ui.html" import icon %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f5f6fb">
+<title>{% block title %}Overview{% endblock %} · Payment Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/admin.css?v=25">
+<script>
+  // Hide animated cards until motion starts (no flash); always show them after 1.2 s.
+  (function () {
+    var soft = false;
+    try { soft = sessionStorage.getItem('pcSoft') === location.pathname + location.search; } catch (e) {}
+    if (soft || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.documentElement.classList.add('pre-anim');
+    setTimeout(function () { document.documentElement.classList.remove('pre-anim'); }, 1200);
+  })();
+</script>
+</head>
+<body>
+<div class="wash" aria-hidden="true"><i></i></div>
+<div class="app">
+  <aside class="sidebar" id="sidebar" aria-label="Main menu">
+    <div style="display:flex;align-items:center">
+      <a class="sb-brand" href="/admin"><div class="logo" aria-hidden="true">₹</div><div><b>Payment Check</b><small>Team dashboard</small></div></a>
+      <button class="sb-close" type="button" id="drawerClose" aria-label="Close menu">{{ icon('x') }}</button>
+    </div>
+    <a class="sb-cta" href="/admin/new">{{ icon('plus') }}New payment link</a>
+    <div class="sb-label">Menu</div>
+    <nav class="sb-nav">
+      {% macro item(key, href, ic, label) %}<a class="sb-item{% if active == key %} active{% endif %}" href="{{ href }}" {% if active == key %}aria-current="page"{% endif %}>{{ icon(ic) }}{{ label }}{{ caller() if caller }}</a>{% endmacro %}
+      {% call item('overview', '/admin', 'home', 'Overview') %}{% if nav.alerts %}<span class="badge hot" title="Alerts">{{ nav.alerts }}</span>{% endif %}{% endcall %}
+      {% call item('review', '/admin/review', 'alert', 'Payments to check') %}{% if nav.review %}<span class="badge hot" title="Need your decision">{{ nav.review }}</span>{% endif %}{% endcall %}
+      {% call item('orders', '/admin/orders', 'orders', 'All payments') %}{% endcall %}
+      {% call item('statements', '/admin/statements', 'inbox', 'Bank statement') %}{% endcall %}
+      {% call item('team', '/admin/team', 'phone', 'Bank accounts') %}<span class="badge" title="Phones online">{{ nav.online }}/{{ nav.members }}</span>{% endcall %}
+      {% call item('customers', '/admin/customers', 'users', 'Customers') %}{% endcall %}
+    </nav>
+    <div class="sb-label">More</div>
+    <nav class="sb-nav">
+      {% call item('payments', '/admin/payments', 'wallet', 'Unclaimed money') %}{% if nav.unmatched %}<span class="badge">{{ nav.unmatched }}</span>{% endif %}{% endcall %}
+      {% call item('notifications', '/admin/notifications', 'bell', 'Phone messages') %}{% endcall %}
+    </nav>
+
+    <div class="sb-foot">
+      <div class="live{% if not auto_refresh %} off{% endif %}"><i></i>{% if auto_refresh %}Live · updates every 20s{% else %}Auto-update paused{% endif %}</div>
+      {% if demo_mode %}<div class="demo-tag">Demo mode · simulate buttons on</div>{% endif %}
+      <form method="post" action="/admin/logout"><button class="btn-ghost" type="submit">{{ icon('logout') }}Log out</button></form>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <div class="main">
+    <header class="topbar" id="topbar">
+      <button class="menu-btn" type="button" id="drawerOpen" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">{{ icon('menu') }}</button>
+      {% block back %}{% endblock %}
+      <div>
+        <div class="crumb">{% block crumb %}Payment Check{% endblock %}</div>
+        <h1>{% block heading %}Overview{% endblock %}</h1>
+      </div>
+      <div class="actions">{% block actions %}{% endblock %}</div>
+    </header>
+    <main class="content{% block content_class %}{% endblock %}">
+      {% if message %}<div class="flash ok" role="status" data-animate>{{ icon('check') }}<span>{{ message }}</span></div>{% endif %}
+      {% if error %}<div class="flash err" role="alert" data-animate>{{ icon('alert') }}<span>{{ error }}</span></div>{% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+{% block fab %}{% endblock %}
+
+<script src="/static/vendor/motion-11.11.13.js"></script>
+<script>window.PC_AUTO_REFRESH = {{ 'true' if auto_refresh else 'false' }};</script>
+<script src="/static/admin.js?v=10"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

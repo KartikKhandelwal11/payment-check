@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#0f1b4d">
+<title>Wallet · Payment Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/customer.css?v=4">
+</head>
+<body>
+{% set LABEL = {'pending': 'Waiting for payment', 'expired': 'Expired', 'action': 'Upload again', 'in_progress': 'Checking',
+                'review': 'In review', 'paid': 'Added', 'failed': 'Not verified', 'cancelled': 'Cancelled'} %}
+<div class="shell">
+  <div class="topline">
+    <div class="brand"><i aria-hidden="true">₹</i>Payment Check</div>
+    <form class="top-actions" method="post" action="/wallet/logout" style="margin:0"><button type="submit">Log out</button></form>
+  </div>
+
+  <section class="card balance">
+    <div class="lbl">Wallet balance</div>
+    <div class="big">{{ customer.balance_paise | rupees }}</div>
+    <div class="who">{{ customer.name }} · {{ customer.phone }}</div>
+  </section>
+
+  {% if pending %}
+  <section class="card confirm" role="alertdialog" aria-labelledby="pendTitle" aria-describedby="pendText">
+    <div class="confirm-ic" aria-hidden="true">!</div>
+    <h2 class="sec-title" id="pendTitle">You have an unpaid order of {{ pending.amount_paise | rupees }}</h2>
+    <p class="sec-sub" id="pendText" style="margin:0">Order {{ pending.id }}, created {{ pending.created_at | local_time }}. Did you pay it?</p>
+    <form method="post" action="/wallet/add" style="margin:0">
+      <input type="hidden" name="amount" value="{{ form_amount }}"><input type="hidden" name="method" value="{{ form_method }}">
+      <input type="hidden" name="replace" value="1">
+      <button type="submit" class="btn brand">No, cancel it and add ₹{{ form_amount }} instead</button>
+    </form>
+    <a class="btn ghost" href="/pay/{{ pending.id }}">Yes, I paid it · upload screenshot</a>
+    <p class="sec-sub" style="margin:0;font-size:12.5px">Cancelled by mistake? You can still upload its screenshot from My orders for 48 hours.</p>
+  </section>
+  {% endif %}
+
+  <section class="card">
+    <form method="post" action="/wallet/add" class="block" style="margin:0" id="addForm">
+      <h2 class="sec-title">Add Cash</h2>
+      {% if error %}<div class="flash" role="alert" style="margin:0">{{ error }}</div>{% endif %}
+      <label class="amount-in"><span>₹</span><input id="amount" name="amount" inputmode="decimal" placeholder="0" required
+        autocomplete="off" aria-label="Amount in rupees" value="{{ form_amount or '' }}"></label>
+      <div class="chips" aria-label="Quick amounts">
+        {% for a in (100, 200, 500, 1000) %}<button type="button" class="chip" data-amount="{{ a }}" aria-pressed="false">₹{{ a }}</button>{% endfor %}
+      </div>
+      <div class="methods" role="radiogroup" aria-label="Payment method">
+        <label><input type="radio" name="method" value="upi" checked>UPI<span class="mlogos"><img src="/static/brands/gpay.svg" alt="Google Pay"><img src="/static/brands/phonepe.svg" alt="PhonePe"><img src="/static/brands/paytm.svg" alt="Paytm"></span></label>
+        {% if bank_ok %}<label><input type="radio" name="method" value="bank">Bank transfer<span class="mlogos"><img src="/static/brands/hdfc.svg" alt="HDFC Bank"></span><small>IMPS / NEFT</small></label>
+        {% else %}<label style="opacity:.5;cursor:not-allowed"><input type="radio" name="method" value="bank" disabled>Bank transfer<small>Not available now</small></label>{% endif %}
+      </div>
+      <button type="submit" class="btn brand">Continue</button>
+      <p class="sec-sub" style="margin:0">After paying you'll upload the payment screenshot. The money is added once our bank confirms the UTR.</p>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2 class="sec-title">My orders</h2>
+    {% if orders %}
+    <ul class="orders">
+      {% for o in orders %}
+      <li><a href="/pay/{{ o.id }}">
+        <div><span class="amt-s">{{ (o.credited_paise or o.amount_paise) | rupees }}</span><small>{{ o.created_at | local_time }} · {{ o.method | upper }} · {{ o.id }}</small>
+          {% if o.status == 'expired' and o.upload_until and o.upload_until > now_ts %}<small style="color:var(--brand)">Paid already? Upload within 48 hours</small>{% endif %}</div>
+        <span class="st tag {{ o.status }}">{{ LABEL.get(o.status, o.status) }}</span>
+      </a></li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty-s">No orders yet.</p>
+    {% endif %}
+  </section>
+</div>
+<script>
+  const amount = document.getElementById('amount');
+  const chips = document.querySelectorAll('.chip');
+  const sync = () => chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.amount === amount.value.trim())));
+  chips.forEach((c) => c.addEventListener('click', () => { amount.value = c.dataset.amount; sync(); }));
+  amount.addEventListener('input', sync); sync();
+</script>
+</body>
+</html>

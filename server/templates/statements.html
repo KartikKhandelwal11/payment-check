@@ -1,0 +1,123 @@
+{% extends "_admin_base.html" %}
+{% from "_ui.html" import icon, empty %}
+{% block title %}Bank statement{% endblock %}
+{% block crumb %}The bank's final word on every payment{% endblock %}
+{% block heading %}Bank statement{% endblock %}
+{% block actions %}{% endblock %}
+
+{% block content %}
+{% set first_due = (accounts | selectattr('due') | list | first) or (accounts | first) %}
+<form method="post" action="/admin/statements" enctype="multipart/form-data" id="stmtForm">
+  {# ---------- one big upload ---------- #}
+  <label class="big-drop" id="bigDrop" data-animate>
+    <input type="file" name="file" id="stmt_file" accept=".csv,.txt,text/csv,text/plain" required>
+    <span class="bd-ic">{{ icon('inbox') }}</span>
+    <b>Upload bank statement</b>
+    <span>Click to choose, or drop the file here</span>
+    <small>HDFC netbanking → Account statement → download as Delimited / CSV</small>
+  </label>
+
+  {# ---------- after a file is chosen: which account, and when ---------- #}
+  <dialog class="modal" id="uploadDialog" aria-labelledby="dlgTitle">
+    <div class="modal-b">
+      <div class="modal-h"><div><h2 id="dlgTitle">Which account is this statement for?</h2><p class="muted" id="dlgFile"></p></div>
+        <button type="button" class="btn-ghost" data-close aria-label="Close">{{ icon('x') }}</button></div>
+      <div class="pick-acct">
+        {% for a in accounts %}
+        <label><input type="radio" name="member_id" value="{{ a.id }}" required {% if first_due and a.id == first_due.id %}checked{% endif %}>
+          <span><b>{{ a.name }} · {{ a.id }}</b><small>{% if a.bank_account %}A/c {{ a.bank_account }} · {% endif %}{% if a.last %}last uploaded {{ a.last | local_time }}{% else %}never uploaded{% endif %}</small></span></label>
+        {% endfor %}
+      </div>
+      <label class="f">When did you download it?
+        <input type="datetime-local" name="downloaded_at" id="stmt_when" required value="{{ now_local }}">
+        <span class="opt" style="font-weight:400">Payments after this time won't be reported missing.</span></label>
+      <div class="modal-a"><button type="button" class="btn-2" data-close>Cancel</button><button type="submit">{{ icon('check') }}Check statement</button></div>
+    </div>
+  </dialog>
+</form>
+
+{# ---------- where each account stands ---------- #}
+{% if accounts %}
+<div class="acct-grid">
+  {% for a in accounts %}
+  <section class="card acct-card" data-animate>
+    <div class="ac-head">
+      <div class="as-ic {{ 'due' if a.due or a.problems else 'ok' }}">{{ icon('alert' if a.due or a.problems else 'check') }}</div>
+      <div class="ac-name"><b>{{ a.name }}</b><small>{{ a.id }}{% if a.bank_account %} · A/c {{ a.bank_account }}{% endif %}</small></div>
+    </div>
+    <dl class="ac-facts">
+      <div><dt>Last uploaded</dt><dd>{{ a.last | local_time if a.last else 'Never' }}</dd></div>
+      <div><dt>Status</dt><dd>
+        {% if a.problems %}<span class="bad-t">{{ a.problems }} problem{{ 's' if a.problems != 1 }}</span>
+        {% elif not a.last %}<span class="bad-t">Not uploaded yet</span>
+        {% elif a.due %}<span class="bad-t">Late · {{ a.hours }} h</span>
+        {% else %}<span class="ok-t">Up to date</span>{% endif %}</dd></div>
+    </dl>
+  </section>
+  {% endfor %}
+</div>
+{% else %}
+<section class="card" data-animate>{{ empty('users', 'No bank accounts yet', 'Add an account first under Bank accounts.') }}</section>
+{% endif %}
+
+{# ---------- results ---------- #}
+{% for st in statements %}
+{% set r = st.report %}
+{% set bad = (r.missing_in_bank | length) + ((r.wrong_amount or []) | length) %}
+<section class="card" data-animate>
+  <div class="card-h"><h2>{{ st.member_id }} · {{ st.filename }}</h2>
+    <span class="sub">Checked {{ st.uploaded_at | local_time }}{% if r.downloaded_at %} · downloaded {{ r.downloaded_at | local_time }}{% endif %} · {{ st.rows }} credits · {{ st.credits | rupees }}</span></div>
+  <div class="report">
+    <div class="ok"><b>{{ r.confirmed | length }}</b><span>Added and in the bank</span></div>
+    <div class="warn"><b>{{ r.not_credited | length }}</b><span>In the bank, not claimed</span></div>
+    <div class="{{ 'bad' if bad else 'ok' }}"><b>{{ bad }}</b><span>Added but NOT in the bank</span></div>
+    <div class="warn"><b>{{ r.claims_not_found | length }}</b><span>Sent to check</span></div>
+  </div>
+  {% if r.missing_in_bank or r.wrong_amount %}
+  <div class="alerts">
+    {% for x in r.missing_in_bank %}<div class="alert-row">{{ icon('alert') }}<span>Order <a class="oid" href="/admin/orders/{{ x.order_id }}">{{ x.order_id }}</a> was credited {{ x.amount | rupees }} (UTR {{ x.utr }}) but this statement has no such credit.</span></div>{% endfor %}
+    {% for x in r.wrong_amount or [] %}<div class="alert-row">{{ icon('alert') }}<span>Order <a class="oid" href="/admin/orders/{{ x.order_id }}">{{ x.order_id }}</a> was credited {{ x.amount | rupees }} for UTR {{ x.utr }}, but the bank shows {{ x.bank_amount | rupees }}.</span></div>{% endfor %}
+  </div>
+  {% endif %}
+  {% if r.not_credited %}
+  <details class="stmt-more"><summary>Money in the bank that no customer has claimed ({{ r.not_credited | length }})</summary>
+    <div class="alerts">{% for x in r.not_credited %}<div class="alert-row soft"><span><b>{{ x.amount | rupees }}</b> · UTR <span class="mono">{{ x.utr }}</span><span class="raw">{{ x.narration }}</span></span></div>{% endfor %}</div>
+  </details>
+  {% endif %}
+  {% if r.no_utr %}
+  <details class="stmt-more"><summary>Rows without a UTR, check by hand ({{ r.no_utr | length }})</summary>
+    <div class="alerts">{% for x in r.no_utr %}<div class="alert-row soft"><span><b>{{ x.amount | rupees }}</b><span class="raw">{{ x.narration }}</span></span></div>{% endfor %}</div>
+  </details>
+  {% endif %}
+</section>
+{% endfor %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  const dlg = document.getElementById('uploadDialog');
+  const input = document.getElementById('stmt_file');
+  const drop = document.getElementById('bigDrop');
+  const open = () => {
+    const f = input.files && input.files[0];
+    if (!f) return;
+    document.getElementById('dlgFile').textContent = f.name;
+    dlg.showModal();
+    const checked = dlg.querySelector('input[type=radio]:checked');
+    if (checked) checked.focus();
+  };
+  input.addEventListener('change', open);
+  // Drag a file onto the big box.
+  ['dragenter', 'dragover'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach((t) => drop.addEventListener(t, () => drop.classList.remove('over')));
+  drop.addEventListener('drop', (e) => {
+    e.preventDefault();
+    if (e.dataTransfer.files.length) { input.files = e.dataTransfer.files; open(); }
+  });
+  const cancel = () => { dlg.close(); input.value = ''; };
+  dlg.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', cancel));
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) cancel(); });
+})();
+</script>
+{% endblock %}

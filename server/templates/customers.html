@@ -1,0 +1,31 @@
+{% extends "_admin_base.html" %}
+{% from "_ui.html" import icon, empty %}
+{% block title %}Customers{% endblock %}
+{% block crumb %}Wallets{% endblock %}
+{% block heading %}Customers{% endblock %}
+{% block actions %}{% endblock %}
+
+{% block content %}
+<section class="card" data-animate>
+  {% if customers %}
+  <div class="table" data-rows style="margin-top:6px">
+    <table class="stack">
+      <thead><tr><th>Customer</th><th>Wallet</th><th class="hide-sm">Paid orders</th><th class="hide-sm">Joined</th><th>Add Cash</th></tr></thead>
+      <tbody>
+      {% for c in customers %}
+      <tr>
+        <td class="c1"><b>{{ c.name }}</b><span class="sub">{{ c.phone }}</span></td>
+        <td class="c2 amt">{{ c.balance_paise | rupees }}</td>
+        <td class="hide-sm">{{ c.paid_count }}</td>
+        <td class="hide-sm muted num">{{ c.created_at | local_time }}</td>
+        <td class="c2">{% if c.paused_until and c.paused_until > now_ts %}<span class="pill failed">Paused till {{ c.paused_until | local_time }}</span>{% else %}<span class="pill paid">Allowed</span>{% endif %}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  {{ empty('users', 'No customers yet', 'Customers appear here after they log in to the wallet at /wallet.') }}
+  {% endif %}
+</section>
+{% endblock %}

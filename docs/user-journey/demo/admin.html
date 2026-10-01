@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f5f6fb">
+<title>Overview · Payment Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/admin.css?v=25">
+<script>
+  // Hide animated cards until motion starts (no flash); always show them after 1.2 s.
+  (function () {
+    var soft = false;
+    try { soft = sessionStorage.getItem('pcSoft') === location.pathname + location.search; } catch (e) {}
+    if (soft || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.documentElement.classList.add('pre-anim');
+    setTimeout(function () { document.documentElement.classList.remove('pre-anim'); }, 1200);
+  })();
+</script>
+<meta name="robots" content="noindex"><link rel="stylesheet" href="proto.css"></head>
+<body>
+<div class="wash" aria-hidden="true"><i></i></div>
+<div class="app">
+  <aside class="sidebar" id="sidebar" aria-label="Main menu">
+    <div style="display:flex;align-items:center">
+      <a class="sb-brand" href="admin.html"><div class="logo" aria-hidden="true">₹</div><div><b>Payment Check</b><small>Team dashboard</small></div></a>
+      <button class="sb-close" type="button" id="drawerClose" aria-label="Close menu"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <a class="sb-cta" href="#proto"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>New payment link</a>
+    <div class="sb-label">Menu</div>
+    <nav class="sb-nav">
+      
+      <a class="sb-item active" href="admin.html" aria-current="page"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Overview<span class="badge hot" title="Alerts">3</span></a>
+      <a class="sb-item" href="admin-review.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>Payments to check<span class="badge hot" title="Need your decision">3</span></a>
+      <a class="sb-item" href="admin-orders.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6M9 4a1 1 0 0 0-1 1v1h8V5a1 1 0 0 0-1-1M8 6H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-2M9 12h6M9 16h4"/></svg>All payments</a>
+      <a class="sb-item" href="admin-statements.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13l3-8h12l3 8v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 13h5l1 2h6l1-2h5"/></svg>Bank statement</a>
+      <a class="sb-item" href="admin-team.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>Bank accounts<span class="badge" title="Phones online">1/2</span></a>
+      <a class="sb-item" href="admin-customers.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg>Customers</a>
+    </nav>
+    <div class="sb-label">More</div>
+    <nav class="sb-nav">
+      <a class="sb-item" href="admin-payments.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h13v4"/><path d="M3 7v11a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1H5a2 2 0 0 1-2-2z"/><circle cx="16.5" cy="14.5" r="1.3"/></svg>Unclaimed money<span class="badge">2</span></a>
+      <a class="sb-item" href="admin-notifications.html" ><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg>Phone messages</a>
+    </nav>
+
+    <div class="sb-foot">
+      <div class="live"><i></i>Live · updates every 20s</div>
+      <div class="demo-tag">Demo mode · simulate buttons on</div>
+      <form method="post" action="/admin/logout"><button class="btn-ghost" type="submit"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 17l5-5-5-5M15 12H3"/></svg>Log out</button></form>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <div class="main">
+    <header class="topbar" id="topbar">
+      <button class="menu-btn" type="button" id="drawerOpen" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+      
+      <div>
+        <div class="crumb">Welcome back</div>
+        <h1>Overview</h1>
+      </div>
+      <div class="actions"></div>
+    </header>
+    <main class="content">
+      
+      
+      
+
+
+
+
+
+<div class="todo-strip" data-animate>
+  
+  <a class="task do" href="admin-review.html"><span class="t-ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6M9 4a1 1 0 0 0-1 1v1h8V5a1 1 0 0 0-1-1M8 6H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-2M9 12h6M9 16h4"/></svg></span>
+    <div class="t-tx"><b>3 payments need your decision</b><span>Customers are waiting</span></div>
+    <span class="btn">Check now</span></a>
+  
+  
+  <a class="task do" href="admin-statements.html"><span class="t-ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13l3-8h12l3 8v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 13h5l1 2h6l1-2h5"/></svg></span>
+    <div class="t-tx"><b>Upload the bank statement</b><span>Rahul Sharma</span></div>
+    <span class="btn btn-2">Upload</span></a>
+  
+  
+  <a class="task info" href="admin-team.html"><span class="t-ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg></span>
+    <div class="t-tx"><b>1 phone offline</b><span>Priya Verma</span></div>
+    <span class="btn btn-2">Check</span></a>
+  
+</div>
+
+
+<div class="grid-top">
+  <section class="card hero-card" data-animate aria-label="Money received">
+    <div class="k"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 5h10M7 9h10M13 19L8 13h2a4 4 0 0 0 0-8"/></svg>Added to wallets today<span class="chip-lite">This week ₹3,300</span></div>
+    <div>
+      <div class="big" data-count="3300" data-money>₹3,300</div>
+      <div class="s" style="margin-top:8px">3 payments today · 3 this week</div>
+    </div>
+    <div class="bars" role="img" aria-label="Money received in the last 7 days">
+      
+      <div class="bar" title="Fri: ₹0 (0)">
+        <i style="height:4px"></i>
+        <span>Fri</span>
+      </div>
+      
+      <div class="bar" title="Sat: ₹0 (0)">
+        <i style="height:4px"></i>
+        <span>Sat</span>
+      </div>
+      
+      <div class="bar" title="Sun: ₹0 (0)">
+        <i style="height:4px"></i>
+        <span>Sun</span>
+      </div>
+      
+      <div class="bar" title="Mon: ₹0 (0)">
+        <i style="height:4px"></i>
+        <span>Mon</span>
+      </div>
+      
+      <div class="bar" title="Tue: ₹0 (0)">
+        <i style="height:4px"></i>
+        <span>Tue</span>
+      </div>
+      
+      <div class="bar" title="Wed: ₹0 (0)">
+        <i style="height:4px"></i>
+        <span>Wed</span>
+      </div>
+      
+      <div class="bar today" title="Thu: ₹3,300 (3)">
+        <i style="height:72px"></i>
+        <span>Today</span>
+      </div>
+      
+    </div>
+  </section>
+
+  <div class="stats">
+    <a class="card stat alert" href="admin-review.html" data-animate>
+      <div class="ic g-rose"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg></div>
+      <div class="v" data-count="3">3</div>
+      <div class="k">Need your decision</div>
+    </a>
+    <a class="card stat" href="admin-orders.html" data-animate>
+      <div class="ic g-amber"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+      <div class="v" data-count="1">1</div>
+      <div class="k">Waiting for bank</div>
+    </a>
+    <a class="card stat" href="admin-team.html" data-animate>
+      <div class="ic g-sky"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg></div>
+      <div class="v"><span data-count="1">1</span><small> / 2</small></div>
+      <div class="k">Phones online</div>
+    </a>
+    <a class="card stat" href="admin-payments.html" data-animate>
+      <div class="ic g-green"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h13v4"/><path d="M3 7v11a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1H5a2 2 0 0 1-2-2z"/><circle cx="16.5" cy="14.5" r="1.3"/></svg></div>
+      <div class="v" data-count="2">2</div>
+      <div class="k">Unclaimed money</div>
+    </a>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="stack-col">
+    
+    <section class="card unmatched-card" data-animate>
+      <div class="card-h"><h2>Alerts</h2><span class="count">3</span>
+        <span class="sub">Things that need a person: fake SMS, credits the bank never got, closed accounts, paused customers.</span></div>
+      <div class="alerts">
+        
+        <div class="alert-row soft"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>
+          <span>Account ANKIT03 was closed with 2 payment(s) waiting for the bank. Upload its latest statement if you still can; otherwise check them in Review.<span class="when">01 Oct, 07:21 AM</span></span>
+          <form method="post" action="/admin/alerts/3/resolve"><button type="submit" class="btn-2">Done</button></form>
+        </div>
+        
+        <div class="alert-row soft"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>
+          <span>Customer Suspicious User (9000000020) had 3 rejected claims in 24 hours. Add Cash paused for 24 hours. <a class="oid" href="admin-order-6JXMCWXG.html">6JXMCWXG</a><span class="when">01 Oct, 07:21 AM</span></span>
+          <form method="post" action="/admin/alerts/2/resolve"><button type="submit" class="btn-2">Done</button></form>
+        </div>
+        
+        <div class="alert-row"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>
+          <span>An SMS that looks like a bank credit (₹5,000.00) came from “+919876501234”, not an HDFC sender ID, on RAHUL01&#39;s phone. Ignored.<span class="when">01 Oct, 07:21 AM</span></span>
+          <form method="post" action="/admin/alerts/1/resolve"><button type="submit" class="btn-2">Done</button></form>
+        </div>
+        
+      </div>
+    </section>
+    
+
+    <section class="card" data-animate>
+      <div class="card-h"><h2>Recent orders</h2><a class="link-more right" href="admin-orders.html">View all <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a></div>
+      
+      <div class="table" data-rows style="margin-top:12px">
+        <table class="stack">
+          <thead><tr><th>Order</th><th>Amount</th><th>Status</th><th class="hide-sm">Customer</th><th class="hide-sm">Created</th></tr></thead>
+          <tbody>
+          
+          <tr data-href="admin-order-6JXMCWXG.html">
+            <td class="c1" style="grid-row:span 2"><a class="oid" href="admin-order-6JXMCWXG.html">6JXMCWXG</a>
+              <span class="sub">PRIYA02 · UPI</span>
+              <span class="sub m-only">Suspicious User · 01 Oct, 07:21 AM</span></td>
+            <td class="c2 amt">₹113.00</td>
+            <td class="c2"><span class="pill failed">Rejected</span></td>
+            <td class="hide-sm">Suspicious User</td>
+            <td class="hide-sm muted num">01 Oct, 07:21 AM</td>
+          </tr>
+          
+          <tr data-href="admin-order-MUCASQ9V.html">
+            <td class="c1" style="grid-row:span 2"><a class="oid" href="admin-order-MUCASQ9V.html">MUCASQ9V</a>
+              <span class="sub">ANKIT03 · UPI</span>
+              <span class="sub m-only">Suspicious User · 01 Oct, 07:21 AM</span></td>
+            <td class="c2 amt">₹111.00</td>
+            <td class="c2"><span class="pill failed">Rejected</span></td>
+            <td class="hide-sm">Suspicious User</td>
+            <td class="hide-sm muted num">01 Oct, 07:21 AM</td>
+          </tr>
+          
+          <tr data-href="admin-order-9AP3V675.html">
+            <td class="c1" style="grid-row:span 2"><a class="oid" href="admin-order-9AP3V675.html">9AP3V675</a>
+              <span class="sub">RAHUL01 · UPI</span>
+              <span class="sub m-only">Suspicious User · 01 Oct, 07:21 AM</span></td>
+            <td class="c2 amt">₹112.00</td>
+            <td class="c2"><span class="pill failed">Rejected</span></td>
+            <td class="hide-sm">Suspicious User</td>
+            <td class="hide-sm muted num">01 Oct, 07:21 AM</td>
+          </tr>
+          
+          <tr data-href="admin-order-SNFMS6KG.html">
+            <td class="c1" style="grid-row:span 2"><a class="oid" href="admin-order-SNFMS6KG.html">SNFMS6KG</a>
+              <span class="sub">PRIYA02 · UPI</span>
+              <span class="sub m-only">Varun Gill · 01 Oct, 07:21 AM</span></td>
+            <td class="c2 amt">₹999.00</td>
+            <td class="c2"><span class="pill review">Needs your decision</span></td>
+            <td class="hide-sm">Varun Gill</td>
+            <td class="hide-sm muted num">01 Oct, 07:21 AM</td>
+          </tr>
+          
+          <tr data-href="admin-order-Z7WMCUC6.html">
+            <td class="c1" style="grid-row:span 2"><a class="oid" href="admin-order-Z7WMCUC6.html">Z7WMCUC6</a>
+              <span class="sub">RAHUL01 · UPI</span>
+              <span class="sub m-only">Harsh Vardhan · 01 Oct, 07:21 AM</span></td>
+            <td class="c2 amt">₹700.00</td>
+            <td class="c2"><span class="pill expired">Not paid</span></td>
+            <td class="hide-sm">Harsh Vardhan</td>
+            <td class="hide-sm muted num">01 Oct, 07:21 AM</td>
+          </tr>
+          
+          <tr data-href="admin-order-VAERVHUX.html">
+            <td class="c1" style="grid-row:span 2"><a class="oid" href="admin-order-VAERVHUX.html">VAERVHUX</a>
+              <span class="sub">ANKIT03 · UPI</span>
+              <span class="sub m-only">Farah Khan · 01 Oct, 07:21 AM</span></td>
+            <td class="c2 amt">₹1,200.00</td>
+            <td class="c2"><span class="pill expired">Not paid</span></td>
+            <td class="hide-sm">Farah Khan</td>
+            <td class="hide-sm muted num">01 Oct, 07:21 AM</td>
+          </tr>
+          
+          <tr data-href="admin-order-MFRF5K4E.html">
+            <td class="c1" style="grid-row:span 2"><a class="oid" href="admin-order-MFRF5K4E.html">MFRF5K4E</a>
+              <span class="sub">RAHUL01 · UPI</span>
+              <span class="sub m-only">Gaurav Sethi · 01 Oct, 07:21 AM</span></td>
+            <td class="c2 amt">₹650.00</td>
+            <td class="c2"><span class="pill pending">Not paid yet</span></td>
+            <td class="hide-sm">Gaurav Sethi</td>
+            <td class="hide-sm muted num">01 Oct, 07:21 AM</td>
+          </tr>
+          
+          <tr data-href="admin-order-GNEREBG7.html">
+            <td class="c1" style="grid-row:span 2"><a class="oid" href="admin-order-GNEREBG7.html">GNEREBG7</a>
+              <span class="sub">ANKIT03 · UPI</span>
+              <span class="sub m-only">Ananya Rao · 01 Oct, 07:21 AM</span></td>
+            <td class="c2 amt">₹999.00</td>
+            <td class="c2"><span class="pill review">Needs your decision</span></td>
+            <td class="hide-sm">Ananya Rao</td>
+            <td class="hide-sm muted num">01 Oct, 07:21 AM</td>
+          </tr>
+          
+          </tbody>
+        </table>
+      </div>
+      
+    </section>
+  </div>
+
+  <div class="stack-col">
+    <section class="card" data-animate>
+      <div class="card-h"><h2>Daily checklist</h2></div>
+      <ol class="steps" style="padding:12px 18px 16px 36px">
+        <li>Clear <a href="admin-review.html">Payments to check</a> (target: within 4 hours).</li>
+        <li>Upload each account's statement at 10 AM, 2 PM, 6 PM and 10 PM on <a href="admin-statements.html">Bank statement</a>.</li>
+        <li>Act on every red alert, then press Done.</li>
+        <li>Check every phone is online on <a href="admin-team.html">Bank accounts</a>.</li>
+      </ol>
+    </section>
+
+    <section class="card" data-animate>
+      <div class="card-h"><h2>Accounts</h2><span class="count">1/2 online</span>
+        <a class="link-more right" href="admin-team.html">Manage <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a></div>
+      <ul class="members" data-rows>
+        
+        <li>
+          <div class="avatar c3 " aria-hidden="true">P<span class="dot"></span></div>
+          <div class="who"><b>Priya Verma</b><span>priya.verma@okhdfcbank</span></div>
+          <div class="state"><span class="off">Offline</span></div>
+        </li>
+        
+        <li>
+          <div class="avatar c4 " aria-hidden="true">R<span class="dot on"></span></div>
+          <div class="who"><b>Rahul Sharma</b><span>rahul.sharma@okhdfcbank</span></div>
+          <div class="state"><span class="on">Online</span></div>
+        </li>
+        
+        <li>
+          <div class="avatar c3 " aria-hidden="true">A<span class="dot on"></span></div>
+          <div class="who"><b>Ankit Mehra</b><span>ankit.mehra@okhdfcbank</span></div>
+          <div class="state"><span class="off">Closed</span></div>
+        </li>
+        
+      </ul>
+    </section>
+  </div>
+</div>
+
+    </main>
+  </div>
+</div>
+
+
+<script src="static/vendor/motion-11.11.13.js"></script>
+<script>window.PC_AUTO_REFRESH = false;</script>
+<script src="static/admin.js?v=10"></script>
+
+<script>window.PROTO={"page": "admin.html", "wallet": "wallet.html"}</script><script src="proto.js"></script></body>
+</html>

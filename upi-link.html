@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UPI Link Generator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  body { font-family: system-ui, sans-serif; background: #f5f5f7; margin: 0; padding: 16px; color: #222; }
+  .card { max-width: 420px; margin: 0 auto; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+  h1 { font-size: 20px; margin: 0 0 16px; }
+  label { display: block; font-size: 13px; margin: 12px 0 4px; color: #555; }
+  input { width: 100%; box-sizing: border-box; padding: 10px; font-size: 15px; border: 1px solid #ccc; border-radius: 8px; }
+  .row { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 14px; }
+  .row input { width: auto; }
+  button { width: 100%; margin-top: 16px; padding: 12px; font-size: 16px; border: 0; border-radius: 8px; background: #5f259f; color: #fff; cursor: pointer; }
+  #out { display: none; margin-top: 20px; text-align: center; }
+  #qr { display: inline-block; padding: 10px; background: #fff; }
+  .amt { font-size: 22px; font-weight: 600; margin: 8px 0; }
+  .link { word-break: break-all; font-size: 12px; background: #f0f0f0; padding: 8px; border-radius: 6px; text-align: left; }
+  .small { font-size: 13px; padding: 8px; margin-top: 8px; background: #444; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>UPI Payment Link / QR</h1>
+
+  <label>Your UPI ID</label>
+  <input id="pa" placeholder="you@ybl">
+
+  <label>Name (shown to the customer)</label>
+  <input id="pn" placeholder="Your Shop">
+
+  <label>Amount (₹)</label>
+  <input id="am" type="number" step="0.01" placeholder="1000">
+
+  <label>Order number / note</label>
+  <input id="tn" placeholder="ORD102">
+
+  <div class="row">
+    <input id="uniq" type="checkbox" checked>
+    <label for="uniq" style="margin:0">Add random paise to the amount (₹1000 → ₹1000.xx)</label>
+  </div>
+
+  <button onclick="makeLink()">Create link and QR</button>
+
+  <div id="out">
+    <div id="qr"></div>
+    <div class="amt" id="finalAmt"></div>
+    <div class="link" id="link"></div>
+    <button class="small" onclick="copyLink()">Copy link</button>
+  </div>
+</div>
+
+<script>
+function makeLink() {
+  const pa = document.getElementById('pa').value.trim();
+  const pn = document.getElementById('pn').value.trim();
+  const tn = document.getElementById('tn').value.trim();
+  let am = parseFloat(document.getElementById('am').value);
+
+  if (!pa || !pa.includes('@')) { alert('Enter a valid UPI ID, for example you@ybl'); return; }
+  if (!am || am <= 0) { alert('Enter an amount'); return; }
+
+  if (document.getElementById('uniq').checked) {
+    am = Math.floor(am) + (Math.floor(Math.random() * 99) + 1) / 100;
+  }
+  const amount = am.toFixed(2);
+
+  const params = new URLSearchParams({ pa, pn, am: amount, cu: 'INR' });
+  if (tn) params.set('tn', tn);
+  const link = 'upi://pay?' + params.toString().replace(/\+/g, '%20');
+
+  document.getElementById('qr').innerHTML = '';
+  new QRCode(document.getElementById('qr'), { text: link, width: 220, height: 220 });
+  document.getElementById('finalAmt').textContent = '₹' + amount;
+  document.getElementById('link').textContent = link;
+  document.getElementById('out').style.display = 'block';
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(document.getElementById('link').textContent)
+    .then(() => alert('Link copied'));
+}
+</script>
+</body>
+</html>

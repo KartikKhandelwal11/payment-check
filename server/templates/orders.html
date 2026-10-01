@@ -1,0 +1,56 @@
+{% extends "_admin_base.html" %}
+{% from "_ui.html" import icon, empty %}
+{% block title %}Orders{% endblock %}
+{% block crumb %}Every Add Cash order and its status{% endblock %}
+{% block heading %}All payments{% endblock %}
+
+{% block content %}
+{% set tabs = [('all', 'All'), ('review', 'Needs decision'), ('in_progress', 'Waiting for bank'), ('paid', 'Added'), ('failed', 'Rejected'), ('pending', 'Not paid yet'), ('expired', 'Not paid')] %}
+<section class="card" data-animate>
+  <form class="toolbar" method="get" action="/admin/orders" role="search">
+    <nav class="tabs" aria-label="Filter by status">
+      {% for key, label in tabs %}
+      <a href="/admin/orders?status={{ key }}{% if q %}&q={{ q | urlencode }}{% endif %}" class="{% if status == key %}on{% endif %}"
+         {% if status == key %}aria-current="true"{% endif %}>{{ label }}<span class="n">{{ counts[key] }}</span></a>
+      {% endfor %}
+    </nav>
+    <input type="hidden" name="status" value="{{ status }}">
+    <label class="search">{{ icon('search') }}
+      <input type="search" name="q" value="{{ q }}" placeholder="Search order, customer, UTR or amount" aria-label="Search orders" data-keep>
+    </label>
+  </form>
+
+  {% if orders %}
+  <div class="table" data-rows>
+    <table class="stack">
+      <thead><tr><th>Order</th><th>Amount</th><th>Status</th><th class="hide-sm">Account</th><th class="hide-sm">Customer</th><th class="hide-sm">Created</th><th class="hide-sm"></th></tr></thead>
+      <tbody>
+      {% for o in orders %}
+      <tr data-href="/admin/orders/{{ o.id }}">
+        <td class="c1" style="grid-row:span 2">
+          <a class="oid" href="/admin/orders/{{ o.id }}">{{ o.id }}</a>
+          {% if o.utr or o.note %}<span class="sub">{{ o.utr or o.note }}</span>{% endif %}
+          <span class="sub m-only">{{ o.customer_name or o.member_name }} · {{ o.created_at | local_time }}</span>
+        </td>
+        <td class="c2 amt">{{ (o.credited_paise or o.amount_paise) | rupees }}</td>
+        <td class="c2"><span class="pill {{ o.status }}">{{ STATUS[o.status] }}</span>
+          {% if o.paid_at %}<span class="sub num hide-sm">{{ o.paid_at | local_time }}</span>{% endif %}</td>
+        <td class="hide-sm">{{ o.member_name }}<span class="sub">{{ o.member_id }}</span></td>
+        <td class="hide-sm">{{ o.customer_name or '—' }}</td>
+        <td class="hide-sm num muted">{{ o.created_at | local_time }}</td>
+        <td class="acts hide-sm">
+          <button type="button" class="icon-btn" data-copy="{{ base_url }}/pay/{{ o.id }}" title="Copy payment link" aria-label="Copy payment link for {{ o.id }}">{{ icon('copy') }}</button>
+          <a class="icon-btn btn" href="/pay/{{ o.id }}" target="_blank" rel="noopener" title="Open payment page" aria-label="Open payment page for {{ o.id }}">{{ icon('open') }}</a>
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% elif q %}
+  {{ empty('search', 'Nothing found', 'No orders match “' ~ q ~ '”.') }}
+  {% else %}
+  {{ empty('orders', 'No ' ~ ('' if status == 'all' else status ~ ' ') ~ 'orders', 'Orders show up here as soon as you create payment links.') }}
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "_admin_base.html" %}
+{% from "_ui.html" import icon, empty %}
+{% block title %}Payments to check{% endblock %}
+{% block crumb %}Find the UTR in the bank, then decide{% endblock %}
+{% block heading %}Payments to check{% endblock %}
+{% block actions %}{% endblock %}
+{% block fab %}{% endblock %}
+
+{% block content %}
+{% if not items %}
+<section class="card" data-animate>{{ empty('check', 'Nothing to check', 'Every payment was matched with the bank automatically.') }}</section>
+{% else %}
+<div class="acct-grid">
+  {% for o in items %}
+  {% set c = o.claim %}
+  <section class="card rv-card" data-animate id="o-{{ o.id }}">
+    <div class="rc-top">
+      {% if c and c.image_path %}<img class="rc-thumb" src="/admin/claims/{{ c.id }}/image" alt="" loading="lazy">{% else %}<span class="rc-thumb empty">{{ icon('inbox') }}</span>{% endif %}
+      <div class="rc-who">
+        <b>{{ o.customer_name or 'Customer' }}</b>
+        <small>{{ o.created_at | local_time }} · {{ o.id }}</small>
+        <span class="rc-amt">{{ (c and c.amount_paise or o.amount_paise) | rupees }}{% if c and c.amount_paise and c.amount_paise != o.amount_paise %}<small> · order {{ o.amount_paise | rupees }}</small>{% endif %}</span>
+      </div>
+    </div>
+    <p class="rc-why">{{ icon('alert') }}{{ o.reason[0] }}</p>
+    <div class="rc-foot">
+      <span class="mono rc-utr">{{ (o.bank and o.bank.utr) or (c and c.utr) or 'UTR not read' }}</span>
+      <button type="button" data-open="dlg-{{ o.id }}">Check</button>
+    </div>
+  </section>
+  {% endfor %}
+</div>
+
+{# ---------- one decision dialog per payment ---------- #}
+{% for o in items %}
+{% set c = o.claim %}
+{% set utr = (o.bank and o.bank.utr) or (c and c.utr) %}
+{% set amount = (o.bank and o.bank.amount_paise) or (c and c.amount_paise) or o.amount_paise %}
+{% set default_reject = {'paid_to_other': 'wrong_account', 'two_claims': 'other_customer', 'utr_credited_elsewhere': 'other_customer'}.get(o.review_reason, 'not_received') %}
+<dialog class="modal wide" id="dlg-{{ o.id }}" aria-labelledby="dlg-{{ o.id }}-t" tabindex="-1">
+  <div class="modal-b">
+    <div class="modal-h">
+      <div><h2 id="dlg-{{ o.id }}-t">{{ o.customer_name or 'Customer' }} says they paid {{ (c and c.amount_paise or o.amount_paise) | rupees }}</h2>
+        <p class="muted">Order <a class="oid" href="/admin/orders/{{ o.id }}">{{ o.id }}</a> for {{ o.amount_paise | rupees }} · to {{ o.member_name }} ({{ o.member_id }}) · {{ o.reason[0] }}</p></div>
+      <button type="button" class="btn-ghost" data-close aria-label="Close">{{ icon('x') }}</button>
+    </div>
+
+    <div class="dl-grid">
+      <div>
+        {% if c and c.image_path %}<a class="dl-shot" href="/admin/claims/{{ c.id }}/image" target="_blank" rel="noopener"><img src="/admin/claims/{{ c.id }}/image" alt="Customer's screenshot" loading="lazy"></a>
+        {% else %}<div class="dl-shot empty">No screenshot kept</div>{% endif %}
+      </div>
+      <div class="dl-side">
+        <div>
+          <div class="dl-label">UTR to search in the bank</div>
+          {% if utr %}<div class="utrbig"><code>{{ utr }}</code><button type="button" class="btn-2" data-copy="{{ utr }}">{{ icon('copy') }}Copy</button></div>
+          {% else %}<p class="muted" style="margin:4px 0 0">Couldn't be read. Read it from the screenshot.</p>{% endif %}
+        </div>
+        <dl class="ac-facts">
+          <div><dt>Amount on screenshot</dt><dd>{{ c.amount_paise | rupees if c and c.amount_paise else '—' }}</dd></div>
+          <div><dt>Date on screenshot</dt><dd>{{ c.shot_at | local_time if c else '—' }}</dd></div>
+          <div><dt>Paid to</dt><dd>{{ (c and c.paid_to_member) or 'Not recognised' }}</dd></div>
+          <div><dt>In our bank records</dt><dd>{% if o.bank %}<span class="ok-t">{{ o.bank.amount_paise | rupees }} on {{ o.bank.member_id }}</span>{% else %}<span class="muted">Not yet</span>{% endif %}</dd></div>
+        </dl>
+        {% if o.others %}<p class="dl-warn">Same UTR also claimed on {% for x in o.others %}<a class="oid" href="/admin/orders/{{ x.order_id }}">{{ x.order_id }}</a>{{ ', ' if not loop.last }}{% endfor %}.</p>{% endif %}
+
+        <div class="two">
+          <form method="post" action="/admin/review/{{ o.id }}/approve" style="margin:0"
+                onsubmit="return confirm('Add {{ amount | rupees }} to {{ (o.customer_name or 'the customer') | e }}\'s wallet?')">
+            {% if utr %}<input type="hidden" name="utr" value="{{ utr }}">
+            {% else %}<label class="f" style="margin-bottom:8px">UTR from the bank<input name="utr" id="utr_{{ o.id }}" required autocomplete="off"></label>{% endif %}
+            <input type="hidden" name="amount" value="{{ amount | plain_amount }}">
+            <input type="hidden" name="member_id" value="{{ (o.bank and o.bank.member_id) or o.member_id }}">
+            <button type="submit" class="bigbtn yes">✓ Found in bank<small>Add {{ amount | rupees }}</small></button>
+          </form>
+          <form method="post" action="/admin/review/{{ o.id }}/reject" style="margin:0"
+                onsubmit="return confirm('Reject? The customer will see: {{ reject_reasons[default_reject] | e }}')">
+            <input type="hidden" name="reason" value="{{ default_reject }}">
+            <button type="submit" class="bigbtn no">✗ Not in bank<small>Reject</small></button>
+          </form>
+        </div>
+
+        <details class="more-opt">
+          <summary>More options</summary>
+          <div style="display:grid;gap:12px">
+            <form method="post" action="/admin/review/{{ o.id }}/approve" class="opt-box">
+              <b>Approve with other details</b>
+              <div class="two-col">
+                <label class="f">UTR<input name="utr" id="utr2_{{ o.id }}" required value="{{ utr or '' }}" autocomplete="off"></label>
+                <label class="f">Amount<input name="amount" id="amt_{{ o.id }}" required inputmode="decimal" value="{{ amount | plain_amount }}"></label>
+              </div>
+              <label class="f">Account where you found it
+                <select name="member_id" id="acct_{{ o.id }}">{% for m in dash.members %}<option value="{{ m.id }}" {% if m.id == ((o.bank and o.bank.member_id) or o.member_id) %}selected{% endif %}>{{ m.name }} ({{ m.id }})</option>{% endfor %}</select></label>
+              <button type="submit">Approve</button>
+            </form>
+            <form method="post" action="/admin/review/{{ o.id }}/reject" class="opt-box" onsubmit="return confirm('Reject this payment?')">
+              <b>Reject with another reason</b>
+              <select name="reason" id="reason_{{ o.id }}">{% for k, t in reject_reasons.items() %}<option value="{{ k }}" {% if k == default_reject %}selected{% endif %}>{{ t }}</option>{% endfor %}</select>
+              <button type="submit" class="btn-danger">Reject</button>
+            </form>
+            <form method="post" action="/admin/review/{{ o.id }}/ask" class="opt-box">
+              <b>Ask the customer to upload again</b>
+              <input name="message" id="ask_{{ o.id }}" required value="Please upload the full transaction details page from your UPI app, showing the UTR and the account it was debited from.">
+              <button type="submit" class="btn-2">Send back</button>
+            </form>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</dialog>
+{% endfor %}
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  const openDlg = (d) => { d.showModal(); d.focus(); };
+  document.querySelectorAll('[data-open]').forEach((b) => b.addEventListener('click', () => openDlg(document.getElementById(b.dataset.open))));
+  document.querySelectorAll('dialog.modal').forEach((d) => {
+    d.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => d.close()));
+    d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
+  });
+  // Opened from a link like /admin/review#o-ABC123: go straight to that payment.
+  const m = location.hash.match(/^#o-(\w+)/);
+  if (m && document.getElementById('dlg-' + m[1])) openDlg(document.getElementById('dlg-' + m[1]));
+})();
+</script>
+{% endblock %}
