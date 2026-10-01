@@ -454,8 +454,43 @@ section{scroll-margin-top:86px}
   .pl i::after{right:-5px;top:auto;bottom:-9px;border:6.5px solid transparent;border-top:9px solid var(--accent);border-bottom:0}
   .pl span{position:static;margin-left:120px;text-align:left}
   .pl span br{display:none}
+  .pl span{margin-left:0;position:absolute;left:calc(50% + 16px);right:auto;top:12px;white-space:nowrap}
+  .pl.net i{background-image:repeating-linear-gradient(180deg,#6a3de8 0 7px,transparent 7px 14px)}.pl.net i::after{border-top-color:#6a3de8;border-left-color:transparent}
+  .pl.ok i{background-image:repeating-linear-gradient(180deg,var(--ok) 0 7px,transparent 7px 14px)}.pl.ok i::after{border-top-color:var(--ok);border-left-color:transparent}
+  .pl i::after{border-left-color:transparent}
 }
 @keyframes pflowv{to{background-position:0 14px}}
+
+/* ---------- flowchart on phones: one column ---------- */
+.mf{display:none;flex-direction:column;align-items:stretch}
+.mf-s{display:flex;flex-direction:column;gap:8px}
+.mf-n{display:flex;align-items:center;gap:10px;border-radius:14px;padding:12px 14px;font:600 14px/1.4 var(--body);border:1.5px solid #b9c0d8;background:#fff;color:var(--ink)}
+.mf-n.mf-main{font-size:15px;box-shadow:var(--shadow)}
+.mf-n .fni{width:28px;height:28px}.mf-n .fni svg{width:28px;height:28px}
+.mf-n.t-start{background:var(--grad);border-color:transparent;color:#fff;border-radius:999px;justify-content:center;text-align:center;font-weight:700}
+.mf-n.t-dec{background:#eef2ff;border-color:var(--accent);font-weight:700;position:relative;padding-left:40px}
+.mf-n.t-dec::before{content:"?";position:absolute;left:12px;top:50%;margin-top:-10px;width:20px;height:20px;border-radius:6px;transform:rotate(45deg);background:var(--accent)}
+.mf-n.t-dec::after{content:"?";position:absolute;left:12px;top:50%;margin-top:-10px;width:20px;height:20px;display:grid;place-items:center;color:#fff;font:800 12px/1 var(--display)}
+.mf-n.t-ok{background:var(--ok-soft);border-color:var(--ok);color:#075c32;font-weight:700}
+.mf-n.t-wait{background:var(--accent-soft);border-color:#7d9cf0;color:#12379c}
+.mf-n.t-retry{background:var(--warn-soft);border-color:#d9a04a;color:#7a4104}
+.mf-n.t-rev{background:var(--person-soft);border-color:var(--person);color:#4a2296}
+.mf-n.t-stop{background:var(--stop-soft);border-color:var(--stop);color:#8f1022}
+.mf-n.t-note{background:#f7f8fc;border-style:dashed;color:var(--ink2);font-weight:500}
+.mf-n.t-bank{border-color:var(--ok);border-style:dashed;font-weight:500}
+.mf-b{list-style:none;margin:0 0 0 14px;padding:0 0 0 14px;border-left:2px dashed #c3c9dd;display:flex;flex-direction:column;gap:8px}
+.mf-b li{display:flex;flex-direction:column;gap:6px;align-items:stretch}
+.mf-b .mf-n{font-size:13.5px;padding:10px 12px}
+.mf-l{align-self:flex-start;font:700 11px/1 var(--body);letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);background:var(--sunk);padding:5px 8px;border-radius:6px}
+.mf-back{font-size:13px;color:var(--ink2);padding-left:2px}
+.mf-h{font:700 12px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.mf-arrow{align-self:center;height:34px;width:3px;background:var(--accent);border-radius:2px;position:relative;margin:4px 0 10px}
+.mf-arrow::after{content:"";position:absolute;left:-5px;bottom:-7px;border:6.5px solid transparent;border-top:9px solid var(--accent);border-bottom:0}
+.mf-arrow span{position:absolute;left:12px;top:7px;font:700 11px/1 var(--body);color:var(--accent);background:var(--accent-soft);padding:5px 8px;border-radius:6px;white-space:nowrap}
+@media (max-width:760px){
+  .mf{display:flex}
+  .fc-wrap,.legend,.fc-note{display:none}
+}
 /* ---------- journey map v2 ---------- */
 .jm2-scroll{margin-inline:-20px;padding-inline:20px;overflow-x:auto;scrollbar-width:none;padding-block:6px 18px}
 .jm2{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(5,auto);column-gap:16px}
@@ -598,12 +633,111 @@ section{scroll-margin-top:86px}
   .wide{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+
+.mf-d{margin-left:14px}
+.mf-d summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font:600 13px/1 var(--body);color:var(--accent);padding:8px 12px;border-radius:999px;background:var(--accent-soft)}
+.mf-d summary::-webkit-details-marker{display:none}
+.mf-d summary::after{content:"+";font:700 16px/1 var(--body)}
+.mf-d[open] summary::after{content:"–"}
+.mf-d summary b{background:#fff;border-radius:999px;padding:3px 7px;font-size:11.5px}
+.mf-d>.mf-b{margin:10px 0 0 4px}
+.mf-arrow{height:26px;margin:2px 0 8px}
+@media (max-width:760px){.m-hide{display:none!important}}
+/* ================= phones ================= */
+.swipe{display:none}
+.pic.pic-b{display:flex;align-items:flex-end}
+.dqs{gap:16px}
+@media (max-width:760px){
+  .wrap{gap:44px;padding-inline:16px}
+  .nav a.nav-cta{display:none}
+  .nav-in{padding:6px 6px 6px 10px}
+  .nav-links{justify-content:flex-start;padding-inline:10px}
+  /* hero */
+  .hero2{padding:22px 18px 0;border-radius:24px}
+  .h-text{gap:16px}
+  .hero2 .lead{font-size:16px}
+  .h-chip{font-size:12.5px;white-space:nowrap}
+  .h-cta{flex-direction:column;align-items:stretch}
+  .h-cta a{justify-content:center}
+  .h-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px;justify-content:stretch}
+  .h-vis{height:400px;max-width:340px}
+  .h-blob{width:280px;height:280px;margin-left:-140px;top:50px}
+  .h-phone{width:210px;margin-left:-105px;bottom:-130px;border-radius:30px 30px 0 0;padding:8px 8px 0}
+  .h-phone img{border-radius:23px 23px 0 0}
+  .h-card{width:150px;padding:9px 10px;border-radius:13px}
+  .h-card b{font-size:11.5px}.h-card code{font-size:11.5px}.h-card span{font-size:10.5px}
+  .hc1{left:0;top:6px}.hc2{right:0;top:118px}
+  .h-match{left:50%;transform:none;margin-left:-112px;width:224px;bottom:22px;padding:10px 12px;border-radius:14px}
+  .h-match b{font-size:15px}.h-match span{font-size:11.5px}
+  /* journey map: swipe cards */
+  .swipe{display:flex;align-items:center;gap:8px;font:600 12.5px/1 var(--body);color:var(--accent)}
+  .swipe::after{content:"→";font-size:16px;animation:nudge 1.2s ease-in-out infinite}
+  .jm2{grid-template-columns:repeat(5,78vw);column-gap:12px}
+  .jm2-scroll{margin-inline:-16px;padding-inline:16px;scroll-padding-inline:16px}
+  .jm2-s{scroll-snap-align:start}
+  /* journeys */
+  .scen{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding:4px 16px 10px}
+  .scen::-webkit-scrollbar{display:none}
+  .scen button{flex:none;white-space:nowrap}
+  .stage{padding:18px}
+  .phone{width:226px;height:470px;border-radius:32px;padding:8px}
+  .phone .scr{border-radius:25px}
+  .info{padding:18px}
+  .info h3{font-size:19px}
+  /* screens: swipe rows */
+  .grp>h3{flex-direction:column;align-items:flex-start;gap:3px}
+  .shots,.wide{display:flex;grid-template-columns:none;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin-inline:-16px;padding:4px 16px 14px;scroll-padding-inline:16px;scrollbar-width:none}
+  .shots::-webkit-scrollbar,.wide::-webkit-scrollbar{display:none}
+  .shots .shot{flex:0 0 62vw;scroll-snap-align:start}
+  .shots .shot .pic{height:74vw}
+  .wide .shot{flex:0 0 84vw;scroll-snap-align:start}
+  .wide .shot .pic{height:52vw}
+  /* cases */
+  .filters{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding:2px 16px 6px}
+  .filters::-webkit-scrollbar{display:none}
+  .filters button{flex:none;white-space:nowrap}
+  .filters input{flex:0 0 200px}
+  /* zoomed desktop screens can be panned */
+  dialog.zoom{max-width:100vw}
+  .zoom-in{overflow:auto;max-width:96vw}
+  .zoom:not(.ph) img{min-width:900px;max-width:none}
+  .zoom.ph img{width:min(420px,92vw)}
+  .demo-box{padding:18px}
+  th,td{padding:10px 12px}
+}
+@keyframes nudge{50%{transform:translateX(5px)}}
+
+.case-search{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:9px 16px;font:inherit;font-size:14px;width:100%;max-width:340px}
+.mf-back{font-size:13px;color:var(--ink2);background:var(--sunk);border-radius:10px;padding:9px 12px}
+.mf-back::before{content:"↪ ";color:var(--ink3)}
+.mf-d{margin-left:0;text-align:center}
+.mf-d>.mf-b{text-align:left;margin:10px 0 0 14px}
+.pbtn{align-self:stretch}
+@media (max-width:760px){
+  .hc1{left:10px}.hc2{right:10px}
+  .h-match{bottom:6px}
+  .nav-links{-webkit-mask-image:linear-gradient(90deg,transparent,#000 30px,#000 calc(100% - 30px),transparent);mask-image:linear-gradient(90deg,transparent,#000 30px,#000 calc(100% - 30px),transparent)}
+  .track,.scen,.filters{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent)}
+  .phone{width:204px;height:410px;border-radius:30px}
+  .stage{padding:16px}
+  .actors{gap:4px;flex-wrap:nowrap}
+  .actor{font-size:10px;padding:6px 6px;letter-spacing:.03em;white-space:nowrap}
+  .pp small br{display:none}
+  .pl span{font-size:11.5px;color:var(--ink2)}
+  .ph4{margin-top:8px}
+  .wide .shot{flex-basis:78vw}
+  .pbtn{font-size:14.5px;padding:13px 16px}
+  .case-search{max-width:none}
+}
+
+@media (max-width:760px){.phone{margin-inline:auto}.mf-arrow{margin-top:8px}}
 </style>
 
 <nav class="nav" aria-label="Sections"><div class="nav-in">
   <a class="brand" href="#top"><i>₹</i><span>Add Cash Journey</span></a>
   <div class="nav-links" id="navlinks">
-    <a href="#rule">The rule</a><a href="#map">Journey map</a><a href="#watch">Journeys</a><a href="#flow">Flowcharts</a><a href="#screens">Screens</a><a href="#cases">Cases</a><a href="#admin">Admin</a><a href="#numbers">Limits</a><a href="#status">Status</a>
+    <a href="#rule">The rule</a><a href="#map">Journey map</a><a href="#watch">Journeys</a><a href="#flow">Flowcharts</a><a href="#screens">Screens</a><a href="#cases">Cases</a><a href="#admin">Admin</a><a href="#numbers">Limits</a><a href="#demo">Demo</a><a href="#status">Status</a>
   </div>
   <a class="nav-cta" href="#demo">Try the demo</a>
 </div></nav>
@@ -615,7 +749,7 @@ section{scroll-margin-top:86px}
 <section id="rule">
   <div class="rule-sec">
     <div class="sec-h"><span class="eyebrow">The one rule</span><h2>Money is added only when two numbers are exactly the same</h2>
-      <p class="sub">The screenshot is only what the customer says. The bank's SMS or statement is the proof. The example on the right plays the four cases by itself. Tap any case to stop on it.</p>
+      <p class="sub">The screenshot is only what the customer says. The bank's SMS or statement is the proof. The example plays the four cases by itself. Tap any case to stop on it.</p>
       <div class="facts">
         <span><b>Screenshot</b> = the customer's claim</span>
         <span><b>Bank SMS or statement</b> = the proof</span>
@@ -639,6 +773,7 @@ section{scroll-margin-top:86px}
 <section id="map">
   <div class="sec-h"><span class="eyebrow">Journey map</span><h2>The normal journey in five stages</h2>
     <p class="sub">Read it left to right. Each stage shows the screen, what the customer does, what our side does, and what can go wrong. Most payments finish in about two minutes.</p></div>
+  <p class="swipe">Swipe sideways to see all five stages</p>
   <div class="jm2-scroll"><div class="jm2">
     <article class="jm2-s" style="--c:#1a4fd6;--c2:#4a43e0">
       <header class="jm2-h"><span class="jm2-n">1</span><h3>Start</h3><span class="jm2-t"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>about 20 seconds</span></header>
@@ -687,26 +822,26 @@ section{scroll-margin-top:86px}
 
 <section id="flow">
   <div class="sec-h"><span class="eyebrow">Flow chart</span><h2>The complete journey as two diagrams</h2>
-    <p class="sub">The first diagram is the customer's side. The second is the bank side: the phone, the SMS and the statement. In both, the thick line down the middle is the normal path and every branch to the side is something that can happen instead.</p></div>
+    <p class="sub">The first diagram is the customer's side. The second is the bank side: the phone, the SMS and the statement. In both, the thick line is the normal path and every branch is something that can happen instead.</p></div>
   <div class="legend" aria-label="Legend">
     <span><i class="lg act"></i>Step</span><span><i class="lg dec"></i>Question</span><span><i class="lg ok"></i>Money added</span>
     <span><i class="lg wait"></i>Waiting</span><span><i class="lg retry"></i>Try again</span><span><i class="lg rev"></i>A person decides</span>
     <span><i class="lg stop"></i>Stopped</span><span><i class="lg bank"></i>Comes from the bank side</span></div>
   <div class="card fc-wrap"><div class="fc-scroll" id="fc" tabindex="0" role="img" aria-label="Flowchart of the complete Add Cash journey. The same decisions are listed as text further below."></div></div>
-  <p class="note">On a phone, slide the diagram sideways. The same decisions are written as a list at the end of this section.</p>
+  <p class="note fc-note">The same decisions are written as a list at the end of this section.</p>
   
   <div class="sec-h" id="bankflow"><h3>What happens on the bank side, the moment a payment arrives</h3>
     <p class="sub">Each HDFC account has one phone with our Android app. This diagram follows the bank's SMS from that phone to the wallet, including what happens when the phone has no internet or is switched off.</p></div>
 
   <div class="card pipe" role="img" aria-label="How a payment travels: HDFC Bank sends an SMS to the receiving phone, our Android app reads it and sends it over the internet to our server, and the server credits the wallet.">
     <div class="pp"><span class="pp-ic"><img src="demo/static/brands/hdfc-icon.svg" alt=""></span><b>HDFC Bank</b><small>Money reaches our account</small></div>
-    <div class="pl"><i></i><span>credit SMS<br>no internet needed</span></div>
+    <div class="pl"><i></i><span>credit SMS,<br> no internet needed</span></div>
     <div class="pp"><span class="pp-ic"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#1a73e8" d="M8 6h32a4 4 0 0 1 4 4v22a4 4 0 0 1-4 4H18l-9.2 7.4A1.1 1.1 0 0 1 7 42.5V36a4 4 0 0 1-3-3.9V10a4 4 0 0 1 4-4z"/><path d="M13 16h22M13 23h22M13 30h13" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg></span><b>Text message</b><small>Sender ID:<br><span style="white-space:nowrap">VM-HDFCBK</span></small></div>
-    <div class="pl"><i></i><span>read on<br>the phone</span></div>
+    <div class="pl"><i></i><span>read on <br>the phone</span></div>
     <div class="pp"><span class="pp-ic phone"><svg viewBox="0 0 48 30" aria-hidden="true"><path d="M13 10 9 3M35 10l4-7" stroke="#3DDC84" stroke-width="2.6" stroke-linecap="round" fill="none"/><path fill="#3DDC84" d="M4 29a20 20 0 0 1 40 0z"/><circle cx="15" cy="20" r="2.3" fill="#fff"/><circle cx="33" cy="20" r="2.3" fill="#fff"/></svg></span><b>Our Android app</b><small>On the phone kept for that account</small></div>
-    <div class="pl net"><i></i><span>internet +<br>phone's code</span></div>
+    <div class="pl net"><i></i><span>internet + <br>phone's code</span></div>
     <div class="pp"><span class="pp-ic"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="5" width="36" height="11" rx="3" fill="#2a3566"/><rect x="6" y="18.5" width="36" height="11" rx="3" fill="#3d47dc"/><rect x="6" y="32" width="36" height="11" rx="3" fill="#6a3de8"/><g fill="#7df0b2"><circle cx="12.5" cy="10.5" r="1.8"/><circle cx="12.5" cy="24" r="1.8"/><circle cx="12.5" cy="37.5" r="1.8"/></g><g stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".75"><path d="M20 10.5h16M20 24h16M20 37.5h16"/></g></svg></span><b>Our server</b><small>Checks sender, UTR and amount</small></div>
-    <div class="pl ok"><i></i><span>exact UTR<br>and amount</span></div>
+    <div class="pl ok"><i></i><span>exact UTR <br>and amount</span></div>
     <div class="pp"><span class="pp-ic"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#0b8a4b" d="M8 12h28a4 4 0 0 1 4 4v2H10a2 2 0 0 1-2-2z"/><rect x="6" y="15" width="36" height="26" rx="5" fill="#22c07a"/><rect x="29" y="23" width="15" height="10" rx="5" fill="#0b8a4b"/><circle cx="35" cy="28" r="2.2" fill="#fff"/></svg></span><b>Wallet</b><small>Credited once, UTR locked</small></div>
   </div>
   <div class="card fc-wrap"><div class="fc-scroll" id="fc2" tabindex="0" role="img" aria-label="Flowchart of the bank side: from the bank SMS reaching the phone to the wallet being credited. The four phone situations are also written out below."></div></div>
@@ -717,8 +852,8 @@ section{scroll-margin-top:86px}
     <div class="card ph"><span class="ph-dot stop"></span><h4>SMS never comes, phone lost or broken</h4><p>Nothing is guessed. The customer sees "Bank confirmation is late". The next bank statement upload credits the payment. A new phone gets a new code; the old code stops working.</p><b>Result: credited from the statement</b></div>
   </div>
   <p class="note">In all four cases the dashboard shows the phone as Offline after 40 minutes without contact and reminds the admin. No payment is lost, because the bank statement always has every UTR. The Android app builds, but it has not been run on a real phone yet.</p>
-  <div class="sec-h"><h3>Who does what, in five steps</h3><p class="sub">The left column is what the customer does, the middle is our server, the right is the bank side.</p></div>
-  <div class="card lanes">
+  <div class="sec-h m-hide"><h3>Who does what, in five steps</h3><p class="sub">For each step: what the customer does, what our server does, and what happens on the bank side.</p></div>
+  <div class="card lanes m-hide">
     <div class="lane-h"><div></div><div style="color:var(--accent)">Customer</div><div style="color:var(--ink2)">Our server</div><div style="color:var(--ok)">Bank side</div></div>
     <div class="lane-r"><div class="n"><span>1</span></div>
       <div data-l="Customer"><b>Add Cash</b>Enters any amount, picks UPI or bank transfer.</div>
@@ -746,8 +881,8 @@ section{scroll-margin-top:86px}
     <div class="out wait"><b>No bank record yet</b><p>The order waits. The next SMS or the next statement decides. Nothing is guessed from time, name or amount.</p></div>
     <div class="out rev"><b>Something does not fit</b><p>Different amount, same UTR claimed twice, or the bank never got it. A person checks the bank and approves, rejects, or asks for a new screenshot.</p></div>
   </div>
-  <div class="sec-h"><h3>The same decisions as a list</h3><p class="sub">The detailed map. Six questions, asked in this order. Every answer ends in money added, a wait, a retry, or a person's decision.</p></div>
-  <div class="dqs"><div class="card dq"><div class="dq-q"><span>1</span><b>Customer taps Add Cash. Is an unpaid order already open?</b></div><div class="dq-b"><div class="dq-row"><span class="ans">No</span><span class="arr" aria-hidden="true"></span><span class="res go">Order created: account with the fewest open orders, 15 minutes to pay</span></div><div class="dq-row"><span class="ans">Yes, and they paid it</span><span class="arr" aria-hidden="true"></span><span class="res go">Opens the old order so they can upload its screenshot</span></div><div class="dq-row"><span class="ans">Yes, but they did not pay it</span><span class="arr" aria-hidden="true"></span><span class="res go">Old order is closed (its upload stays open 48 hours), new order created</span></div></div></div><div class="card dq"><div class="dq-q"><span>2</span><b>Customer uploads the screenshot. Do all checks pass?</b></div><div class="dq-b"><div class="dq-row"><span class="ans">Yes</span><span class="arr" aria-hidden="true"></span><span class="res go">Details shown read-only, customer presses Proceed</span></div><div class="dq-row"><span class="ans">Two UTR numbers were read</span><span class="arr" aria-hidden="true"></span><span class="res go">Customer picks one of the two, then Proceed</span></div><div class="dq-row"><span class="ans">No, fixable</span><span class="arr" aria-hidden="true"></span><span class="res retry">Exact reason shown, upload again</span></div><div class="dq-row"><span class="ans">No: different amount, other account, or 2 failed tries</span><span class="arr" aria-hidden="true"></span><span class="res rev">Customer may send it to a person</span></div><div class="dq-row"><span class="ans">No: failed payment, old screenshot, used UTR, same picture</span><span class="arr" aria-hidden="true"></span><span class="res stop">Stops. Pay again or upload the right screenshot</span></div></div></div><div class="card dq"><div class="dq-q"><span>3</span><b>After Proceed: does the bank have a record with exactly this UTR?</b></div><div class="dq-b"><div class="dq-row"><span class="ans">Yes, same amount</span><span class="arr" aria-hidden="true"></span><span class="res ok">Wallet credited. UTR locked forever</span></div><div class="dq-row"><span class="ans">Yes, different amount</span><span class="arr" aria-hidden="true"></span><span class="res rev">A person decides</span></div><div class="dq-row"><span class="ans">Another customer claims the same UTR</span><span class="arr" aria-hidden="true"></span><span class="res rev">A person decides, for both</span></div><div class="dq-row"><span class="ans">Not yet</span><span class="arr" aria-hidden="true"></span><span class="res wait">Order waits for the bank</span></div></div></div><div class="card dq"><div class="dq-q"><span>4</span><b>While waiting: does the HDFC SMS arrive with this UTR?</b></div><div class="dq-b"><div class="dq-row"><span class="ans">Yes</span><span class="arr" aria-hidden="true"></span><span class="res go">Back to question 3, checked at once</span></div><div class="dq-row"><span class="ans">A UPI app alert arrives instead</span><span class="arr" aria-hidden="true"></span><span class="res wait">Message becomes "Payment received". No money added</span></div><div class="dq-row"><span class="ans">SMS is late, or has no UTR</span><span class="arr" aria-hidden="true"></span><span class="res wait">Customer is told it is late. Wait for the statement</span></div></div></div><div class="card dq"><div class="dq-q"><span>5</span><b>Bank statement uploaded: is the UTR in it?</b></div><div class="dq-b"><div class="dq-row"><span class="ans">Yes, same amount</span><span class="arr" aria-hidden="true"></span><span class="res ok">Wallet credited</span></div><div class="dq-row"><span class="ans">No, and the statement covers that time</span><span class="arr" aria-hidden="true"></span><span class="res rev">A person decides</span></div><div class="dq-row"><span class="ans">Money in the statement nobody claimed</span><span class="arr" aria-hidden="true"></span><span class="res wait">Kept under Unclaimed money until a customer uploads</span></div></div></div><div class="card dq"><div class="dq-q"><span>6</span><b>A person searches the UTR in the bank. What did they find?</b></div><div class="dq-b"><div class="dq-row"><span class="ans">Found</span><span class="arr" aria-hidden="true"></span><span class="res ok">Approve with the UTR and amount the bank shows. Wallet credited</span></div><div class="dq-row"><span class="ans">Not found in any account</span><span class="arr" aria-hidden="true"></span><span class="res stop">Reject. The customer sees the reason</span></div><div class="dq-row"><span class="ans">Cannot tell from this screenshot</span><span class="arr" aria-hidden="true"></span><span class="res retry">Ask the customer to upload again</span></div></div></div></div>
+  <div class="sec-h m-hide"><h3>The same decisions as a list</h3><p class="sub">The detailed map. Six questions, asked in this order. Every answer ends in money added, a wait, a retry, or a person's decision.</p></div>
+  <div class="dqs m-hide"><div class="card dq"><div class="dq-q"><span>1</span><b>Customer taps Add Cash. Is an unpaid order already open?</b></div><div class="dq-b"><div class="dq-row"><span class="ans">No</span><span class="arr" aria-hidden="true"></span><span class="res go">Order created: account with the fewest open orders, 15 minutes to pay</span></div><div class="dq-row"><span class="ans">Yes, and they paid it</span><span class="arr" aria-hidden="true"></span><span class="res go">Opens the old order so they can upload its screenshot</span></div><div class="dq-row"><span class="ans">Yes, but they did not pay it</span><span class="arr" aria-hidden="true"></span><span class="res go">Old order is closed (its upload stays open 48 hours), new order created</span></div></div></div><div class="card dq"><div class="dq-q"><span>2</span><b>Customer uploads the screenshot. Do all checks pass?</b></div><div class="dq-b"><div class="dq-row"><span class="ans">Yes</span><span class="arr" aria-hidden="true"></span><span class="res go">Details shown read-only, customer presses Proceed</span></div><div class="dq-row"><span class="ans">Two UTR numbers were read</span><span class="arr" aria-hidden="true"></span><span class="res go">Customer picks one of the two, then Proceed</span></div><div class="dq-row"><span class="ans">No, fixable</span><span class="arr" aria-hidden="true"></span><span class="res retry">Exact reason shown, upload again</span></div><div class="dq-row"><span class="ans">No: different amount, other account, or 2 failed tries</span><span class="arr" aria-hidden="true"></span><span class="res rev">Customer may send it to a person</span></div><div class="dq-row"><span class="ans">No: failed payment, old screenshot, used UTR, same picture</span><span class="arr" aria-hidden="true"></span><span class="res stop">Stops. Pay again or upload the right screenshot</span></div></div></div><div class="card dq"><div class="dq-q"><span>3</span><b>After Proceed: does the bank have a record with exactly this UTR?</b></div><div class="dq-b"><div class="dq-row"><span class="ans">Yes, same amount</span><span class="arr" aria-hidden="true"></span><span class="res ok">Wallet credited. UTR locked forever</span></div><div class="dq-row"><span class="ans">Yes, different amount</span><span class="arr" aria-hidden="true"></span><span class="res rev">A person decides</span></div><div class="dq-row"><span class="ans">Another customer claims the same UTR</span><span class="arr" aria-hidden="true"></span><span class="res rev">A person decides, for both</span></div><div class="dq-row"><span class="ans">Not yet</span><span class="arr" aria-hidden="true"></span><span class="res wait">Order waits for the bank</span></div></div></div><div class="card dq"><div class="dq-q"><span>4</span><b>While waiting: does the HDFC SMS arrive with this UTR?</b></div><div class="dq-b"><div class="dq-row"><span class="ans">Yes</span><span class="arr" aria-hidden="true"></span><span class="res go">Back to question 3, checked at once</span></div><div class="dq-row"><span class="ans">A UPI app alert arrives instead</span><span class="arr" aria-hidden="true"></span><span class="res wait">Message becomes "Payment received". No money added</span></div><div class="dq-row"><span class="ans">SMS is late, or has no UTR</span><span class="arr" aria-hidden="true"></span><span class="res wait">Customer is told it is late. Wait for the statement</span></div></div></div><div class="card dq"><div class="dq-q"><span>5</span><b>Bank statement uploaded: is the UTR in it?</b></div><div class="dq-b"><div class="dq-row"><span class="ans">Yes, same amount</span><span class="arr" aria-hidden="true"></span><span class="res ok">Wallet credited</span></div><div class="dq-row"><span class="ans">No, and the statement covers that time</span><span class="arr" aria-hidden="true"></span><span class="res rev">A person decides</span></div><div class="dq-row"><span class="ans">Money in the statement nobody claimed</span><span class="arr" aria-hidden="true"></span><span class="res wait">Kept under Unclaimed money until a customer uploads</span></div></div></div><div class="card dq"><div class="dq-q"><span>6</span><b>A person searches the UTR in the bank. What did they find?</b></div><div class="dq-b"><div class="dq-row"><span class="ans">Found</span><span class="arr" aria-hidden="true"></span><span class="res ok">Approve with the UTR and amount the bank shows. Wallet credited</span></div><div class="dq-row"><span class="ans">Not found in any account</span><span class="arr" aria-hidden="true"></span><span class="res stop">Reject. The customer sees the reason</span></div><div class="dq-row"><span class="ans">Cannot tell from this screenshot</span><span class="arr" aria-hidden="true"></span><span class="res retry">Ask the customer to upload again</span></div></div></div></div>
 </section>
 
 <section id="screens">
@@ -880,7 +1015,7 @@ const RULES={
     const done=()=>{b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1400)};
     (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(done).catch(()=>{const r=document.createRange();r.selectNodeContents(src);const sel=getSelection();sel.removeAllRanges();sel.addRange(r)})});
   const links=[...document.querySelectorAll('#navlinks a')],box=$('#navlinks');
-  if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.forEach(en=>{if(!en.isIntersecting)return;links.forEach(l=>{const on=l.getAttribute('href')==='#'+en.target.id;l.classList.toggle('on',on);if(on)box.scrollTo({left:l.offsetLeft-box.clientWidth/2+l.clientWidth/2,behavior:'smooth'})})}),{rootMargin:'-45% 0px -50% 0px'});
+  if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.forEach(en=>{if(!en.isIntersecting)return;links.forEach(l=>{const on=l.getAttribute('href')==='#'+en.target.id;l.classList.toggle('on',on);if(on&&scrollY>200)box.scrollTo({left:l.offsetLeft-box.clientWidth/2+l.clientWidth/2,behavior:'smooth'})})}),{rootMargin:'-45% 0px -50% 0px'});
     links.forEach(l=>{const t=document.querySelector(l.getAttribute('href'));if(t)io.observe(t)})}
 })();
 /* ---------- zoom ---------- */
@@ -979,7 +1114,7 @@ function boot(){
     const bob=(d,del)=>({animate:reduce?{}:{y:[0,-10,0]},transition:{duration:d,repeat:Infinity,ease:'easeInOut',delay:del}});
     return h(m.div,{className:'h-grid',initial:reduce?'b':'a',animate:'b',variants:{b:{transition:{staggerChildren:.09}}}},
       h('div',{className:'h-text'},
-        h(m.span,{className:'h-chip',variants:up},h('i',null,'₹'),'Payment Check · Add Cash user journey'),
+        h(m.span,{className:'h-chip',variants:up},h('i',null,'₹'),'Add Cash user journey'),
         h(m.h1,{variants:up},'How money gets into the wallet, ',h('em',null,'without a payment gateway')),
         h(m.p,{className:'lead',variants:up},'The customer pays by UPI or bank transfer and uploads the payment screenshot. The wallet is topped up only when our bank reports the very same payment. Every screen, every decision and every edge case is on this page.'),
         h(m.div,{className:'h-cta',variants:up},h('a',{className:'p',href:'#watch'},'▶ Play the journeys'),h('a',{className:'g',href:'#flow'},'See the flowchart'),h('a',{className:'g',href:'#demo'},'Open the live demo')),
@@ -1047,7 +1182,7 @@ function boot(){
             h('span',{className:'orb o1'}),h('span',{className:'orb o2'}),
             h(AP,{mode:'wait',custom:dir,initial:false},h(m.div,{key:si+'-'+st,className:'stage-in',custom:dir,initial:{opacity:0,x:70*dir,rotateY:-10*dir,scale:.94},animate:{opacity:1,x:0,rotateY:0,scale:1},exit:{opacity:0,x:-70*dir,scale:.94},transition:{type:'spring',stiffness:260,damping:28}},h(Screen,{name:s[0],kind:s[1],title:s[2],playing})))),
           h('div',{className:'info'},
-            h('div',{className:'actors'},ACTORS.map(a=>h(m.span,{key:a[0],className:'actor a-'+a[0]+(acts.includes(a[0])?' on':''),animate:{scale:acts.includes(a[0])?1:.94,opacity:acts.includes(a[0])?1:.45},transition:spring},a[1]))),
+            h('div',{className:'actors'},ACTORS.map(a=>h(m.span,{key:a[0],className:'actor a-'+a[0]+(acts.includes(a[0])?' on':''),animate:{scale:acts.includes(a[0])?1:.94,opacity:acts.includes(a[0])?1:.62},transition:spring},a[1]))),
             h(AP,{mode:'wait',initial:false},h(m.div,{key:si+'-'+st,className:'info-in',initial:'a',animate:'b',exit:'c',variants:{a:{},b:{transition:{staggerChildren:.07}},c:{opacity:0,transition:{duration:.12}}}},
               [h('span',{className:'count',key:1},'Step '+(st+1)+' of '+n),
                h('h3',{key:2},s[2]),
@@ -1077,7 +1212,8 @@ const FCI={sms:'<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#1a73e8"
 function drawChart(id,rows,trav,N,mkE){
   const X=[115,355,595,835,1075],Y=r=>70+r*130,W=200,H=68;
   const g={};for(const k in N){const n=N[k],h=n[4]||(n[2]==='dec'?76:H),x=X[n[0]],y=Y(n[1]);g[k]={x,y,h,t:[x,y-h/2],b:[x,y+h/2],l:[x-W/2,y],r:[x+W/2,y],type:n[2],text:n[3]}}
-  const a=(k,s)=>g[k][s];
+  const a=(k,s)=>{const p=g[k][s].slice();p.k=k;return p};
+  for(const k in g){g[k].col=N[k][0];g[k].row=N[k][1];g[k].icon=N[k][5]}
   const E=mkE(a,X,Y);
   const path=p=>{let d='M'+p[0];for(let i=1;i<p.length;i++){const c=p[i],n=p[i+1];if(!n){d+=' L'+c;break}
     const pr=p[i-1],r=12,v1=[Math.sign(c[0]-pr[0]),Math.sign(c[1]-pr[1])],v2=[Math.sign(n[0]-c[0]),Math.sign(n[1]-c[1])];
@@ -1100,6 +1236,29 @@ function drawChart(id,rows,trav,N,mkE){
     o+='<g class="el"><rect x="'+(at[0]-w/2)+'" y="'+(at[1]-hh/2)+'" width="'+w+'" height="'+hh+'" rx="8"/>'+lines.map((l,i)=>'<text x="'+at[0]+'" y="'+(at[1]-hh/2+15+i*14)+'" text-anchor="middle">'+esc(l)+'</text>').join('')+'</g>'});
   o+='</svg>';
   $('#'+id).innerHTML=o;
+  // ---- phone version: the same chart as one column ----
+  const out={},inn={};
+  E.forEach(e=>{const p=e[0],s=p[0].k,t=p[p.length-1].k;if(!s)return;(out[s]=out[s]||[]).push({t,label:e[2]?e[2].replace(/\|/g,' '):'',main:e[1]==='main'});if(t)(inn[t]=inn[t]||[]).push(s)});
+  const spine=Object.keys(g).filter(k=>g[k].col===2).sort((x,y)=>g[x].row-g[y].row),onSpine=new Set(spine),seen=new Set(spine);
+  const box=(k,cls)=>'<div class="mf-n t-'+g[k].type+' '+(cls||'')+'">'+(g[k].icon?'<span class="fni">'+FCI[g[k].icon]+'</span>':'')+'<span>'+esc(g[k].text)+'</span></div>';
+  const branch=(k,depth)=>{let h='';(out[k]||[]).filter(e=>!e.main).forEach(e=>{
+      if(!e.t||onSpine.has(e.t)){h+='<li><span class="mf-l">'+esc(e.label||'then')+'</span><div class="mf-back">'+(e.t?'back to: '+esc(g[e.t].text):'continues on the main path')+'</div></li>';return}
+      if(seen.has(e.t)){h+='<li><span class="mf-l">'+esc(e.label||'then')+'</span><div class="mf-back">same as: '+esc(g[e.t].text)+'</div></li>';return}
+      seen.add(e.t);h+='<li>'+(e.label?'<span class="mf-l">'+esc(e.label)+'</span>':'')+box(e.t)+(depth<4?branch(e.t,depth+1):'')+'</li>'});
+    return h?'<ul class="mf-b">'+h+'</ul>':''};
+  let m='';
+  spine.forEach((k,i)=>{
+    const side=branch(k,0);
+    // inputs that feed this row from outside the main path (bank side, admin)
+    let extra='';Object.keys(g).filter(x=>!seen.has(x)&&g[x].row===g[k].row).forEach(x=>{seen.add(x);extra+='<li><span class="mf-l">meanwhile</span>'+box(x)+branch(x,1)+'</li>'});
+    const nx=(out[k]||[]).find(e=>e.main);
+    const both=side+(extra?'<ul class="mf-b">'+extra+'</ul>':''),cnt=(both.match(/<li>/g)||[]).length;
+    m+='<div class="mf-s">'+box(k,'mf-main')+(both?'<details class="mf-d"><summary>'+(g[k].type==='dec'?'Other answers':'What else can happen here')+' <b>'+cnt+'</b></summary>'+both+'</details>':'')+'</div>'+(i<spine.length-1?'<div class="mf-arrow">'+(nx&&nx.label?'<span>'+esc(nx.label)+'</span>':'')+'</div>':'');
+  });
+  const rest=Object.keys(g).filter(x=>!seen.has(x)).sort((x,y)=>g[x].row-g[y].row);
+  if(rest.length){m+='<div class="mf-s" style="margin-top:22px"><div class="mf-h">Also on the bank side</div><ul class="mf-b">'+rest.map(x=>{if(seen.has(x))return'';seen.add(x);return'<li>'+box(x)+branch(x,1)+'</li>'}).join('')+'</ul></div>'}
+  const mf=document.createElement('div');mf.className='mf';mf.innerHTML=m;
+  const wrap=$('#'+id).closest('.fc-wrap');wrap.parentNode.insertBefore(mf,wrap.nextSibling);
 }
 drawChart('fc',14,13,{
     start:[2,0,'start','Customer taps Add Cash and enters an amount'],
@@ -1198,7 +1357,7 @@ drawChart('fc2',12,12,{
     code:[3,6,'stop','Wrong or old phone code: refused. Stays on the phone until a new code is entered',78],
     q4:[2,7,'dec','Was this same SMS already received?'],
     dup:[1,7,'note','Yes: ignored as a duplicate'],
-    q5:[2,8,'dec','Is the sender a real HDFC ID, like VM-HDFCBK?'],
+    q5:[2,8,'dec','Is the sender a real HDFC ID, like VM‑HDFCBK?'],
     fake:[1,8,'stop','No: blocked, and a fake-SMS alert is raised'],
     q6:[2,9,'dec','Does the SMS contain a UTR?'],
     noutr:[1,9,'wait','No: saved, but the statement must confirm this payment'],
@@ -1282,7 +1441,7 @@ const CS=[
 ];
 function shotCard(n,t,d){
   const c=el('div','card shot');c.id='s-'+n;
-  const p=el('div','pic');p.innerHTML='<img loading="lazy" src="'+src(n)+'" alt="'+t.replace(/"/g,'&quot;')+'">';
+  const p=el('div','pic'+(n==='c03b_leave'?' pic-b':''));p.innerHTML='<img loading="lazy" src="'+src(n)+'" alt="'+t.replace(/"/g,'&quot;')+'">';
   p.tabIndex=0;p.setAttribute('role','button');p.setAttribute('aria-label','Enlarge: '+t);
   p.addEventListener('click',()=>openZoom(n));p.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openZoom(n)}});
   c.append(p,el('div','cap','<b>'+t+'</b><span>'+d+'</span>'));return c;
@@ -1366,7 +1525,7 @@ const C=[
 let gf=0,q='';
 const fl=$('#filters');
 ['All cases',...G].forEach((g,i)=>{const b=el('button',null,g+' <span style="opacity:.6">'+(i?C.filter(c=>c[0]===i-1).length:C.length)+'</span>');b.type='button';b.setAttribute('aria-pressed',i===1);b.addEventListener('click',()=>{gf=i-1;[...fl.querySelectorAll('button')].forEach((x,j)=>x.setAttribute('aria-pressed',j===i));cases()});fl.append(b)});
-const inp=el('input');inp.id='caseq';inp.type='search';inp.placeholder='Search all cases';inp.setAttribute('aria-label','Search cases');inp.addEventListener('input',()=>{q=inp.value.toLowerCase();if(q&&gf>=0){gf=-1;[...fl.querySelectorAll('button')].forEach((x,j)=>x.setAttribute('aria-pressed',j===0))}cases()});fl.append(inp);
+const inp=el('input');inp.id='caseq';inp.type='search';inp.placeholder='Search all cases';inp.setAttribute('aria-label','Search cases');inp.className='case-search';inp.addEventListener('input',()=>{q=inp.value.toLowerCase();if(q&&gf>=0){gf=-1;[...fl.querySelectorAll('button')].forEach((x,j)=>x.setAttribute('aria-pressed',j===0))}cases()});fl.after(inp);
 function cases(){
   const L=$('#caselist');L.innerHTML='';
   const rows=C.filter(c=>(gf<0||c[0]===gf)&&(!q||c.join(' ').toLowerCase().includes(q)));
@@ -1384,5 +1543,4 @@ function cases(){
 }
 cases();
 })();
-</script>
-</body></html>
+</script></body></html>
