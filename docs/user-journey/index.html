@@ -430,6 +430,32 @@ section{scroll-margin-top:86px}
 .c2-b .cf{padding-inline:0}
 .c2-b .see{margin-top:6px}
 @media (max-width:760px){.cases{columns:1}}
+
+/* ---------- bank-side pipeline ---------- */
+.pipe{display:grid;grid-template-columns:minmax(0,1fr) minmax(56px,.8fr) minmax(0,1fr) minmax(56px,.8fr) minmax(0,1fr) minmax(56px,.8fr) minmax(0,1fr) minmax(56px,.8fr) minmax(0,1fr);align-items:start;padding:24px 20px;gap:0;background:linear-gradient(180deg,#fff,#f8f9fe)}
+.pp{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;min-width:0}
+.pp-ic{width:68px;height:68px;border-radius:20px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);display:grid;place-items:center;margin-bottom:6px}
+.pp-ic svg,.pp-ic img{width:40px;height:40px;display:block}
+.pp-ic.phone{background:#101426;border-color:#101426;border-radius:16px;height:76px;width:52px;margin-top:-4px;margin-bottom:2px;box-shadow:0 10px 22px rgba(16,20,38,.3)}
+.pp-ic.phone svg{width:32px;height:auto}
+.pp b{font:700 14px/1.25 var(--display)}
+.pp small{font-size:12px;line-height:1.35;color:var(--ink2)}
+.pl{position:relative;height:68px;display:flex;align-items:center;justify-content:center}
+.pl i{position:absolute;left:2px;right:10px;top:33px;height:3px;border-radius:2px;background:repeating-linear-gradient(90deg,var(--accent) 0 7px,transparent 7px 14px);background-size:14px 3px;animation:pflow .7s linear infinite}
+.pl i::after{content:"";position:absolute;right:-9px;top:-5px;border:6.5px solid transparent;border-left:9px solid var(--accent);border-right:0}
+.pl.net i{background-image:repeating-linear-gradient(90deg,#6a3de8 0 7px,transparent 7px 14px)}.pl.net i::after{border-left-color:#6a3de8}
+.pl.ok i{background-image:repeating-linear-gradient(90deg,var(--ok) 0 7px,transparent 7px 14px)}.pl.ok i::after{border-left-color:var(--ok)}
+@keyframes pflow{to{background-position:14px 0}}
+.pl span{position:absolute;top:44px;left:0;right:0;text-align:center;font:600 10.5px/1.3 var(--body);color:var(--ink3)}
+@media (max-width:860px){
+  .pipe{grid-template-columns:1fr;justify-items:center;gap:4px;padding:20px}
+  .pl{height:54px;width:100%}
+  .pl i{left:50%;right:auto;top:4px;width:3px;height:34px;margin-left:-1.5px;background:repeating-linear-gradient(180deg,var(--accent) 0 7px,transparent 7px 14px);background-size:3px 14px;animation:pflowv .7s linear infinite}
+  .pl i::after{right:-5px;top:auto;bottom:-9px;border:6.5px solid transparent;border-top:9px solid var(--accent);border-bottom:0}
+  .pl span{position:static;margin-left:120px;text-align:left}
+  .pl span br{display:none}
+}
+@keyframes pflowv{to{background-position:0 14px}}
 /* ---------- journey map v2 ---------- */
 .jm2-scroll{margin-inline:-20px;padding-inline:20px;overflow-x:auto;scrollbar-width:none;padding-block:6px 18px}
 .jm2{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(5,auto);column-gap:16px}
@@ -518,8 +544,10 @@ section{scroll-margin-top:86px}
 .lg.stop{background:var(--stop-soft);border-color:var(--stop)}.lg.bank{background:#fff;border-color:var(--ok);border-style:dashed}
 .fc-wrap{overflow:hidden;background:linear-gradient(180deg,#fff,#f8f9fe)}
 .fc-scroll{overflow-x:auto;padding:10px}
-.fc-scroll svg{display:block;min-width:1000px;width:100%;height:auto}
+.fc-scroll>svg{display:block;min-width:1000px;width:100%;height:auto}
 .fn{width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;font:600 12.5px/1.3 "Inter",system-ui,sans-serif;color:#111830;padding:4px 12px;box-sizing:border-box}
+.fn.has-i{justify-content:flex-start;text-align:left;gap:9px;padding-left:10px}
+.fni{flex:none;width:26px;height:26px;display:grid;place-items:center}.fni svg{width:26px;height:26px;display:block;min-width:0}
 .fn.t-start{color:#fff;font-weight:700;font-size:13.5px}.fn.t-dec{font-weight:700;padding-inline:24px}
 .fn.t-ok{color:#075c32;font-weight:700}.fn.t-stop{color:#8f1022}.fn.t-rev{color:#4a2296}.fn.t-retry{color:#7a4104}.fn.t-wait{color:#12379c}
 .fn.t-note,.fn.t-bank{font-weight:500;color:#48506a;font-size:12px}
@@ -669,6 +697,18 @@ section{scroll-margin-top:86px}
   
   <div class="sec-h" id="bankflow"><h3>What happens on the bank side, the moment a payment arrives</h3>
     <p class="sub">Each HDFC account has one phone with our Android app. This diagram follows the bank's SMS from that phone to the wallet, including what happens when the phone has no internet or is switched off.</p></div>
+
+  <div class="card pipe" role="img" aria-label="How a payment travels: HDFC Bank sends an SMS to the receiving phone, our Android app reads it and sends it over the internet to our server, and the server credits the wallet.">
+    <div class="pp"><span class="pp-ic"><img src="demo/static/brands/hdfc-icon.svg" alt=""></span><b>HDFC Bank</b><small>Money reaches our account</small></div>
+    <div class="pl"><i></i><span>credit SMS<br>no internet needed</span></div>
+    <div class="pp"><span class="pp-ic"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#1a73e8" d="M8 6h32a4 4 0 0 1 4 4v22a4 4 0 0 1-4 4H18l-9.2 7.4A1.1 1.1 0 0 1 7 42.5V36a4 4 0 0 1-3-3.9V10a4 4 0 0 1 4-4z"/><path d="M13 16h22M13 23h22M13 30h13" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg></span><b>Text message</b><small>Sender ID:<br><span style="white-space:nowrap">VM-HDFCBK</span></small></div>
+    <div class="pl"><i></i><span>read on<br>the phone</span></div>
+    <div class="pp"><span class="pp-ic phone"><svg viewBox="0 0 48 30" aria-hidden="true"><path d="M13 10 9 3M35 10l4-7" stroke="#3DDC84" stroke-width="2.6" stroke-linecap="round" fill="none"/><path fill="#3DDC84" d="M4 29a20 20 0 0 1 40 0z"/><circle cx="15" cy="20" r="2.3" fill="#fff"/><circle cx="33" cy="20" r="2.3" fill="#fff"/></svg></span><b>Our Android app</b><small>On the phone kept for that account</small></div>
+    <div class="pl net"><i></i><span>internet +<br>phone's code</span></div>
+    <div class="pp"><span class="pp-ic"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="5" width="36" height="11" rx="3" fill="#2a3566"/><rect x="6" y="18.5" width="36" height="11" rx="3" fill="#3d47dc"/><rect x="6" y="32" width="36" height="11" rx="3" fill="#6a3de8"/><g fill="#7df0b2"><circle cx="12.5" cy="10.5" r="1.8"/><circle cx="12.5" cy="24" r="1.8"/><circle cx="12.5" cy="37.5" r="1.8"/></g><g stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".75"><path d="M20 10.5h16M20 24h16M20 37.5h16"/></g></svg></span><b>Our server</b><small>Checks sender, UTR and amount</small></div>
+    <div class="pl ok"><i></i><span>exact UTR<br>and amount</span></div>
+    <div class="pp"><span class="pp-ic"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#0b8a4b" d="M8 12h28a4 4 0 0 1 4 4v2H10a2 2 0 0 1-2-2z"/><rect x="6" y="15" width="36" height="26" rx="5" fill="#22c07a"/><rect x="29" y="23" width="15" height="10" rx="5" fill="#0b8a4b"/><circle cx="35" cy="28" r="2.2" fill="#fff"/></svg></span><b>Wallet</b><small>Credited once, UTR locked</small></div>
+  </div>
   <div class="card fc-wrap"><div class="fc-scroll" id="fc2" tabindex="0" role="img" aria-label="Flowchart of the bank side: from the bank SMS reaching the phone to the wallet being credited. The four phone situations are also written out below."></div></div>
   <div class="ph4">
     <div class="card ph"><span class="ph-dot ok"></span><h4>Phone on, internet on</h4><p>The SMS is read and sent to the server in a few seconds. This is the normal case.</p><b>Result: credited in seconds</b></div>
@@ -1033,6 +1073,7 @@ boot();
 
 
 /* ---------- flowcharts ---------- */
+const FCI={sms:'<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#1a73e8" d="M8 6h32a4 4 0 0 1 4 4v22a4 4 0 0 1-4 4H18l-9.2 7.4A1.1 1.1 0 0 1 7 42.5V36a4 4 0 0 1-3-3.9V10a4 4 0 0 1 4-4z"/><path d="M13 16h22M13 23h22M13 30h13" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>',android:'<svg viewBox="0 0 48 30" aria-hidden="true"><path d="M13 10 9 3M35 10l4-7" stroke="#3DDC84" stroke-width="2.6" stroke-linecap="round" fill="none"/><path fill="#3DDC84" d="M4 29a20 20 0 0 1 40 0z"/><circle cx="15" cy="20" r="2.3" fill="#fff"/><circle cx="33" cy="20" r="2.3" fill="#fff"/></svg>',server:'<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="5" width="36" height="11" rx="3" fill="#2a3566"/><rect x="6" y="18.5" width="36" height="11" rx="3" fill="#3d47dc"/><rect x="6" y="32" width="36" height="11" rx="3" fill="#6a3de8"/><g fill="#7df0b2"><circle cx="12.5" cy="10.5" r="1.8"/><circle cx="12.5" cy="24" r="1.8"/><circle cx="12.5" cy="37.5" r="1.8"/></g><g stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".75"><path d="M20 10.5h16M20 24h16M20 37.5h16"/></g></svg>',wallet:'<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#0b8a4b" d="M8 12h28a4 4 0 0 1 4 4v2H10a2 2 0 0 1-2-2z"/><rect x="6" y="15" width="36" height="26" rx="5" fill="#22c07a"/><rect x="29" y="23" width="15" height="10" rx="5" fill="#0b8a4b"/><circle cx="35" cy="28" r="2.2" fill="#fff"/></svg>'};
 function drawChart(id,rows,trav,N,mkE){
   const X=[115,355,595,835,1075],Y=r=>70+r*130,W=200,H=68;
   const g={};for(const k in N){const n=N[k],h=n[4]||(n[2]==='dec'?76:H),x=X[n[0]],y=Y(n[1]);g[k]={x,y,h,t:[x,y-h/2],b:[x,y+h/2],l:[x-W/2,y],r:[x+W/2,y],type:n[2],text:n[3]}}
@@ -1051,7 +1092,8 @@ function drawChart(id,rows,trav,N,mkE){
   for(const k in g){const n=g[k],x=n.x-W/2,y=n.y-n.h/2;
     if(n.type==='dec')o+='<polygon class="s-dec" points="'+[[x+20,y],[x+W-20,y],[x+W,n.y],[x+W-20,y+n.h],[x+20,y+n.h],[x,n.y]].join(' ')+'"/>';
     else o+='<rect class="s-'+n.type+'" x="'+x+'" y="'+y+'" width="'+W+'" height="'+n.h+'" rx="'+(n.type==='start'?n.h/2:14)+'"/>';
-    o+='<foreignObject x="'+x+'" y="'+y+'" width="'+W+'" height="'+n.h+'"><div xmlns="http://www.w3.org/1999/xhtml" class="fn t-'+n.type+'">'+esc(n.text)+'</div></foreignObject>'}
+    const ic=N[k][5]?'<span class="fni">'+FCI[N[k][5]]+'</span>':'';
+    o+='<foreignObject x="'+x+'" y="'+y+'" width="'+W+'" height="'+n.h+'"><div xmlns="http://www.w3.org/1999/xhtml" class="fn t-'+n.type+(ic?' has-i':'')+'">'+ic+'<span>'+esc(n.text)+'</span></div></foreignObject>'}
   E.forEach(e=>{if(!e[2])return;const p=e[0],lines=e[2].split('|');let at=e[3];
     const w=Math.max(...lines.map(l=>l.length))*6.1+16,hh=lines.length*14+8;
     if(!at){const A=p[0],B=p[1];at=A[0]===B[0]?[A[0]+w/2+10,(A[1]+B[1])/2]:[(A[0]+B[0])/2,A[1]-hh/2-7]}
@@ -1140,19 +1182,19 @@ drawChart('fc',14,13,{
   ]);
 drawChart('fc2',12,12,{
     start:[2,0,'start',"Customer's money reaches our HDFC account"],
-    sms:[2,1,'bank','HDFC sends a credit SMS to the phone kept for that account'],
+    sms:[2,1,'bank','HDFC sends a credit SMS to the phone kept for that account',78,'sms'],
     notif:[3,1,'bank','The UPI app on that phone may also show a "money received" notification',78],
     signal:[3,2,'wait','Forwarded as a signal only: customer sees "Payment received". Never adds money',78],
     q1:[2,2,'dec','Is the phone on, with mobile signal?'],
     hold:[1,2,'wait','The mobile network holds the SMS and delivers it when the phone is back',78],
     never:[0,2,'note','SMS never arrives? The bank statement confirms the payment instead',78],
-    read:[2,3,'act','Our Android app reads the SMS itself, with the real sender ID from the network',78],
+    read:[2,3,'act','Our Android app reads the SMS itself, with the real sender ID from the network',84,'android'],
     q2:[2,4,'dec','Does it look like a money-received SMS?'],
     otp:[1,4,'stop','No: OTPs and personal SMS never leave the phone'],
     q3:[2,5,'dec','Is the phone connected to the internet?'],
     queue:[1,5,'wait','Kept in a queue on the phone. Retries by itself, even after a restart',78],
     offline:[0,5,'note','Phone silent for 40 minutes: dashboard shows Offline and reminds the admin',78],
-    send:[2,6,'act',"Sent to our server with that phone's secret code"],
+    send:[2,6,'act',"Sent to our server with that phone's secret code",78,'server'],
     code:[3,6,'stop','Wrong or old phone code: refused. Stays on the phone until a new code is entered',78],
     q4:[2,7,'dec','Was this same SMS already received?'],
     dup:[1,7,'note','Yes: ignored as a duplicate'],
@@ -1160,11 +1202,11 @@ drawChart('fc2',12,12,{
     fake:[1,8,'stop','No: blocked, and a fake-SMS alert is raised'],
     q6:[2,9,'dec','Does the SMS contain a UTR?'],
     noutr:[1,9,'wait','No: saved, but the statement must confirm this payment'],
-    save:[2,10,'act','Bank record saved: UTR, amount and account'],
+    save:[2,10,'act','Bank record saved: UTR, amount and account',68,'server'],
     q7:[2,11,'dec','Is a customer waiting with exactly this UTR?'],
     unclaimed:[1,11,'wait','No: kept as Unclaimed money until the customer uploads',78],
     person:[3,11,'rev','Different amount, or two customers claim this UTR: a person decides',78],
-    credit:[2,12,'ok','Same UTR, same amount: wallet credited. UTR locked forever',78],
+    credit:[2,12,'ok','Same UTR, same amount: wallet credited. UTR locked forever',78,'wallet'],
     stmt:[4,9,'bank','Backup: admin uploads the HDFC statement at 10 AM, 2 PM, 6 PM, 10 PM',78],
     rows:[4,10,'act','Every statement row is checked the same way, by UTR'],
     red:[4,11,'stop','Credited from an SMS but missing in the statement: red alert',78]
