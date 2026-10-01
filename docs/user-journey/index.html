@@ -487,10 +487,7 @@ section{scroll-margin-top:86px}
 .mf-arrow{align-self:center;height:34px;width:3px;background:var(--accent);border-radius:2px;position:relative;margin:4px 0 10px}
 .mf-arrow::after{content:"";position:absolute;left:-5px;bottom:-7px;border:6.5px solid transparent;border-top:9px solid var(--accent);border-bottom:0}
 .mf-arrow span{position:absolute;left:12px;top:7px;font:700 11px/1 var(--body);color:var(--accent);background:var(--accent-soft);padding:5px 8px;border-radius:6px;white-space:nowrap}
-@media (max-width:760px){
-  .mf{display:flex}
-  .fc-wrap,.legend,.fc-note{display:none}
-}
+
 /* ---------- journey map v2 ---------- */
 .jm2-scroll{margin-inline:-20px;padding-inline:20px;overflow-x:auto;scrollbar-width:none;padding-block:6px 18px}
 .jm2{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(5,auto);column-gap:16px}
@@ -643,7 +640,7 @@ section{scroll-margin-top:86px}
 .mf-d summary b{background:#fff;border-radius:999px;padding:3px 7px;font-size:11.5px}
 .mf-d>.mf-b{margin:10px 0 0 4px}
 .mf-arrow{height:26px;margin:2px 0 8px}
-@media (max-width:760px){.m-hide{display:none!important}}
+
 /* ================= phones ================= */
 .swipe{display:none}
 .pic.pic-b{display:flex;align-items:flex-end}
@@ -732,6 +729,10 @@ section{scroll-margin-top:86px}
 }
 
 @media (max-width:760px){.phone{margin-inline:auto}.mf-arrow{margin-top:8px}}
+
+.rule-in{display:flex;flex-direction:column;gap:16px}
+
+@media (max-width:760px){.fc-scroll>svg{min-width:1150px}.fc-scroll{padding:6px}}
 </style>
 
 <nav class="nav" aria-label="Sections"><div class="nav-in">
@@ -827,6 +828,7 @@ section{scroll-margin-top:86px}
     <span><i class="lg act"></i>Step</span><span><i class="lg dec"></i>Question</span><span><i class="lg ok"></i>Money added</span>
     <span><i class="lg wait"></i>Waiting</span><span><i class="lg retry"></i>Try again</span><span><i class="lg rev"></i>A person decides</span>
     <span><i class="lg stop"></i>Stopped</span><span><i class="lg bank"></i>Comes from the bank side</span></div>
+  <p class="swipe">Slide the diagram sideways to see every branch</p>
   <div class="card fc-wrap"><div class="fc-scroll" id="fc" tabindex="0" role="img" aria-label="Flowchart of the complete Add Cash journey. The same decisions are listed as text further below."></div></div>
   <p class="note fc-note">The same decisions are written as a list at the end of this section.</p>
   
@@ -844,6 +846,7 @@ section{scroll-margin-top:86px}
     <div class="pl ok"><i></i><span>exact UTR <br>and amount</span></div>
     <div class="pp"><span class="pp-ic"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#0b8a4b" d="M8 12h28a4 4 0 0 1 4 4v2H10a2 2 0 0 1-2-2z"/><rect x="6" y="15" width="36" height="26" rx="5" fill="#22c07a"/><rect x="29" y="23" width="15" height="10" rx="5" fill="#0b8a4b"/><circle cx="35" cy="28" r="2.2" fill="#fff"/></svg></span><b>Wallet</b><small>Credited once, UTR locked</small></div>
   </div>
+  <p class="swipe">Slide the diagram sideways to see every branch</p>
   <div class="card fc-wrap"><div class="fc-scroll" id="fc2" tabindex="0" role="img" aria-label="Flowchart of the bank side: from the bank SMS reaching the phone to the wallet being credited. The four phone situations are also written out below."></div></div>
   <div class="ph4">
     <div class="card ph"><span class="ph-dot ok"></span><h4>Phone on, internet on</h4><p>The SMS is read and sent to the server in a few seconds. This is the normal case.</p><b>Result: credited in seconds</b></div>
@@ -1107,6 +1110,17 @@ function boot(){
   if(!window.React||!window.ReactDOM||!window.Motion){$('#hero-root').innerHTML='<div class="h-text"><h1>How money gets into the wallet, <em>without a payment gateway</em></h1></div>';document.querySelectorAll('#rule-root,#journey-root').forEach(r=>r.innerHTML='<p style="padding:20px">The animated parts need an internet connection to load. Everything below still works.</p>');return}
   const h=React.createElement,{useState,useEffect,useRef}=React,{motion:m,AnimatePresence:AP,LayoutGroup:LG}=Motion;
   const spring={type:'spring',stiffness:420,damping:34};
+  // true while the element is on screen, so nothing plays before the reader gets there
+  function useOnScreen(ref){
+    const [on,setOn]=useState(false);
+    useEffect(()=>{let raf=0;
+      const check=()=>{raf=0;const e=ref.current;if(!e)return;const r=e.getBoundingClientRect(),vh=window.innerHeight||document.documentElement.clientHeight;
+        setOn(r.top<vh*.8&&r.bottom>vh*.2)};
+      const later=()=>{if(!raf)raf=requestAnimationFrame(check)};
+      check();window.addEventListener('scroll',later,{passive:true});window.addEventListener('resize',later);
+      return()=>{window.removeEventListener('scroll',later);window.removeEventListener('resize',later);cancelAnimationFrame(raf)}},[]);
+    return on;
+  }
 
 
   function Hero(){
@@ -1129,20 +1143,20 @@ function boot(){
 
   function Rule(){
     const KEYS=[['same','Same UTR,','same amount'],['digit','One digit','different'],['amount','Amount','different'],['none','No bank','record yet']];
-    const [k,setK]=useState('same'),[n,setN]=useState(0),[auto,setAuto]=useState(!reduce),r=RULES[k];
+    const [k,setK]=useState('same'),[n,setN]=useState(0),[auto,setAuto]=useState(!reduce),r=RULES[k],box=useRef(null),seen=useOnScreen(box);
     const total=(r.b?1300:0)+3600;
-    useEffect(()=>{setN(0);if(!r.b)return;if(reduce){setN(13);return}let i=0;const t=setInterval(()=>{i++;setN(i);if(i>=13)clearInterval(t)},95);return()=>clearInterval(t)},[k]);
-    useEffect(()=>{if(!auto)return;const t=setTimeout(()=>{const i=KEYS.findIndex(x=>x[0]===k);setK(KEYS[(i+1)%KEYS.length][0])},total);return()=>clearTimeout(t)},[k,auto]);
+    useEffect(()=>{setN(0);if(!r.b)return;if(reduce){setN(13);return}if(!seen)return;let i=0;const t=setInterval(()=>{i++;setN(i);if(i>=13)clearInterval(t)},95);return()=>clearInterval(t)},[k,seen]);
+    useEffect(()=>{if(!auto||!seen)return;const t=setTimeout(()=>{const i=KEYS.findIndex(x=>x[0]===k);setK(KEYS[(i+1)%KEYS.length][0])},total);return()=>clearTimeout(t)},[k,auto,seen]);
     const done=!r.b||n>=13;
     const row=(str)=>[...str].map((d,i)=>h(m.i,{key:k+i,className:i<n?(UTR[i]===r.b[i]?'hit':'miss'):'',animate:i===n-1?{scale:[1,1.5,1],y:[0,-3,0]}:{scale:1},transition:{duration:.28}},d));
     const sym=done?(r.cls==='ok'?'=':r.cls==='no'?'≠':'?'):'…';
-    return h(React.Fragment,null,
+    return h('div',{ref:box,className:'rule-in'},
       h('div',{className:'rule-top'},h('b',null,'Try each case'),
         h('button',{type:'button',className:'rule-auto',onClick:()=>setAuto(!auto),'aria-pressed':auto},auto?'❚❚ Playing by itself':'▶ Play by itself')),
       h('div',{className:'rtabs',role:'group','aria-label':'Choose a case'},KEYS.map(b=>h(m.button,{key:b[0],type:'button','aria-pressed':k===b[0],whileTap:{scale:.96},whileHover:{y:-1},onClick:()=>{setAuto(false);setK(b[0])}},
         k===b[0]&&h(m.span,{layoutId:'rtab',className:'rtab-bg',transition:spring}),
         h('span',{className:'rtab-t'},b[1],h('br'),b[2]),
-        k===b[0]&&auto&&h(m.span,{key:k,className:'rtab-p',initial:{scaleX:0},animate:{scaleX:1},transition:{duration:total/1000,ease:'linear'}})))),
+        k===b[0]&&auto&&seen&&h(m.span,{key:k,className:'rtab-p',initial:{scaleX:0},animate:{scaleX:1},transition:{duration:total/1000,ease:'linear'}})))),
       h('div',{className:'rule-pair'},
         h('div',{className:'slip'},h('small',null,'Claim'),h('span',{className:'who'},"Customer's screenshot"),h('div',{className:'digits'},r.b?row(UTR):[...UTR].map((d,i)=>h('i',{key:i},d))),h('span',{className:'amt'},'₹500.00')),
         h(m.div,{className:'eq '+(done?r.cls:'wait'),key:k+done,initial:{scale:.7},animate:{scale:1},transition:spring},sym),
@@ -1163,12 +1177,12 @@ function boot(){
 
   function Journey(){
     const [si,setSi]=useState(0),[st,setSt]=useState(0),[playing,setPlaying]=useState(!reduce),[dir,setDir]=useState(1);
-    const sc=SC[si],n=sc.steps.length,s=sc.steps[st],track=useRef(null);
+    const sc=SC[si],n=sc.steps.length,s=sc.steps[st],track=useRef(null),root=useRef(null),seen=useOnScreen(track),run=playing&&seen;
     const go=i=>{setDir(i>=st?1:-1);setSt(i)};
-    useEffect(()=>{if(!playing)return;const t=setTimeout(()=>{if(st<n-1){setDir(1);setSt(st+1)}else setPlaying(false)},DUR);return()=>clearTimeout(t)},[si,st,playing]);
+    useEffect(()=>{if(!run)return;const t=setTimeout(()=>{if(st<n-1){setDir(1);setSt(st+1)}else setPlaying(false)},DUR);return()=>clearTimeout(t)},[si,st,run]);
     useEffect(()=>{const t=track.current,e=t&&t.querySelector('[data-on="1"]');if(e)t.scrollTo({left:e.offsetLeft-t.clientWidth/2+e.clientWidth/2,behavior:reduce?'auto':'smooth'})},[si,st]);
     const acts=ACT[s[0]]||(s[1]===D?'a':'c');
-    return h('div',{className:'jr'},
+    return h('div',{className:'jr',ref:root,'data-seen':seen?1:0,'data-play':playing?1:0},
       h(LG,{id:'tabs'},h('div',{className:'scen',role:'group','aria-label':'Journey'},SC.map((x,i)=>h('button',{key:i,type:'button','aria-pressed':i===si,onClick:()=>{setSi(i);setSt(0);setDir(1);setPlaying(!reduce)}},i===si&&h(m.span,{layoutId:'tabbg',className:'tabbg',transition:spring}),h('span',null,x.k))))),
       h(AP,{mode:'wait',initial:false},h(m.p,{key:si,className:'jr-desc',initial:{opacity:0,y:6},animate:{opacity:1,y:0},exit:{opacity:0},transition:{duration:.18}},DESC[si])),
       h('div',{className:'card jr-card'},
@@ -1180,7 +1194,7 @@ function boot(){
         h('div',{className:'player'},
           h('div',{className:'stage'},
             h('span',{className:'orb o1'}),h('span',{className:'orb o2'}),
-            h(AP,{mode:'wait',custom:dir,initial:false},h(m.div,{key:si+'-'+st,className:'stage-in',custom:dir,initial:{opacity:0,x:70*dir,rotateY:-10*dir,scale:.94},animate:{opacity:1,x:0,rotateY:0,scale:1},exit:{opacity:0,x:-70*dir,scale:.94},transition:{type:'spring',stiffness:260,damping:28}},h(Screen,{name:s[0],kind:s[1],title:s[2],playing})))),
+            h(AP,{mode:'wait',custom:dir,initial:false},h(m.div,{key:si+'-'+st,className:'stage-in',custom:dir,initial:{opacity:0,x:70*dir,rotateY:-10*dir,scale:.94},animate:{opacity:1,x:0,rotateY:0,scale:1},exit:{opacity:0,x:-70*dir,scale:.94},transition:{type:'spring',stiffness:260,damping:28}},h(Screen,{name:s[0],kind:s[1],title:s[2],playing:run})))),
           h('div',{className:'info'},
             h('div',{className:'actors'},ACTORS.map(a=>h(m.span,{key:a[0],className:'actor a-'+a[0]+(acts.includes(a[0])?' on':''),animate:{scale:acts.includes(a[0])?1:.94,opacity:acts.includes(a[0])?1:.62},transition:spring},a[1]))),
             h(AP,{mode:'wait',initial:false},h(m.div,{key:si+'-'+st,className:'info-in',initial:'a',animate:'b',exit:'c',variants:{a:{},b:{transition:{staggerChildren:.07}},c:{opacity:0,transition:{duration:.12}}}},
@@ -1189,7 +1203,7 @@ function boot(){
                h('div',{className:'blk c',key:3},h('small',null,'Customer'),h('p',null,s[3]==='Nothing.'?"Sees nothing new. This step happens on the team's dashboard.":s[3])),
                h('div',{className:'blk s',key:4},h('small',null,'Behind the scenes'),h('p',null,s[4]))].map((c,i)=>h(m.div,{key:i,variants:{a:{opacity:0,y:14},b:{opacity:1,y:0,transition:{duration:.3,ease:[.22,1,.36,1]}}}},c)))),
             h('div',{className:'ctrl'},
-              h('div',{className:'bar'},h(m.span,{key:si+'-'+st+'-'+playing,initial:{scaleX:playing?0:1},animate:{scaleX:1},transition:{duration:playing?DUR/1000:0,ease:'linear'}})),
+              h('div',{className:'bar'},h(m.span,{key:si+'-'+st+'-'+run,initial:{scaleX:0},animate:{scaleX:run?1:0},transition:{duration:run?DUR/1000:0,ease:'linear'}})),
               h('div',{className:'ctrl-b'},
                 h(m.button,{type:'button',className:'btn',whileTap:{scale:.95},disabled:st===0,onClick:()=>go(st-1)},'Back'),
                 h(m.button,{type:'button',className:'btn pri',whileTap:{scale:.95},onClick:()=>{if(!playing&&st===n-1)go(0);setPlaying(!playing)}},playing?'Pause':(st===n-1?'Replay':'Play')),
@@ -1258,7 +1272,8 @@ function drawChart(id,rows,trav,N,mkE){
   const rest=Object.keys(g).filter(x=>!seen.has(x)).sort((x,y)=>g[x].row-g[y].row);
   if(rest.length){m+='<div class="mf-s" style="margin-top:22px"><div class="mf-h">Also on the bank side</div><ul class="mf-b">'+rest.map(x=>{if(seen.has(x))return'';seen.add(x);return'<li>'+box(x)+branch(x,1)+'</li>'}).join('')+'</ul></div>'}
   const mf=document.createElement('div');mf.className='mf';mf.innerHTML=m;
-  const wrap=$('#'+id).closest('.fc-wrap');wrap.parentNode.insertBefore(mf,wrap.nextSibling);
+  // (kept for reference; the full diagram is shown at every width)
+  const sc=$('#'+id);requestAnimationFrame(()=>{sc.scrollLeft=(sc.scrollWidth-sc.clientWidth)/2});
 }
 drawChart('fc',14,13,{
     start:[2,0,'start','Customer taps Add Cash and enters an amount'],
